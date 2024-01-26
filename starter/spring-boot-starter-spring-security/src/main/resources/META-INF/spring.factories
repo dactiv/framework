@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.github.dactiv.framework.spring.security.SpringSecurityAutoConfiguration,\
+com.github.dactiv.framework.spring.security.OAuth2WebSecurityAutoConfiguration,\
+com.github.dactiv.framework.spring.security.DefaultWebSecurityAutoConfiguration,\
+com.github.dactiv.framework.spring.security.OperationDataTraceAuditAutoConfiguration, \
+com.github.dactiv.framework.spring.security.CaptchaExtendAutoConfiguration

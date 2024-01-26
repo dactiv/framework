@@ -1,0 +1,9 @@
+healthan:
+  authentication:
+    audit:
+      type: memory
+
+
+spring:
+  redis:
+    password: 19880602
