@@ -1,12 +1,12 @@
 {
   "groups": [
     {
-      "name": "net.healthan"
+      "name": "com.github.dactiv"
     }
   ],
   "properties": [
     {
-      "name": "healthan.idempotent.enabled",
+      "name": "dactiv.idempotent.enabled",
       "type": "java.lang.Boolean",
       "description": "是否开启幂等性支持.",
       "defaultValue": true

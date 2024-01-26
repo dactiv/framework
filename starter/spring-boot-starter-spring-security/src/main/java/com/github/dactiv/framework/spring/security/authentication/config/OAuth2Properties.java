@@ -72,7 +72,7 @@ public class OAuth2Properties {
      * 授权缓存配置
      */
     private CacheProperties authorizationCache = CacheProperties.of(
-            "healthan:uni-portal:authentication:oauth2:authorization:",
+            "dactiv:spring:security:oauth2:authorization:",
             TimeProperties.of(5, TimeUnit.MINUTES)
     );
 

@@ -1,5 +1,5 @@
 mybatis-plus:
-  type-aliases-package: net.healthan.mdm.mybatis.plus.test.entity
+  type-aliases-package: com.github.dactiv.framework.mybatis.plus.test.entity
   configuration:
     call-setters-on-nulls: on
     default-enum-type-handler: com.github.dactiv.framework.mybatis.handler.NameValueEnumTypeHandler
@@ -20,7 +20,7 @@ spring:
     init:
       schema-locations: classpath:sql/schema.sql
       data-locations: classpath:sql/data.sql
-healthan:
+dactiv:
   mybatis:
     plus:
       crypto:

@@ -1,12 +1,12 @@
 {
   "groups": [
     {
-      "name": "net.healthan"
+      "name": "com.github.dactiv"
     }
   ],
   "properties": [
     {
-      "name": "healthan.spring.web.mvc.enabled",
+      "name": "dactiv.spring.web.mvc.enabled",
       "type": "java.lang.Boolean",
       "description": "enabled spring web mvc support .",
       "defaultValue": true

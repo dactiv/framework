@@ -69,7 +69,7 @@ import java.util.stream.Collectors;
 @AutoConfigureBefore(ErrorMvcAutoConfiguration.class)
 @EnableConfigurationProperties({SpringWebMvcProperties.class, JacksonProperties.class})
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@ConditionalOnProperty(prefix = "healthan.spring.web.mvc", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.spring.web.mvc", value = "enabled", matchIfMissing = true)
 public class SpringWebMvcAutoConfiguration {
 
     @Configuration
@@ -177,7 +177,7 @@ public class SpringWebMvcAutoConfiguration {
     }
 
     @Bean
-    @ConfigurationProperties("healthan.enumerate")
+    @ConfigurationProperties("dactiv.enumerate")
     public EnumerateEndpoint enumerateEndpoint(ObjectProvider<InfoContributor> infoContributor) {
         return new EnumerateEndpoint(infoContributor.stream().collect(Collectors.toList()));
     }

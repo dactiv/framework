@@ -31,7 +31,7 @@ public class TestElasticsearchAuditEventRepository {
     private ElasticsearchAuditEventRepository auditEventRepository;
 
     @Test
-    public void test() throws InterruptedException {
+    public void test() {
         Instant instant = Instant.now();
 
         int before = auditEventRepository.find("admin", instant, null).size();
@@ -45,9 +45,8 @@ public class TestElasticsearchAuditEventRepository {
         date.put("date", new Date());
         map.put("data",date);
 
-
         auditEventRepository.add(new PluginAuditEvent("admin", "test", map));
-        Thread.sleep(5000);
+
         List<AuditEvent> auditEvents = auditEventRepository.find("admin", instant, null);
 
         Assertions.assertEquals(before + 1, auditEvents.size());

@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @EnableConfigurationProperties(MinioProperties.class)
-@ConditionalOnProperty(prefix = "healthan.minio", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.minio", value = "enabled", matchIfMissing = true)
 public class MinioAutoConfiguration {
 
     /**

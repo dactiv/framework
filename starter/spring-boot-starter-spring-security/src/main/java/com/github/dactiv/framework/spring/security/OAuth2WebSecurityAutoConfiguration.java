@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 @AutoConfigureBefore(SpringSecurityAutoConfiguration.class)
 @EnableConfigurationProperties(AuthenticationProperties.class)
 @ConditionalOnClass(OAuth2AuthorizationServerConfigurer.class)
-@ConditionalOnProperty(prefix = "healthan.authentication.spring.security.oauth2", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.authentication.spring.security.oauth2", value = "enabled", matchIfMissing = true)
 public class OAuth2WebSecurityAutoConfiguration {
 
     private static final RsaCipherService cipherService = new RsaCipherService();

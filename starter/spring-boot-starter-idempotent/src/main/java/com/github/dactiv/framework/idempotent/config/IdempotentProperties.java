@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.idempotent")
+@ConfigurationProperties("dactiv.idempotent")
 public class IdempotentProperties {
 
     /**

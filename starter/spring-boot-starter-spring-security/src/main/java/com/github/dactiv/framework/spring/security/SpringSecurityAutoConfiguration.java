@@ -47,17 +47,17 @@ import java.util.stream.Collectors;
 @Configuration
 @AutoConfigureAfter(RedissonAutoConfiguration.class)
 @EnableConfigurationProperties(AuthenticationProperties.class)
-@ConditionalOnProperty(prefix = "healthan.authentication.spring.security", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.authentication.spring.security", value = "enabled", matchIfMissing = true)
 public class SpringSecurityAutoConfiguration {
 
     @Bean
-    @ConfigurationProperties("healthan.authentication.plugin")
+    @ConfigurationProperties("dactiv.authentication.plugin")
     PluginEndpoint pluginEndpoint(ObjectProvider<InfoContributor> infoContributor) {
         return new PluginEndpoint(infoContributor.stream().collect(Collectors.toList()));
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "healthan.authentication.audit", name = "enabled", havingValue = "true")
+    @ConditionalOnProperty(prefix = "dactiv.authentication.audit", name = "enabled", havingValue = "true")
     ControllerAuditHandlerInterceptor controllerAuditHandlerInterceptor() {
         return new ControllerAuditHandlerInterceptor();
     }
@@ -69,7 +69,7 @@ public class SpringSecurityAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "healthan.authentication.access-token", value = "enable-controller", havingValue = "true")
+    @ConditionalOnProperty(prefix = "dactiv.authentication.access-token", value = "enable-controller", havingValue = "true")
     TokenController accessTokenController(AccessTokenContextRepository accessTokenContextRepository,
                                           RedissonClient redissonClient,
                                           AuthenticationProperties authenticationProperties) {
@@ -164,7 +164,7 @@ public class SpringSecurityAutoConfiguration {
 
     @Configuration
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-    @ConditionalOnProperty(prefix = "healthan.authentication.audit", name = "enabled", havingValue = "true")
+    @ConditionalOnProperty(prefix = "dactiv.authentication.audit", name = "enabled", havingValue = "true")
     public static class DefaultWebMvcConfigurer extends UndertowWebSocketServletWebServerCustomizer implements WebMvcConfigurer {
 
         private final ControllerAuditHandlerInterceptor controllerAuditHandlerInterceptor;

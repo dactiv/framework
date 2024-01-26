@@ -1,12 +1,12 @@
 {
   "groups": [
     {
-      "name": "net.healthan"
+      "name": "com.github.dactiv"
     }
   ],
   "properties": [
     {
-      "name": "healthan.mybatis.plus.enabled",
+      "name": "dactiv.mybatis.plus.enabled",
       "type": "java.lang.Boolean",
       "description": "enabled mybatis-plus support .",
       "defaultValue": true

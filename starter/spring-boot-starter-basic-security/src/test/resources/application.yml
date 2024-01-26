@@ -23,7 +23,7 @@ spring:
     activate:
       on-profile: elasticsearch
 
-healthan:
+dactiv:
   authentication:
     audit:
       type: elasticsearch
@@ -34,7 +34,7 @@ spring:
     activate:
       on-profile: mongo
 
-healthan:
+dactiv:
   authentication:
     audit:
       type: mongo

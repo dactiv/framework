@@ -1,12 +1,12 @@
 {
   "groups": [
     {
-      "name": "net.healthan"
+      "name": "com.github.dactiv"
     }
   ],
   "properties": [
     {
-      "name": "healthan.authentication.audit.enabled",
+      "name": "dactiv.authentication.audit.enabled",
       "type": "java.lang.Boolean",
       "description": "是否开启审计支持 .",
       "defaultValue": true

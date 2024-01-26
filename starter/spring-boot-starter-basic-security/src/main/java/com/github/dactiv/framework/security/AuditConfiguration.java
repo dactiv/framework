@@ -34,7 +34,7 @@ import java.util.*;
 @Configuration
 @EnableConfigurationProperties(AuditProperties.class)
 @Import(AuditConfiguration.AuditImportSelector.class)
-@ConditionalOnProperty(prefix = "healthan.authentication.audit", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.authentication.audit", value = "enabled", matchIfMissing = true)
 public class AuditConfiguration {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AuditConfiguration.class);
@@ -88,7 +88,7 @@ public class AuditConfiguration {
 
                 BindResult<AuditType> specified = Binder
                         .get(environment)
-                        .bind("healthan.authentication.audit.type", AuditType.class);
+                        .bind("dactiv.authentication.audit.type", AuditType.class);
 
                 if (AnnotationMetadata.class.isAssignableFrom(metadata.getClass())) {
 
@@ -135,7 +135,7 @@ public class AuditConfiguration {
     @ConditionalOnMissingBean(AuditEventRepository.class)
     @ConditionalOnClass(InMemoryAuditEventRepository.class)
     @EnableConfigurationProperties(SecurityProperties.class)
-    @ConditionalOnProperty(prefix = "healthan.authentication.audit", value = "enabled", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dactiv.authentication.audit", value = "enabled", matchIfMissing = true)
     public static class InMemoryAuditConfiguration {
 
         @Bean
@@ -153,7 +153,7 @@ public class AuditConfiguration {
     @ConditionalOnClass(MongoAuditEventRepository.class)
     @ConditionalOnMissingBean(AuditEventRepository.class)
     @EnableConfigurationProperties(SecurityProperties.class)
-    @ConditionalOnProperty(prefix = "healthan.authentication.audit", value = "enabled", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dactiv.authentication.audit", value = "enabled", matchIfMissing = true)
     public static class MongoAuditConfiguration {
 
         @Bean
@@ -181,7 +181,7 @@ public class AuditConfiguration {
     @ConditionalOnMissingBean(AuditEventRepository.class)
     @EnableConfigurationProperties(SecurityProperties.class)
     @ConditionalOnClass(ElasticsearchAuditEventRepository.class)
-    @ConditionalOnProperty(prefix = "healthan.authentication.audit", value = "enabled", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dactiv.authentication.audit", value = "enabled", matchIfMissing = true)
     public static class ElasticsearchAuditConfiguration {
 
         @Bean

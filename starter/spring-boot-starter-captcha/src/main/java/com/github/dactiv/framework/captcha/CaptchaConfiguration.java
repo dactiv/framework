@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  */
 @Configuration
 @EnableConfigurationProperties({CaptchaProperties.class, TianaiCaptchaProperties.class})
-@ConditionalOnProperty(prefix = "healthan.captcha", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.captcha", value = "enabled", matchIfMissing = true)
 public class CaptchaConfiguration {
 
     @Bean
@@ -49,7 +49,7 @@ public class CaptchaConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "healthan.captcha.controller", value = "enabled", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dactiv.captcha.controller", value = "enabled", matchIfMissing = true)
     public CaptchaController captchaController(@Lazy Interceptor interceptor,
                                                CaptchaProperties captchaProperties,
                                                TianaiCaptchaService captchaService,

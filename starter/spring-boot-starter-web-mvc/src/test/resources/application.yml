@@ -1,5 +1,5 @@
-healthan:
+dactiv:
   spring:
     web:
       mvc:
-        filter-view-base-packages: net.healthan.mdm.spring.web.test.result.entity
+        filter-view-base-packages: com.github.dactiv.framework.spring.web.test.result.entity

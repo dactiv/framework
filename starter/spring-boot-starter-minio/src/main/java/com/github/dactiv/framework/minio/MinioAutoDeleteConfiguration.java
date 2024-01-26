@@ -29,7 +29,7 @@ import java.util.Objects;
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureAfter(MinioAutoConfiguration.class)
 @EnableConfigurationProperties(AutoDeleteProperties.class)
-@ConditionalOnProperty(prefix = "healthan.minio", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.minio", value = "enabled", matchIfMissing = true)
 public class MinioAutoDeleteConfiguration implements SchedulingConfigurer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MinioAutoDeleteConfiguration.class);

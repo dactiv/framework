@@ -1,18 +1,18 @@
 {
   "groups": [
     {
-      "name": "net.healthan"
+      "name": "com.github.dactiv"
     }
   ],
   "properties": [
     {
-      "name": "healthan.captcha.enabled",
+      "name": "dactiv.captcha.enabled",
       "type": "java.lang.Boolean",
       "description": "是否开启验证码支持 .",
       "defaultValue": true
     },
     {
-      "name": "healthan.captcha.constrooler.enabled",
+      "name": "dactiv.captcha.constrooler.enabled",
       "type": "java.lang.Boolean",
       "description": "是否开启验证码控制器支持 .",
       "defaultValue": true

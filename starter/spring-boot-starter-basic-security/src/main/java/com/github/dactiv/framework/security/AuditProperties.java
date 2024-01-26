@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.authentication.audit")
+@ConfigurationProperties("dactiv.authentication.audit")
 public class AuditProperties {
 
     /**

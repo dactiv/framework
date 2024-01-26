@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.minio")
+@ConfigurationProperties("dactiv.minio")
 public class MinioProperties {
 
     /**

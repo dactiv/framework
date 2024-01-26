@@ -24,12 +24,12 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @AutoConfigureAfter(RedissonAutoConfiguration.class)
 @EnableConfigurationProperties(IdempotentProperties.class)
-@ConditionalOnProperty(prefix = "healthan.idempotent", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.idempotent", value = "enabled", matchIfMissing = true)
 public class IdempotentAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(ConcurrentInterceptor.class)
-    ConcurrentInterceptor concurrentInterceptor(RedissonClient redissonClient,
+    public ConcurrentInterceptor concurrentInterceptor(RedissonClient redissonClient,
                                                 IdempotentProperties idempotentProperties) {
         SpelExpressionValueGenerator generator = new SpelExpressionValueGenerator();
         generator.setPrefix(idempotentProperties.getConcurrentKeyPrefix());
@@ -37,13 +37,13 @@ public class IdempotentAutoConfiguration {
     }
 
     @Bean
-    ConcurrentPointcutAdvisor concurrentPointcutAdvisor(ConcurrentInterceptor concurrentInterceptor) {
+    public ConcurrentPointcutAdvisor concurrentPointcutAdvisor(ConcurrentInterceptor concurrentInterceptor) {
         return new ConcurrentPointcutAdvisor(concurrentInterceptor);
     }
 
     @Bean
     @ConditionalOnMissingBean(IdempotentInterceptor.class)
-    IdempotentInterceptor idempotentInterceptor(RedissonClient redissonClient,
+    public IdempotentInterceptor idempotentInterceptor(RedissonClient redissonClient,
                                                 IdempotentProperties idempotentProperties) {
         SpelExpressionValueGenerator generator = new SpelExpressionValueGenerator();
         generator.setPrefix(idempotentProperties.getIdempotentKeyPrefix());
@@ -51,12 +51,12 @@ public class IdempotentAutoConfiguration {
     }
 
     @Bean
-    IdempotentPointcutAdvisor idempotentPointcutAdvisor(IdempotentInterceptor idempotentInterceptor) {
+    public IdempotentPointcutAdvisor idempotentPointcutAdvisor(IdempotentInterceptor idempotentInterceptor) {
         return new IdempotentPointcutAdvisor(idempotentInterceptor);
     }
 
     @Bean
-    IdempotentErrorResultResolver idempotentErrorResultResolver() {
+    public IdempotentErrorResultResolver idempotentErrorResultResolver() {
         return new IdempotentErrorResultResolver();
     }
 

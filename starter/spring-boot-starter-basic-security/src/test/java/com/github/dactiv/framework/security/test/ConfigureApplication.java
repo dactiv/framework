@@ -9,7 +9,9 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.RefreshPolicy;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.util.ArrayList;
@@ -24,11 +26,11 @@ public class ConfigureApplication {
     }
 
     @Bean
-    public ElasticsearchAuditEventRepository elasticsearchAuditEventRepository(ElasticsearchOperations elasticsearchOperations,
+    public ElasticsearchAuditEventRepository elasticsearchAuditEventRepository(ElasticsearchTemplate elasticsearchOperations,
                                                                                SecurityProperties securityProperties) {
         List<String> ignorePrincipals = new ArrayList<>(PluginAuditEventRepository.DEFAULT_IGNORE_PRINCIPALS);
         ignorePrincipals.add(securityProperties.getUser().getName());
-
+        elasticsearchOperations.setRefreshPolicy(RefreshPolicy.IMMEDIATE);
         return new ElasticsearchAuditEventRepository(
                 elasticsearchOperations,
                 "ix_test_audit_event",
