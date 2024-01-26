@@ -1,6 +1,7 @@
 package com.github.dactiv.framework.captcha;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 

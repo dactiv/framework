@@ -7,8 +7,8 @@ import com.github.dactiv.framework.captcha.InterceptToken;
 import com.github.dactiv.framework.captcha.intercept.Interceptor;
 import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.commons.exception.SystemException;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.Objects;
 

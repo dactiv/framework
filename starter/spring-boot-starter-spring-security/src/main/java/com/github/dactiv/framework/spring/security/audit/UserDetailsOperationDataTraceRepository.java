@@ -8,6 +8,7 @@ import com.github.dactiv.framework.spring.security.authentication.token.SimpleAu
 import com.github.dactiv.framework.spring.security.entity.SecurityUserDetails;
 import com.github.dactiv.framework.spring.security.entity.UserDetailsOperationDataTraceRecord;
 import com.github.dactiv.framework.spring.web.mvc.SpringMvcUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import net.sf.jsqlparser.statement.Statement;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**

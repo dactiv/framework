@@ -9,8 +9,8 @@ import com.github.dactiv.framework.commons.id.BasicIdentification;
 import com.github.dactiv.framework.commons.id.StringIdEntity;
 import com.github.dactiv.framework.mybatis.handler.JacksonJsonTypeHandler;
 import com.github.dactiv.framework.mybatis.handler.NameValueEnumTypeHandler;
+import jakarta.validation.constraints.NotEmpty;
 
-import javax.validation.constraints.NotEmpty;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

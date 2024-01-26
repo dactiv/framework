@@ -1,9 +1,9 @@
 package com.github.dactiv.framework.captcha;
 
 import com.github.dactiv.framework.commons.RestResult;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**

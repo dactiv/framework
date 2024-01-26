@@ -3,9 +3,9 @@ package com.github.dactiv.framework.captcha.filter.support;
 import com.github.dactiv.framework.captcha.filter.CaptchaVerificationService;
 import com.github.dactiv.framework.captcha.tianai.TianaiCaptchaService;
 import com.github.dactiv.framework.commons.RestResult;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.util.Assert;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

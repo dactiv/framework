@@ -2,8 +2,8 @@ package com.github.dactiv.framework.captcha.intercept;
 
 import com.github.dactiv.framework.captcha.InterceptToken;
 import com.github.dactiv.framework.commons.RestResult;
+import jakarta.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**

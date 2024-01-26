@@ -9,6 +9,7 @@ import com.github.dactiv.framework.captcha.tianai.TianaiCaptchaService;
 import com.github.dactiv.framework.captcha.tianai.config.TianaiCaptchaProperties;
 import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.spring.web.mvc.SpringMvcUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.io.Resource;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;

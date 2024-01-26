@@ -2,30 +2,35 @@ package com.github.dactiv.framework.spring.security;
 
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
+import com.github.dactiv.framework.security.plugin.Plugin;
 import com.github.dactiv.framework.spring.security.authentication.*;
 import com.github.dactiv.framework.spring.security.authentication.adapter.WebSecurityConfigurerAfterAdapter;
 import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
 import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationFailureHandler;
 import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationSuccessHandler;
 import com.github.dactiv.framework.spring.security.authentication.rememberme.CookieRememberService;
-import com.github.dactiv.framework.spring.security.plugin.PluginSourceTypeVoter;
+import com.github.dactiv.framework.spring.security.plugin.PluginSourceAuthorizationManager;
 import com.github.dactiv.framework.spring.web.result.error.ErrorResultResolver;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.aop.Advisor;
+import org.springframework.aop.support.Pointcuts;
+import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Role;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDecisionManager;
-import org.springframework.security.access.intercept.aopalliance.MethodSecurityInterceptor;
-import org.springframework.security.access.vote.AbstractAccessDecisionManager;
-import org.springframework.security.access.vote.ConsensusBased;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authorization.AuthorizationEventPublisher;
+import org.springframework.security.authorization.method.AuthorizationInterceptorsOrder;
+import org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.List;
@@ -91,7 +96,7 @@ public class DefaultWebSecurityAutoConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeHttpRequests()
-                .antMatchers(properties.getPermitUriAntMatchers().toArray(new String[0]))
+                .requestMatchers(properties.getPermitUriAntMatchers().toArray(new String[0]))
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -138,12 +143,11 @@ public class DefaultWebSecurityAutoConfiguration {
         filter.setRememberMeServices(cookieRememberService);
         filter.setAuthenticationSuccessHandler(jsonAuthenticationSuccessHandler);
         filter.setAuthenticationFailureHandler(jsonAuthenticationFailureHandler);
-
+        filter.setSecurityContextRepository(accessTokenContextRepository);
 
         httpSecurity.addFilter(filter);
         httpSecurity.addFilterBefore(new IpAuthenticationFilter(this.properties), RequestAuthenticationFilter.class);
 
-        addConsensusBasedToMethodSecurityInterceptor(httpSecurity, properties);
         return httpSecurity.build();
     }
 
@@ -159,36 +163,7 @@ public class DefaultWebSecurityAutoConfiguration {
         };
     }
 
-    /**
-     * 添加 ConsensusBased 访问管理器到方法拦截器中
-     *
-     * @param http http security
-     */
-    public static void addConsensusBasedToMethodSecurityInterceptor(HttpSecurity http,
-                                                                    AuthenticationProperties properties) {
-        try {
-            MethodSecurityInterceptor methodSecurityInterceptor = http
-                    .getSharedObject(ApplicationContext.class)
-                    .getBean(MethodSecurityInterceptor.class);
-
-            AccessDecisionManager accessDecisionManager = methodSecurityInterceptor.getAccessDecisionManager();
-
-            if (AbstractAccessDecisionManager.class.isAssignableFrom(accessDecisionManager.getClass())) {
-
-                AbstractAccessDecisionManager adm = (AbstractAccessDecisionManager) accessDecisionManager;
-                adm.getDecisionVoters().add(new PluginSourceTypeVoter());
-
-                ConsensusBased consensusBased = new ConsensusBased(adm.getDecisionVoters());
-                consensusBased.setAllowIfEqualGrantedDeniedDecisions(properties.isAllowIfEqualGrantedDeniedDecisions());
-
-                methodSecurityInterceptor.setAccessDecisionManager(consensusBased);
-            }
-        } catch (Exception ignored) {
-
-        }
-    }
-
-    /*@Bean
+    @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     static Advisor pluginAuthorizationMethodInterceptor(ObjectProvider<SecurityContextHolderStrategy> strategyProvider,
                                                         ObjectProvider<AuthorizationEventPublisher> eventPublisherProvider) {
@@ -202,6 +177,6 @@ public class DefaultWebSecurityAutoConfiguration {
         eventPublisherProvider.ifAvailable(interceptor::setAuthorizationEventPublisher);
 
         return interceptor;
-    }*/
+    }
 
 }

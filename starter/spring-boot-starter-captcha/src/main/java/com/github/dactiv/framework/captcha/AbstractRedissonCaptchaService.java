@@ -2,11 +2,11 @@ package com.github.dactiv.framework.captcha;
 
 import com.github.dactiv.framework.captcha.intercept.Interceptor;
 import com.github.dactiv.framework.commons.CacheProperties;
+import jakarta.servlet.http.HttpServletRequest;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.validation.Validator;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 /**
