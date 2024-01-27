@@ -6,6 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -16,7 +17,7 @@ import java.util.Collection;
  */
 public class SimpleAuthenticationToken extends AbstractAuthenticationToken {
 
-    
+    @Serial
     private static final long serialVersionUID = 3747271533448473641L;
 
     private final UsernamePasswordAuthenticationToken token;
@@ -35,7 +36,7 @@ public class SimpleAuthenticationToken extends AbstractAuthenticationToken {
      * 当前用户认证 token
      *
      * @param username 登陆账户
-     * @param type  用户类型
+     * @param type     用户类型
      */
     public SimpleAuthenticationToken(String username, String type, boolean rememberMe) {
         this(new UsernamePasswordAuthenticationToken(username, null), type, rememberMe);

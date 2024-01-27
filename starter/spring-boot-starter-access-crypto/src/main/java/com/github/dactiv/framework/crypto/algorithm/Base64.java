@@ -1,6 +1,8 @@
 
 package com.github.dactiv.framework.crypto.algorithm;
 
+import java.util.Arrays;
+
 /**
  * Base64 工具类
  *
@@ -89,9 +91,7 @@ public class Base64 {
     // Populating the lookup and character arrays
 
     static {
-        for (int i = 0; i < BASELENGTH; i++) {
-            base64Alphabet[i] = (byte) -1;
-        }
+        Arrays.fill(base64Alphabet, (byte) -1);
         for (int i = 'Z'; i >= 'A'; i--) {
             base64Alphabet[i] = (byte) (i - 'A');
         }
@@ -125,7 +125,6 @@ public class Base64 {
      * Returns whether or not the <code>octet</code> is in the base 64 alphabet.
      *
      * @param octect The value to test
-     *
      * @return <code>true</code> if the value is defined in the the base 64 alphabet, <code>false</code> otherwise.
      */
     private static boolean isBase64(byte octect) {
@@ -143,7 +142,6 @@ public class Base64 {
      * Tests a given byte array to see if it contains only valid characters within the Base64 alphabet.
      *
      * @param arrayOctect byte array to test
-     *
      * @return <code>true</code> if all bytes are valid characters in the Base64 alphabet or if the byte array is
      * empty; false, otherwise
      */
@@ -155,27 +153,13 @@ public class Base64 {
         } catch (Exception e) {
             return false;
         }
-        /*arrayOctect = discardWhitespace(arrayOctect);
 
-        int length = arrayOctect.length;
-        if (length == 0) {
-            // shouldn't a 0 length array be valid base64 data?
-            // return false;
-            return true;
-        }
-        for (byte b : arrayOctect) {
-            if (!isBase64(b)) {
-                return false;
-            }
-        }
-        return true;*/
     }
 
     /**
      * Discards any whitespace from a base-64 encoded block.
      *
      * @param data The base-64 encoded data to discard the whitespace from.
-     *
      * @return The data, less whitespace (see RFC 2045).
      */
     static byte[] discardWhitespace(byte[] data) {
@@ -206,7 +190,6 @@ public class Base64 {
      * encoding (UTF-8).
      *
      * @param bytes the byte array to Base64 encode.
-     *
      * @return a UTF-8 encoded String of the resulting Base64 encoded byte array.
      */
     public static String encodeToString(byte[] bytes) {
@@ -218,7 +201,6 @@ public class Base64 {
      * Encodes binary data using the base64 algorithm and chunks the encoded output into 76 character blocks
      *
      * @param binaryData binary data to encodeToChars
-     *
      * @return Base64 characters chunked in 76 character blocks
      */
     public static byte[] encodeChunked(byte[] binaryData) {
@@ -229,7 +211,6 @@ public class Base64 {
      * Encodes a byte[] containing binary data, into a byte[] containing characters in the Base64 alphabet.
      *
      * @param pArray a byte array containing binary data
-     *
      * @return A byte array containing only Base64 character data
      */
     public static byte[] encode(byte[] pArray) {
@@ -241,9 +222,7 @@ public class Base64 {
      *
      * @param binaryData Array containing binary data to encodeToChars.
      * @param isChunked  if <code>true</code> this encoder will chunk the base64 output into 76 character blocks
-     *
      * @return Base64-encoded data.
-     *
      * @throws IllegalArgumentException Thrown when the input array needs an output array bigger than {@link Integer#MAX_VALUE}
      */
     public static byte[] encode(byte[] binaryData, boolean isChunked) {
@@ -327,8 +306,7 @@ public class Base64 {
         if (fewerThan24bits == EIGHTBIT) {
             b1 = binaryData[dataIndex];
             k = (byte) (b1 & 0x03);
-            // log.debug("b1=" + b1);
-            // log.debug("b1<<2 = " + (b1>>2) );
+
             byte val1 = ((b1 & SIGN) == 0) ? (byte) (b1 >> 2) : (byte) ((b1) >> 2 ^ 0xc0);
             encodedData[encodedIndex] = lookUpBase64Alphabet[val1];
             encodedData[encodedIndex + 1] = lookUpBase64Alphabet[k << 4];
@@ -365,7 +343,6 @@ public class Base64 {
      * Converts the specified UTF-8 Base64 encoded String and decodes it to a resultant UTF-8 encoded string.
      *
      * @param base64Encoded a UTF-8 Base64 encoded String
-     *
      * @return the decoded String, UTF-8 encoded.
      */
     public static String decodeToString(String base64Encoded) {
@@ -377,7 +354,6 @@ public class Base64 {
      * Decodes the specified Base64 encoded byte array and returns the decoded result as a UTF-8 encoded.
      *
      * @param base64Encoded a Base64 encoded byte array
-     *
      * @return the decoded String, UTF-8 encoded.
      */
     public static String decodeToString(byte[] base64Encoded) {
@@ -389,7 +365,6 @@ public class Base64 {
      * Converts the specified UTF-8 Base64 encoded String and decodes it to a raw Base64 decoded byte array.
      *
      * @param base64Encoded a UTF-8 Base64 encoded String
-     *
      * @return the raw Base64 decoded byte array.
      */
     public static byte[] decode(String base64Encoded) {
@@ -401,7 +376,6 @@ public class Base64 {
      * Decodes Base64 data into octets
      *
      * @param base64Data Byte array containing Base64 data
-     *
      * @return Array containing decoded data.
      */
     public static byte[] decode(byte[] base64Data) {
@@ -414,7 +388,7 @@ public class Base64 {
         }
 
         int numberQuadruple = base64Data.length / FOURBYTE;
-        byte decodedData[];
+        byte[] decodedData;
         byte b1, b2, b3, b4, marker0, marker1;
 
         // Throw away anything not in base64Data
@@ -468,7 +442,6 @@ public class Base64 {
      * characters outside of the base64 alphabet are to be ignored in base64 encoded data."
      *
      * @param data The base-64 encoded data to groom
-     *
      * @return The data, less non-base64 characters (see RFC 2045).
      */
     static byte[] discardNonBase64(byte[] data) {

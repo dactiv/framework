@@ -21,10 +21,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 /**
@@ -53,7 +53,6 @@ public class SpringMvcUtils {
      *
      * @param name attribute 名称
      * @param <T>  attribute 类型
-     *
      * @return attribute 值
      */
     public static <T> T getRequestAttribute(String name) {
@@ -89,7 +88,6 @@ public class SpringMvcUtils {
      *
      * @param name attribute 名称
      * @param <T>  attribute 类型
-     *
      * @return attribute 值
      */
     public static <T> T getSessionAttribute(String name) {
@@ -145,7 +143,6 @@ public class SpringMvcUtils {
      * 获取 http 响应状态
      *
      * @param httpServletResponse http servlet response
-     *
      * @return http 响应状态
      */
     public static HttpStatus getHttpStatus(HttpServletResponse httpServletResponse) {
@@ -176,7 +173,7 @@ public class SpringMvcUtils {
 
         Optional<HttpServletRequest> optional = getHttpServletRequest();
 
-        if (!optional.isPresent()) {
+        if (optional.isEmpty()) {
             throw new SystemException("当前线程中无法获取 HttpServletRequest 信息");
         }
         return DeviceUtils.getRequiredCurrentDevice(optional.get());
@@ -196,7 +193,6 @@ public class SpringMvcUtils {
      * 获取设备唯一识别
      *
      * @param request http servlet request
-     *
      * @return 设备唯一识别
      */
     public static String getDeviceIdentified(HttpServletRequest request) {
@@ -232,12 +228,11 @@ public class SpringMvcUtils {
      * 通过 rest 结果集构造下载类型的 ResponseEntity
      *
      * @param result rest 结果集
-     *
      * @return 下载类型的 ResponseEntity
      */
-    public static ResponseEntity<byte[]> createDownloadResponseEntity(RestResult<byte[]> result) throws UnsupportedEncodingException {
+    public static ResponseEntity<byte[]> createDownloadResponseEntity(RestResult<byte[]> result) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentDispositionFormData(SpringMvcUtils.DEFAULT_ATTACHMENT_NAME, URLEncoder.encode(result.getMessage(), "UTF-8"));
+        headers.setContentDispositionFormData(SpringMvcUtils.DEFAULT_ATTACHMENT_NAME, URLEncoder.encode(result.getMessage(), StandardCharsets.UTF_8));
         return new ResponseEntity<>(result.getData(), headers, HttpStatus.OK);
     }
 
@@ -246,16 +241,14 @@ public class SpringMvcUtils {
      *
      * @param filename 下载文件名称
      * @param path     文件路径
-     *
      * @return 下载类型的 ResponseEntity
-     *
      * @throws IOException 获取路径文件失败抛出
      */
     public static ResponseEntity<byte[]> createDownloadResponseEntity(String filename, String path) throws IOException {
         HttpHeaders headers = new HttpHeaders();
 
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-        headers.setContentDispositionFormData(DEFAULT_ATTACHMENT_NAME, URLEncoder.encode(filename, "UTF-8"));
+        headers.setContentDispositionFormData(DEFAULT_ATTACHMENT_NAME, URLEncoder.encode(filename, StandardCharsets.UTF_8));
 
         return new ResponseEntity<>(FileCopyUtils.copyToByteArray(new File(path)), headers, HttpStatus.CREATED);
     }
@@ -274,7 +267,6 @@ public class SpringMvcUtils {
      * 获取 ip 地址
      *
      * @param request request http servlet reques
-     *
      * @return ip 地址
      */
     public static String getIpAddress(HttpServletRequest request) {
@@ -309,7 +301,7 @@ public class SpringMvcUtils {
     /**
      * 获取 mac 地址
      *
-     * @return  mac 地址
+     * @return mac 地址
      */
     public static String getMacAddress() {
         Optional<HttpServletRequest> optional = getHttpServletRequest();
@@ -319,9 +311,8 @@ public class SpringMvcUtils {
     /**
      * 获取 mac 地址
      *
-     * @param request  mac 地址
-     *
-     * @return  mac 地址
+     * @param request mac 地址
+     * @return mac 地址
      */
     public static String getMacAddress(HttpServletRequest request) {
 
@@ -345,7 +336,6 @@ public class SpringMvcUtils {
      * 判断是否回路地址
      *
      * @param host host 值
-     *
      * @return true 是，否则 false
      */
     public static boolean isLoopbackAddress(String host) {
@@ -363,7 +353,7 @@ public class SpringMvcUtils {
         }
         try {
             int[] address = new int[ipv4Octets.length];
-            for (int i=0; i < ipv4Octets.length; i++) {
+            for (int i = 0; i < ipv4Octets.length; i++) {
                 address[i] = Integer.parseInt(ipv4Octets[i]);
             }
             return address[0] == 127 && address[1] >= 0 && address[1] <= 255 && address[2] >= 0 &&

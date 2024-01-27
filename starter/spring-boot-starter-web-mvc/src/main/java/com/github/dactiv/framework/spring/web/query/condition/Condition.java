@@ -2,13 +2,18 @@ package com.github.dactiv.framework.spring.web.query.condition;
 
 import com.github.dactiv.framework.spring.web.query.Property;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * 条件信息, 用于记录一个条件里包含的过滤查询内容
  *
  * @author maurice.chen
  */
-public class Condition {
+public class Condition implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = -8626527871073433205L;
     /**
      * 名称
      */

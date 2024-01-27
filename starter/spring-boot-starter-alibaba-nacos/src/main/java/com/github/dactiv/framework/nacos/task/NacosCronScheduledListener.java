@@ -22,6 +22,7 @@ import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 import org.springframework.core.env.PropertySource;
+import org.springframework.lang.NonNull;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTask;
@@ -113,7 +114,7 @@ public class NacosCronScheduledListener implements SchedulingConfigurer, BeanPos
                     .stream()
                     // 匹配等于条件的值
                     .filter(m -> propertySource.containsProperty(m.getMatch().toString()))
-                    .collect(Collectors.toList());
+                    .toList();
 
             if (result.stream().anyMatch(m -> m.evaluation(propertySource.getProperty(m.getMatch().toString()), target))) {
                 changeScheduledInfos.add(target);
@@ -151,7 +152,7 @@ public class NacosCronScheduledListener implements SchedulingConfigurer, BeanPos
      * @param scheduledTaskRegistrar 任务任务注册器
      */
     @Override
-    public void configureTasks(ScheduledTaskRegistrar scheduledTaskRegistrar) {
+    public void configureTasks(@NonNull ScheduledTaskRegistrar scheduledTaskRegistrar) {
         this.scheduledTaskRegistrar = scheduledTaskRegistrar;
 
         // CACHE 内容来源 postProcessAfterInitialization 方法进行构造
@@ -173,11 +174,10 @@ public class NacosCronScheduledListener implements SchedulingConfigurer, BeanPos
      *
      * @param bean     当前类对象
      * @param beanName 当前类名称
-     *
      * @return 当前类信息
      */
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) {
+    public Object postProcessAfterInitialization(Object bean, @NonNull String beanName) {
 
         // aop 功能的 bean 不支持 NacosCronScheduled
         if (AopInfrastructureBean.class.isAssignableFrom(bean.getClass())) {
@@ -266,7 +266,6 @@ public class NacosCronScheduledListener implements SchedulingConfigurer, BeanPos
      * @param method    使用 NacosCronScheduled 注解的方法类
      * @param scheduled NacosCronScheduled 注解
      * @param bean      使用 NacosCronScheduled 注解方法的类对象
-     *
      * @return cron 调度信息
      */
     protected CronScheduledInfo createCronScheduledInfo(Method method, NacosCronScheduled scheduled, Object bean) {
@@ -330,7 +329,6 @@ public class NacosCronScheduledListener implements SchedulingConfigurer, BeanPos
      * 通过字符串获取时区
      *
      * @param zone 时区字符内容
-     *
      * @return 时区
      */
     private TimeZone getTimeZone(String zone) {
@@ -343,7 +341,6 @@ public class NacosCronScheduledListener implements SchedulingConfigurer, BeanPos
      * 获取 spring el 变量名
      *
      * @param value 值，格式为:${变量} 或 ${变量:默认值}
-     *
      * @return spring el 变量名
      */
     private String getPropertyName(String value) {
@@ -366,7 +363,6 @@ public class NacosCronScheduledListener implements SchedulingConfigurer, BeanPos
      *
      * @param target 目标类
      * @param method 方法
-     *
      * @return 可运行的后台线程
      */
     protected Runnable createRunnable(Object target, Method method) {
@@ -376,7 +372,7 @@ public class NacosCronScheduledListener implements SchedulingConfigurer, BeanPos
     }
 
     @Override
-    public void setEmbeddedValueResolver(StringValueResolver embeddedValueResolver) {
+    public void setEmbeddedValueResolver(@NonNull StringValueResolver embeddedValueResolver) {
         this.embeddedValueResolver = embeddedValueResolver;
     }
 
@@ -455,7 +451,7 @@ public class NacosCronScheduledListener implements SchedulingConfigurer, BeanPos
                     .stream()
                     .filter(NacosConfigProperties.Config::isRefresh)
                     .map(c -> new NacosConfigProperties.Config(c.getDataId(), c.getGroup()))
-                    .collect(Collectors.toList());
+                    .toList();
 
             list.addAll(result);
         }
@@ -468,7 +464,7 @@ public class NacosCronScheduledListener implements SchedulingConfigurer, BeanPos
                     .stream()
                     .filter(NacosConfigProperties.Config::isRefresh)
                     .map(c -> new NacosConfigProperties.Config(c.getDataId(), c.getGroup()))
-                    .collect(Collectors.toList());
+                    .toList();
 
             list.addAll(result);
         }
@@ -493,7 +489,7 @@ public class NacosCronScheduledListener implements SchedulingConfigurer, BeanPos
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 }

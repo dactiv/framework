@@ -3,6 +3,7 @@ package com.github.dactiv.framework.mybatis.interceptor.audit;
 import com.github.dactiv.framework.commons.id.StringIdEntity;
 import com.github.dactiv.framework.mybatis.enumerate.OperationDataType;
 
+import java.io.Serial;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -15,7 +16,7 @@ import java.util.UUID;
  */
 public class OperationDataTraceRecord extends StringIdEntity {
 
-    
+    @Serial
     private static final long serialVersionUID = 1987280604707609834L;
 
     /**
@@ -134,6 +135,7 @@ public class OperationDataTraceRecord extends StringIdEntity {
 
     /**
      * 设置备注
+     *
      * @param remark 备注
      */
     public void setRemark(String remark) {

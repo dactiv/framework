@@ -5,6 +5,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.Date;
 
@@ -15,7 +16,7 @@ import java.util.Date;
  */
 public class PrincipalAuthenticationToken extends SimpleAuthenticationToken {
 
-    
+    @Serial
     private static final long serialVersionUID = 8996883635276805751L;
 
     /**
@@ -33,7 +34,7 @@ public class PrincipalAuthenticationToken extends SimpleAuthenticationToken {
         this.lastAuthenticationTime = lastAuthenticationTime;
     }
 
-    public PrincipalAuthenticationToken(UsernamePasswordAuthenticationToken token,SecurityUserDetails userDetails, boolean rememberMe, Date lastAuthenticationTime) {
+    public PrincipalAuthenticationToken(UsernamePasswordAuthenticationToken token, SecurityUserDetails userDetails, boolean rememberMe, Date lastAuthenticationTime) {
         super(token, userDetails.getType(), userDetails, userDetails.getAuthorities(), rememberMe);
         this.lastAuthenticationTime = lastAuthenticationTime;
     }

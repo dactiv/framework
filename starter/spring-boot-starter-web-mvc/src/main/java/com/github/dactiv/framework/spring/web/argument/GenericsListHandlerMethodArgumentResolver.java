@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ResolvableType;
+import org.springframework.lang.NonNull;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -52,7 +53,7 @@ public class GenericsListHandlerMethodArgumentResolver implements HandlerMethodA
      * 重写父类方法，解析 request 的参数信息
      */
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, @NonNull NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
 
         GenericsList genericsList = parameter.getParameterAnnotation(GenericsList.class);
 
@@ -120,7 +121,6 @@ public class GenericsListHandlerMethodArgumentResolver implements HandlerMethodA
      *
      * @param name       参数名称
      * @param webRequest request 对象
-     *
      * @return 参数信息集合
      */
     private List<Map<String, Object>> getParameter(String name, NativeWebRequest webRequest) {

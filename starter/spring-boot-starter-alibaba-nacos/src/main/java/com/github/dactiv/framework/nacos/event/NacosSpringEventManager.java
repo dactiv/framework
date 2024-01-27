@@ -18,6 +18,7 @@ import org.springframework.cloud.client.discovery.event.InstanceRegisteredEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.event.EventListener;
+import org.springframework.lang.NonNull;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -98,7 +99,7 @@ public class NacosSpringEventManager implements ApplicationEventPublisherAware, 
                 .values()
                 .stream()
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .toList();
 
         for (NacosServiceEventListener sel : listeners) {
 
@@ -182,7 +183,7 @@ public class NacosSpringEventManager implements ApplicationEventPublisherAware, 
                     List<NacosServiceListenerValidator> validators = nacosServiceListenerValidators
                             .stream()
                             .filter(v -> v.isSupport(nacosService))
-                            .collect(Collectors.toList());
+                            .toList();
 
                     boolean isContinue = false;
 
@@ -215,7 +216,7 @@ public class NacosSpringEventManager implements ApplicationEventPublisherAware, 
     }
 
     @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+    public void setApplicationEventPublisher(@NonNull ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
@@ -240,7 +241,7 @@ public class NacosSpringEventManager implements ApplicationEventPublisherAware, 
     @EventListener
     public void onInstanceRegisteredEvent(InstanceRegisteredEvent<NacosAutoServiceRegistration> event) {
         if (!discoveryEventProperties.isInstanceRegisteredSubscribe()) {
-            return ;
+            return;
         }
         scanThenSubscribeService();
     }

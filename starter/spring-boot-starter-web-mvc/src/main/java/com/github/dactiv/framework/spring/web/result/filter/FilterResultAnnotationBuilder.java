@@ -27,6 +27,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.SystemPropertyUtils;
 
 import java.beans.PropertyDescriptor;
+import java.io.Serial;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -38,7 +39,7 @@ import java.util.*;
  */
 public class FilterResultAnnotationBuilder extends JacksonAnnotationIntrospector {
 
-    
+    @Serial
     private static final long serialVersionUID = -72593450166134217L;
     private static final Logger LOGGER = LoggerFactory.getLogger(FilterResultAnnotationBuilder.class);
 
@@ -70,7 +71,6 @@ public class FilterResultAnnotationBuilder extends JacksonAnnotationIntrospector
      * 获取 filter 供应者
      *
      * @param config 配置信息
-     *
      * @return filter 供应者
      */
     public FilterProvider getFilterProvider(MapperConfig<?> config) {
@@ -108,7 +108,7 @@ public class FilterResultAnnotationBuilder extends JacksonAnnotationIntrospector
                                 .filter(Objects::nonNull)
                                 .count();
 
-                        if (count <= 0){
+                        if (count <= 0) {
                             continue;
                         }
 
@@ -256,7 +256,6 @@ public class FilterResultAnnotationBuilder extends JacksonAnnotationIntrospector
      * @param view 排除视图注解
      * @param ids  当前应用的 id 值集合
      * @param a    当前注解位置
-     *
      * @return 如果匹配返回排除视图  id 值，否则返回 null
      */
     public Object getExcludeViewId(ExcludeView view, List<String> ids, Annotated a) {
@@ -278,7 +277,6 @@ public class FilterResultAnnotationBuilder extends JacksonAnnotationIntrospector
      * @param view 引入视图注解
      * @param ids  当前应用的 id 值集合
      * @param a    当前注解位置
-     *
      * @return 如果匹配返回排除视图  id 值，否则返回 null
      */
     public Object getIncludeViewId(IncludeView view, List<String> ids, Annotated a) {
@@ -299,7 +297,6 @@ public class FilterResultAnnotationBuilder extends JacksonAnnotationIntrospector
      *
      * @param view 排除视图注解
      * @param a    当前注解位置
-     *
      * @return 排除视图  id 值
      */
     public String getExcludeViewId(ExcludeView view, Annotated a) {
@@ -311,7 +308,6 @@ public class FilterResultAnnotationBuilder extends JacksonAnnotationIntrospector
      *
      * @param view 引入视图
      * @param a    当前注解位置
-     *
      * @return 引入视图  id 值
      */
     private String getIncludeViewId(IncludeView view, Annotated a) {
@@ -355,7 +351,6 @@ public class FilterResultAnnotationBuilder extends JacksonAnnotationIntrospector
      *
      * @param exclude 配置注解
      * @param ids     当前视图 id 集合
-     *
      * @return true 是，否则 false
      */
     private boolean isExclude(Exclude exclude, List<String> ids) {

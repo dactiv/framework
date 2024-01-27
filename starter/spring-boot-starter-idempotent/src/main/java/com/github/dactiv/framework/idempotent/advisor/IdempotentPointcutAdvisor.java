@@ -5,7 +5,9 @@ import org.aopalliance.aop.Advice;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.AbstractPointcutAdvisor;
 import org.springframework.aop.support.StaticMethodMatcherPointcut;
+import org.springframework.lang.NonNull;
 
+import java.io.Serial;
 import java.lang.reflect.Method;
 
 /**
@@ -15,7 +17,7 @@ import java.lang.reflect.Method;
  */
 public class IdempotentPointcutAdvisor extends AbstractPointcutAdvisor {
 
-    
+    @Serial
     private static final long serialVersionUID = -2973618152809395856L;
 
     private final IdempotentInterceptor idempotentInterceptor;
@@ -24,17 +26,19 @@ public class IdempotentPointcutAdvisor extends AbstractPointcutAdvisor {
         this.idempotentInterceptor = idempotentInterceptor;
     }
 
+    @NonNull
     @Override
     public Pointcut getPointcut() {
         return new StaticMethodMatcherPointcut() {
             @Override
-            public boolean matches(Method method, Class<?> targetClass) {
+            public boolean matches(@NonNull Method method, @NonNull Class<?> targetClass) {
                 return method.isAnnotationPresent(Idempotent.class);
             }
 
         };
     }
 
+    @NonNull
     @Override
     public Advice getAdvice() {
         return idempotentInterceptor;

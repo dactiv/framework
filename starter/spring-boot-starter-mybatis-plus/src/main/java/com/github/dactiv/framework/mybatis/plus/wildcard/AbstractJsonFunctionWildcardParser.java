@@ -6,6 +6,7 @@ import com.github.dactiv.framework.spring.web.query.Property;
 import com.github.dactiv.framework.spring.web.query.generator.WildcardParser;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,8 +16,8 @@ import java.util.function.Function;
 /**
  * 首相的 json 功能通配符解析器实现
  *
- * @author maurice.chen
  * @param <T>
+ * @author maurice.chen
  */
 public abstract class AbstractJsonFunctionWildcardParser<T> implements WildcardParser<QueryWrapper<T>> {
 
@@ -34,7 +35,7 @@ public abstract class AbstractJsonFunctionWildcardParser<T> implements WildcardP
      * 获取表达式
      *
      * @param propertyName 属性名称
-     * @param index   所引值
+     * @param index        所引值
      * @return json 函数表达式 的 sql 语句
      */
     protected abstract String getExpression(String propertyName, Integer index);
@@ -70,7 +71,7 @@ public abstract class AbstractJsonFunctionWildcardParser<T> implements WildcardP
      */
     public static class ApplyObject implements Serializable {
 
-        
+        @Serial
         private static final long serialVersionUID = -4857566069778364200L;
 
         /**

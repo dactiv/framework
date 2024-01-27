@@ -55,11 +55,6 @@ public class DefaultUserDetailsService extends AbstractUserDetailsService {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getPrincipalAuthorities(SecurityUserDetails userDetails) {
-        return userDetails.getAuthorities();
-    }
-
-    @Override
     public boolean isSupportCache(SimpleAuthenticationToken token) {
         return false;
     }

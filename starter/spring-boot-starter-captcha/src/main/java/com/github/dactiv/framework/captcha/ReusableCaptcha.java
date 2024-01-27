@@ -2,6 +2,7 @@ package com.github.dactiv.framework.captcha;
 
 import com.github.dactiv.framework.commons.TimeProperties;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -14,6 +15,7 @@ import java.util.Objects;
  */
 public class ReusableCaptcha extends ExpiredCaptcha implements Serializable, Reusable {
 
+    @Serial
     private static final long serialVersionUID = 2295130548867148592L;
 
     /**

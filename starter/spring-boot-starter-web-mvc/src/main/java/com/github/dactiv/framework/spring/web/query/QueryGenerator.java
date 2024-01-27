@@ -22,7 +22,6 @@ public interface QueryGenerator<T> {
      * 生成内容
      *
      * @param filterConditionMap 条件信息
-     *
      * @return 查询结果类型
      */
     T generate(Map<String, List<Condition>> filterConditionMap);
@@ -45,7 +44,6 @@ public interface QueryGenerator<T> {
      * 通过 request 创建指定的查询对象
      *
      * @param request http servlet request
-     *
      * @return 指定的查询对象
      */
     default T createQueryWrapperFromHttpRequest(HttpServletRequest request) {
@@ -63,7 +61,6 @@ public interface QueryGenerator<T> {
      * 通过 MultiValueMap 创建指定的查询对象
      *
      * @param columnMap MultiValueMap
-     *
      * @return 指定的查询对象
      */
     default T createQueryWrapperFromMap(MultiValueMap<String, Object> columnMap) {
@@ -73,7 +70,7 @@ public interface QueryGenerator<T> {
                 .stream()
                 // 过滤掉空的值
                 .filter(e -> Objects.nonNull(e.getValue()))
-                .collect(Collectors.toList());
+                .toList();
         Map<String, List<Condition>> filterConditionMap = new LinkedHashMap<>();
         for (Map.Entry<String, List<Object>> entry : entryList) {
             List<Condition> conditions = getConditionParserList()

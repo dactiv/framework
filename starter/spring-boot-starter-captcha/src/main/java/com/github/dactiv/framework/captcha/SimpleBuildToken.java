@@ -1,12 +1,15 @@
 package com.github.dactiv.framework.captcha;
 
+import java.io.Serial;
+
 /**
  * 简单的验证码绑定 token 实现
  *
  * @author maurice
  */
-public class SimpleBuildToken extends SimpleInterceptToken implements BuildToken{
+public class SimpleBuildToken extends SimpleInterceptToken implements BuildToken {
 
+    @Serial
     private static final long serialVersionUID = 3913898137626092376L;
 
     /**

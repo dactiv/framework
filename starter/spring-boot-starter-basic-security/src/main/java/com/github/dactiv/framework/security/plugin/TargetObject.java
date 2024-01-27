@@ -1,5 +1,7 @@
 package com.github.dactiv.framework.security.plugin;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -8,7 +10,10 @@ import java.util.List;
  *
  * @author maurice.chen
  */
-public class TargetObject {
+public class TargetObject implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -3187348696762437870L;
 
     private final Object target;
 

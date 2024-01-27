@@ -26,7 +26,6 @@ import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.IndexOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.document.Document;
 import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
@@ -48,6 +47,7 @@ import java.util.stream.Collectors;
 public class ElasticsearchOperationDataTraceRepository extends UserDetailsOperationDataTraceRepository {
 
     public static final String DEFAULT_INDEX_NAME = "ix_user_operation_data_trace";
+
     public static final String MAPPING_FILE_PATH = "elasticsearch/operation-data-trace-record-mapping.json";
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ElasticsearchAuditEventRepository.class);
@@ -89,10 +89,6 @@ public class ElasticsearchOperationDataTraceRepository extends UserDetailsOperat
         } catch (Exception e) {
             LOGGER.warn("新增 elasticsearch 操作数据留痕出现异常", e);
         }
-    }
-
-    private void createOperationDataTraceRecordDocument(Document document) {
-
     }
 
     @Override
@@ -181,7 +177,6 @@ public class ElasticsearchOperationDataTraceRepository extends UserDetailsOperat
      * @param entityId     实体 id
      * @param auditType    审计类型
      * @param principal    操作人
-     *
      * @return 查询条件
      */
     private ObjectBuilder<Query> createQueryBuilder(Query.Builder builder, Date creationTime, String target, Object entityId, String auditType, String principal) {

@@ -23,6 +23,7 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.ClassMetadata;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.lang.NonNull;
 
 import java.util.*;
 
@@ -54,7 +55,7 @@ public class AuditConfiguration {
     public static class AuditImportSelector implements ImportSelector {
 
         @Override
-        public String[] selectImports(AnnotationMetadata importingClassMetadata) {
+        public String[] selectImports(@NonNull AnnotationMetadata importingClassMetadata) {
             List<String> imports = new LinkedList<>();
 
             for (AuditType auditType : AuditType.values()) {

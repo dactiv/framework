@@ -2,25 +2,32 @@ package com.github.dactiv.framework.captcha.tianai.config;
 
 import cloud.tianai.captcha.resource.ResourceProvider;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
  * 资源配置信息，用于 tianai 配置行为验证图片使用
  *
  * @author maurice.chen
- *
  */
 public class ResourceProperties implements Serializable {
 
-    public static final String DEFAULT_TAG_NAME = "default";
-
+    @Serial
     private static final long serialVersionUID = -1796848512858498745L;
 
-    /** 类型. */
+    public static final String DEFAULT_TAG_NAME = "default";
+
+    /**
+     * 类型.
+     */
     private String type;
-    /** 数据,传输给 {@link ResourceProvider} 的参数 */
+    /**
+     * 数据,传输给 {@link ResourceProvider} 的参数
+     */
     public String data;
-    /** 标签.*/
+    /**
+     * 标签.
+     */
     private String tag;
 
     public ResourceProperties() {

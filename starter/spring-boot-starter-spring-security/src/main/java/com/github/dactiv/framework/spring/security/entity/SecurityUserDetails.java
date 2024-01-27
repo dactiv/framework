@@ -12,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serial;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
  */
 public class SecurityUserDetails implements UserDetails, BasicIdentification<Object> {
 
-    
+    @Serial
     private static final long serialVersionUID = 1369484231035811533L;
 
     public static final String DEFAULT_IS_AUTHENTICATED_METHOD_NAME = "isAuthenticated";
@@ -136,7 +137,7 @@ public class SecurityUserDetails implements UserDetails, BasicIdentification<Obj
                         .filter(x -> StringUtils.endsWith(x, ResourceAuthority.DEFAULT_RESOURCE_SUFFIX))
                         .map(SimpleGrantedAuthority::new)
                         .distinct()
-                        .collect(Collectors.toList())
+                        .toList()
         );
 
         result.addAll(
@@ -144,7 +145,7 @@ public class SecurityUserDetails implements UserDetails, BasicIdentification<Obj
                         .map(x -> RoleAuthority.DEFAULT_ROLE_PREFIX + x.getAuthority())
                         .map(SimpleGrantedAuthority::new)
                         .distinct()
-                        .collect(Collectors.toList())
+                        .toList()
         );
 
         return result;
@@ -338,6 +339,7 @@ public class SecurityUserDetails implements UserDetails, BasicIdentification<Obj
 
     /**
      * 获取元数据
+     *
      * @return 元数据
      */
     public Map<String, Object> getMeta() {
@@ -375,7 +377,6 @@ public class SecurityUserDetails implements UserDetails, BasicIdentification<Obj
      * 转换基础用户信息
      *
      * @param <T> 主键 id 类型
-     *
      * @return 基础用户信息
      */
     public <T> BasicUserDetails<T> toBasicUserDetails() {

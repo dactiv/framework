@@ -1,5 +1,6 @@
 package com.github.dactiv.framework.captcha.tianai.config;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -8,9 +9,13 @@ import java.io.Serializable;
  * @author maurice.chen
  */
 public class TemplateProperties implements Serializable {
+
+    @Serial
     private static final long serialVersionUID = -2399006088823656944L;
 
-    /** 标签.*/
+    /**
+     * 标签.
+     */
     private String tag;
 
     private ResourceProperties activeImage;

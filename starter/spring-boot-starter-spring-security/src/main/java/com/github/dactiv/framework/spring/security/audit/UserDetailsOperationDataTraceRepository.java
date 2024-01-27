@@ -39,9 +39,10 @@ public abstract class UserDetailsOperationDataTraceRepository extends MybatisPlu
 
         Optional<HttpServletRequest> optional = SpringMvcUtils.getHttpServletRequest();
 
-        if (!optional.isPresent()) {
+        if (optional.isEmpty()) {
             return null;
         }
+
         HttpServletRequest httpServletRequest = optional.get();
         Object trace = httpServletRequest.getAttribute(ControllerAuditHandlerInterceptor.OPERATION_DATA_TRACE_ATT_NAME);
 

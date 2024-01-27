@@ -39,7 +39,7 @@ public class CaptchaProperties {
 
     private String verifySuccessDeleteParamName = DEFAULT_VERIFY_SUCCESS_DELETE_PARAM_NAME;
 
-    private String verifyTokenExistParamName = DEFAULT_VERIFY_TOKEN_EXIST_PARAM_NAME;;
+    private String verifyTokenExistParamName = DEFAULT_VERIFY_TOKEN_EXIST_PARAM_NAME;
 
     /**
      * 验证绑定 token 的参数后缀名

@@ -47,6 +47,6 @@ public class ConcurrentDataService {
     }
 
     public void setCount(int count) {
-        this.count = count;
+        ConcurrentDataService.count = count;
     }
 }

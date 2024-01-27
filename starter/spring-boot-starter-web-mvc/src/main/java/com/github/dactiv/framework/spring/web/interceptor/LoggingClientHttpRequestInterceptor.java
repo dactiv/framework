@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.lang.NonNull;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -18,15 +19,16 @@ public class LoggingClientHttpRequestInterceptor implements CustomClientHttpRequ
 
     private final static Logger LOGGER = LoggerFactory.getLogger(LoggingClientHttpRequestInterceptor.class);
 
+    @NonNull
     @Override
-    public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution) throws IOException {
+    public ClientHttpResponse intercept(@NonNull HttpRequest request, @NonNull byte[] body, ClientHttpRequestExecution execution) throws IOException {
         traceRequest(request, body);
         ClientHttpResponse response = execution.execute(request, body);
         traceResponse(response);
         return response;
     }
 
-    private void traceRequest(HttpRequest request, byte[] body)  {
+    private void traceRequest(HttpRequest request, byte[] body) {
         LOGGER.debug("URI           : {}", request.getURI());
         LOGGER.debug("Method        : {}", request.getMethod());
         LOGGER.debug("Headers       : {}", request.getHeaders());

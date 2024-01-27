@@ -20,6 +20,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -44,12 +45,12 @@ public class RequestAuthenticationProvider implements AuthenticationManager, Aut
     /**
      * 认证缓存块名称
      */
-    public static String DEFAULT_AUTHENTICATION_KEY_NAME = "spring:security:authentication:";
+    public static final String DEFAULT_AUTHENTICATION_KEY_NAME = "spring:security:authentication:";
 
     /**
      * 授权缓存块名称
      */
-    public static String DEFAULT_AUTHORIZATION_KEY_NAME = "spring:security:authorization:";
+    public static final String DEFAULT_AUTHORIZATION_KEY_NAME = "spring:security:authorization:";
 
     /**
      * 国际化信息
@@ -308,7 +309,7 @@ public class RequestAuthenticationProvider implements AuthenticationManager, Aut
         // 通过 token 获取对应 type 实现的 UserDetailsService
         Optional<UserDetailsService> optional = getUserDetailsService(token);
 
-        if (!optional.isPresent()) {
+        if (optional.isEmpty()) {
             return new PrincipalAuthenticationToken(
                     new UsernamePasswordAuthenticationToken(token.getPrincipal(), token.getCredentials()),
                     token.getType(),
@@ -377,7 +378,7 @@ public class RequestAuthenticationProvider implements AuthenticationManager, Aut
 
 
     @Override
-    public void setMessageSource(MessageSource messageSource) {
+    public void setMessageSource(@NonNull MessageSource messageSource) {
         this.messages = new MessageSourceAccessor(messageSource);
     }
 

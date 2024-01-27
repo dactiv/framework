@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
+import org.springframework.lang.NonNull;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -51,7 +52,7 @@ public class CaptchaVerificationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         String url = request.getServletPath();
         if (captchaProperties.getVerifyUrls().stream().noneMatch(s -> matcher.match(s, url))) {
             filterChain.doFilter(request, response);
@@ -91,7 +92,7 @@ public class CaptchaVerificationFilter extends OncePerRequestFilter {
         }
 
         if (success) {
-            filterChain.doFilter(request,response);
+            filterChain.doFilter(request, response);
         }
     }
 

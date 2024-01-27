@@ -94,14 +94,14 @@ public abstract class AbstractRedissonStorageCaptchaService<B> extends AbstractR
 
     protected void onMatchesCaptchaFailure(InterceptToken token, HttpServletRequest request, SimpleCaptcha exist) {
         if (!isMatchesFailureDeleteCaptcha()) {
-            return ;
+            return;
         }
         // 删除验证码信息
         deleteCaptcha(token);
     }
 
     protected void onMatchesCaptchaSuccess(InterceptToken token, HttpServletRequest request, SimpleCaptcha exist) {
-        if(token instanceof BuildToken && exist.isVerifySuccessDelete()) {
+        if (token instanceof BuildToken && exist.isVerifySuccessDelete()) {
             BuildToken buildToken = Casts.cast(token);
             // 成功后删除 绑定 token
             deleteBuildToken(buildToken);
@@ -153,7 +153,7 @@ public abstract class AbstractRedissonStorageCaptchaService<B> extends AbstractR
         return true;
     }
 
-    protected abstract GenerateCaptchaResult doGenerateCaptcha(InterceptToken buildToken, B requestBody, HttpServletRequest request)  throws Exception;
+    protected abstract GenerateCaptchaResult doGenerateCaptcha(InterceptToken buildToken, B requestBody, HttpServletRequest request) throws Exception;
 
     /**
      * 获取验证码过期时间

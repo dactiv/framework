@@ -1,11 +1,10 @@
 package com.github.dactiv.framework.spring.security;
 
-import com.github.dactiv.framework.commons.Casts;
-import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.security.plugin.Plugin;
 import com.github.dactiv.framework.spring.security.authentication.*;
 import com.github.dactiv.framework.spring.security.authentication.adapter.WebSecurityConfigurerAfterAdapter;
 import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
+import com.github.dactiv.framework.spring.security.authentication.handler.ForbiddenAccessDeniedHandler;
 import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationFailureHandler;
 import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationSuccessHandler;
 import com.github.dactiv.framework.spring.security.authentication.rememberme.CookieRememberService;
@@ -17,21 +16,24 @@ import org.springframework.aop.support.Pointcuts;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authorization.AuthorizationEventPublisher;
 import org.springframework.security.authorization.method.AuthorizationInterceptorsOrder;
 import org.springframework.security.authorization.method.AuthorizationManagerBeforeMethodInterceptor;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,6 +70,8 @@ public class DefaultWebSecurityAutoConfiguration {
 
     private final List<ErrorResultResolver> resultResolvers;
 
+    private final ForbiddenAccessDeniedHandler forbiddenAccessDeniedHandler;
+
     public DefaultWebSecurityAutoConfiguration(AccessTokenContextRepository accessTokenContextRepository,
                                                AuthenticationProperties properties,
                                                JsonAuthenticationFailureHandler jsonAuthenticationFailureHandler,
@@ -75,6 +79,7 @@ public class DefaultWebSecurityAutoConfiguration {
                                                ApplicationEventPublisher eventPublisher,
                                                AuthenticationManager authenticationManager,
                                                CookieRememberService cookieRememberService,
+                                               ForbiddenAccessDeniedHandler forbiddenAccessDeniedHandler,
                                                ObjectProvider<UserDetailsService> userDetailsServices,
                                                ObjectProvider<ErrorResultResolver> resultResolvers,
                                                ObjectProvider<AuthenticationTypeTokenResolver> authenticationTypeTokenResolver,
@@ -86,6 +91,7 @@ public class DefaultWebSecurityAutoConfiguration {
         this.eventPublisher = eventPublisher;
         this.authenticationManager = authenticationManager;
         this.cookieRememberService = cookieRememberService;
+        this.forbiddenAccessDeniedHandler = forbiddenAccessDeniedHandler;
         this.authenticationTypeTokenResolvers = authenticationTypeTokenResolver.stream().collect(Collectors.toList());
         this.userDetailsServices = userDetailsServices.stream().collect(Collectors.toList());
         this.webSecurityConfigurerAfterAdapters = webSecurityConfigurerAfterAdapter.stream().collect(Collectors.toList());
@@ -95,36 +101,23 @@ public class DefaultWebSecurityAutoConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .authorizeHttpRequests()
-                .requestMatchers(properties.getPermitUriAntMatchers().toArray(new String[0]))
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .httpBasic()
-                .disable()
-                .formLogin()
-                .disable()
-                .logout()
-                .disable()
-                .rememberMe()
-                .disable()
-                .exceptionHandling()
-                .accessDeniedHandler((request, response, accessDeniedException) -> {
-                    response.setStatus(HttpStatus.FORBIDDEN.value());
-                    RestResult<?> result = RestResult.of(accessDeniedException.getMessage(), HttpStatus.FORBIDDEN.value(), String.valueOf(HttpStatus.FORBIDDEN.value()));
-                    response.getWriter().write(Casts.writeValueAsString(result));
-                })
-                .authenticationEntryPoint(new RestResultAuthenticationEntryPoint(resultResolvers))
-                .and()
-                .cors()
-                .and()
-                .csrf()
-                .disable()
-                .requestCache()
-                .disable()
-                .securityContext()
-                .securityContextRepository(accessTokenContextRepository);
+                .authorizeHttpRequests(a -> a
+                        .requestMatchers(properties.getPermitUriAntMatchers().toArray(new String[0]))
+                        .permitAll()
+                        .anyRequest().authenticated()
+                )
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
+                .logout(AbstractHttpConfigurer::disable)
+                .rememberMe(AbstractHttpConfigurer::disable)
+                .exceptionHandling(c -> c
+                        .accessDeniedHandler(forbiddenAccessDeniedHandler)
+                        .authenticationEntryPoint(new RestResultAuthenticationEntryPoint(resultResolvers))
+                )
+                .cors(c -> c.configure(httpSecurity))
+                .csrf(AbstractHttpConfigurer::disable)
+                .requestCache(RequestCacheConfigurer::disable)
+                .securityContext(s -> s.securityContextRepository(accessTokenContextRepository));
 
         if (CollectionUtils.isNotEmpty(webSecurityConfigurerAfterAdapters)) {
             for (WebSecurityConfigurerAfterAdapter a : webSecurityConfigurerAfterAdapters) {
@@ -151,6 +144,11 @@ public class DefaultWebSecurityAutoConfiguration {
         return httpSecurity.build();
     }
 
+    @Bean
+    @ConditionalOnMissingBean(AccessDeniedHandler.class)
+    public ForbiddenAccessDeniedHandler forbiddenAccessDeniedHandler() {
+        return new ForbiddenAccessDeniedHandler();
+    }
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {

@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  *
  * @author maurice.chen
  */
-public class MybatisPlusOperationDataTraceRepository extends InMemoryOperationDataTraceRepository implements EntityIdOperationDataTraceRepository{
+public class MybatisPlusOperationDataTraceRepository extends InMemoryOperationDataTraceRepository implements EntityIdOperationDataTraceRepository {
 
     public static final String WHERE_SEPARATE = "\\s+(?i:and|or)\\s+";
 
@@ -101,7 +101,7 @@ public class MybatisPlusOperationDataTraceRepository extends InMemoryOperationDa
 
     private Object getIdValueExp(String sqlSegment, Object parameterObject) throws OgnlException {
         List<String> conditions = Arrays.asList(StringUtils.substringsBetween(sqlSegment, StringPool.LEFT_BRACKET, StringPool.RIGHT_BRACKET));
-        List<String> fields = conditions.stream().flatMap(s -> Arrays.stream(s.split(WHERE_SEPARATE))).collect(Collectors.toList());
+        List<String> fields = conditions.stream().flatMap(s -> Arrays.stream(s.split(WHERE_SEPARATE))).toList();
 
         Object idValue = null;
         for (String field : fields) {
@@ -123,7 +123,7 @@ public class MybatisPlusOperationDataTraceRepository extends InMemoryOperationDa
             return mapValue.keySet().iterator().next();
         }
 
-        return  value;
+        return value;
     }
 
     protected List<OperationDataTraceRecord> createUpdateOrDeleteRecord(String tableName,
@@ -220,8 +220,14 @@ public class MybatisPlusOperationDataTraceRepository extends InMemoryOperationDa
     @Override
     public List<OperationDataTraceRecord> find(String target, Object entityId) {
         List<OperationDataTraceRecord> records = find(target);
-        List<EntityIdOperationDataTraceRecord> result = records.stream().map(r -> Casts.cast(r, EntityIdOperationDataTraceRecord.class)).collect(Collectors.toList());
-        return result.stream().filter(e -> e.getEntityId().equals(entityId)).collect(Collectors.toCollection(LinkedList::new));
+        List<EntityIdOperationDataTraceRecord> result = records
+                .stream()
+                .map(r -> Casts.cast(r, EntityIdOperationDataTraceRecord.class))
+                .toList();
+        return result
+                .stream()
+                .filter(e -> e.getEntityId().equals(entityId))
+                .collect(Collectors.toCollection(LinkedList::new));
     }
 
     @Override

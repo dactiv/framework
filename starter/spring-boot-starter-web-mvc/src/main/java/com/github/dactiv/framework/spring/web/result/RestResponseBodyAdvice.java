@@ -22,6 +22,7 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.http.server.ServletServerHttpResponse;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
@@ -71,18 +72,18 @@ public class RestResponseBodyAdvice implements ResponseBodyAdvice<Object> {
     }
 
     @Override
-    public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
+    public boolean supports(@NonNull MethodParameter returnType, @NonNull Class<? extends HttpMessageConverter<?>> converterType) {
         return MappingJackson2HttpMessageConverter.class.isAssignableFrom(converterType);
     }
 
     @Override
     @Nullable
     public Object beforeBodyWrite(Object body,
-                                  MethodParameter returnType,
-                                  MediaType selectedContentType,
-                                  Class<? extends HttpMessageConverter<?>> selectedConverterType,
+                                  @NonNull MethodParameter returnType,
+                                  @NonNull MediaType selectedContentType,
+                                  @NonNull Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   ServerHttpRequest request,
-                                  ServerHttpResponse response) {
+                                  @NonNull ServerHttpResponse response) {
 
         List<String> clients = request.getHeaders().get(DEFAULT_CLIENT_HEADER_NAME);
 
@@ -172,7 +173,6 @@ public class RestResponseBodyAdvice implements ResponseBodyAdvice<Object> {
      * 获取过滤返回对象结果集的值
      *
      * @param request http 请求
-     *
      * @return 过滤返回对象结果集的值
      */
     public String getFilterResultId(HttpServletRequest request) {

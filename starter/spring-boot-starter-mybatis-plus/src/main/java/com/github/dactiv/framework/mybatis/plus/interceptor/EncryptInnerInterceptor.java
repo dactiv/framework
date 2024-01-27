@@ -30,7 +30,6 @@ import org.springframework.context.expression.StandardBeanExpressionResolver;
 import org.springframework.core.annotation.AnnotatedElementUtils;
 
 import java.lang.reflect.Field;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -81,18 +80,18 @@ public class EncryptInnerInterceptor implements InnerInterceptor {
     }
 
     @Override
-    public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
+    public void beforeQuery(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
 
         if (!Map.class.isAssignableFrom(parameter.getClass())) {
-            return ;
+            return;
         }
 
         Map<String, Object> map = Casts.cast(parameter);
         Object ew = map.getOrDefault(Constants.WRAPPER, null);
         if (Objects.isNull(ew)) {
-            return ;
+            return;
         }
-        AbstractWrapper<?,?,?> queryWrapper = Casts.cast(ew);
+        AbstractWrapper<?, ?, ?> queryWrapper = Casts.cast(ew);
         String sqlSegment = queryWrapper.getExpression().getNormal().getSqlSegment();
         if (StringUtils.isEmpty(sqlSegment)) {
             return;
@@ -139,14 +138,14 @@ public class EncryptInnerInterceptor implements InnerInterceptor {
         Object ew = map.get(Constants.WRAPPER);
 
         if (Objects.isNull(ew) || !AbstractWrapper.class.isAssignableFrom(ew.getClass())) {
-            return ;
+            return;
         }
 
         Class<?> entityClass = BasicService.getEntityClass(ms.getId());
         AbstractWrapper<?, ?, ?> updateWrapper = Casts.cast(ew);
         Map<CryptoService, List<Field>> fields = this.getCryptoFields(entityClass);
         if (MapUtils.isEmpty(fields)) {
-            return ;
+            return;
         }
 
         List<String> sqlSet = Arrays.asList(StringUtils.splitByWholeSeparator(updateWrapper.getSqlSet(), Casts.COMMA));
@@ -155,7 +154,7 @@ public class EncryptInnerInterceptor implements InnerInterceptor {
 
     }
 
-    public void encryptAndReplaceParamNameValuePairs(AbstractWrapper<?,?,?> wrapper, List<String> sqlExpressions, Map<CryptoService, List<Field>> fields) {
+    public void encryptAndReplaceParamNameValuePairs(AbstractWrapper<?, ?, ?> wrapper, List<String> sqlExpressions, Map<CryptoService, List<Field>> fields) {
         Map<String, Object> paramNameValuePairs = Casts.cast(ReflectionUtils.getFieldValue(wrapper, PARAM_VALUE_PAIRS_NAME));
 
         for (Map.Entry<CryptoService, List<Field>> entry : fields.entrySet()) {
@@ -164,7 +163,7 @@ public class EncryptInnerInterceptor implements InnerInterceptor {
                     .stream()
                     .map(f -> Casts.toSnakeCase(f.getName()))
                     .flatMap(s -> findSqlSetField(s, sqlExpressions).stream())
-                    .collect(Collectors.toList());
+                    .toList();
 
             for (String encryptionField : sqlEncryptionFieldList) {
                 String el = StringUtils.substringAfter(encryptionField, Casts.EQ);

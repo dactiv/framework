@@ -94,9 +94,7 @@ public class MinioTemplate {
      * 如果桶名称不存在，创建桶。
      *
      * @param bucket 桶描述
-     *
      * @return 如果桶存在返回 true，否则创建桶后返回 false
-     *
      * @throws Exception 创建错误时抛出
      */
     public boolean makeBucketIfNotExists(Bucket bucket) throws Exception {
@@ -119,7 +117,6 @@ public class MinioTemplate {
      * 判断文件是否存在
      *
      * @param fileObject 文件对象
-     *
      * @return true 是，否则 false
      */
     public boolean isObjectExist(FileObject fileObject) {
@@ -142,9 +139,7 @@ public class MinioTemplate {
      * 判断桶是否存在
      *
      * @param bucket 桶描述
-     *
      * @return tru 存在，否则 false
-     *
      * @throws Exception 查询错误时抛出
      */
     public boolean isBucketExist(Bucket bucket) throws Exception {
@@ -165,9 +160,7 @@ public class MinioTemplate {
      * @param file        文件内容
      * @param contentType 文件类型
      * @param size        文件大小
-     *
      * @return 对象写入响应信息
-     *
      * @throws Exception 上传错误时抛出
      */
     public ObjectWriteResponse upload(FileObject object, InputStream file, long size, String contentType) throws Exception {
@@ -182,9 +175,7 @@ public class MinioTemplate {
      * @param size         文件大小
      * @param userMetadata 用户元数据信息
      * @param contentType  文件类型
-     *
      * @return 对象写入响应信息
-     *
      * @throws Exception 上传错误时抛出
      */
     public ObjectWriteResponse upload(FileObject object, InputStream file, Map<String, String> userMetadata, long size, String contentType) throws Exception {
@@ -209,7 +200,6 @@ public class MinioTemplate {
      * 删除文件
      *
      * @param fileObject 文件对象描述
-     *
      * @throws Exception 删除错误时抛出
      */
     public void deleteObject(FileObject fileObject) throws Exception {
@@ -220,9 +210,7 @@ public class MinioTemplate {
      * 获取文件列表
      *
      * @param bucket 桶信息
-     *
      * @return 文件项
-     *
      * @throws Exception 获取错误时抛出
      */
     public List<ObjectItem> getFileObjects(Bucket bucket) throws Exception {
@@ -242,11 +230,9 @@ public class MinioTemplate {
     /**
      * 推送对象
      *
-     * @param fileObject 文件对象
+     * @param fileObject  文件对象
      * @param inputStream 输入流
-     *
      * @return 对象写入响应信息
-     *
      * @throws Exception 推送错误时跑出
      */
     public ObjectWriteResponse putObject(FileObject fileObject, InputStream inputStream, Map<String, String> userMetadata) throws Exception {
@@ -273,13 +259,11 @@ public class MinioTemplate {
     /**
      * 推送对象
      *
-     * @param fileObject 文件对象
+     * @param fileObject  文件对象
      * @param inputStream 输入流
-     * @param objectSize 文件大小
-     * @param partSize 段大小
-     *
+     * @param objectSize  文件大小
+     * @param partSize    段大小
      * @return 对象写入响应信息
-     *
      * @throws Exception 推送错误时跑出
      */
     public ObjectWriteResponse putObject(FileObject fileObject, InputStream inputStream, int objectSize, int partSize) throws Exception {
@@ -288,7 +272,7 @@ public class MinioTemplate {
                         .bucket(fileObject.getBucketName())
                         .region(fileObject.getRegion())
                         .object(fileObject.getObjectName())
-                        .stream(inputStream,  objectSize, partSize)
+                        .stream(inputStream, objectSize, partSize)
                         .build()
         ).get();
     }
@@ -298,7 +282,6 @@ public class MinioTemplate {
      *
      * @param fileObject          文件对象描述
      * @param deleteBucketIfEmpty true: 如果桶的文件目录为空，删除桶，否则 false
-     *
      * @throws Exception 删除错误时抛出
      */
     public void deleteObject(FileObject fileObject, boolean deleteBucketIfEmpty) throws Exception {
@@ -328,7 +311,7 @@ public class MinioTemplate {
                     .build();
 
             Iterable<Result<DeleteError>> results = minioClient.removeObjects(removeObjectsArgs);
-            for (Result<DeleteError>  result : results) {
+            for (Result<DeleteError> result : results) {
                 DeleteError error = result.get();
                 LOGGER.warn("Error in deleting object " + error.objectName() + "; " + error.message());
             }
@@ -369,7 +352,6 @@ public class MinioTemplate {
      * 获取文件
      *
      * @return 输入流
-     *
      * @throws Exception 获取错误时抛出
      */
     public GetObjectResponse getObject(FileObject fileObject) throws Exception {
@@ -391,8 +373,7 @@ public class MinioTemplate {
      * 获取预览 url
      *
      * @param fileObject 文件对象
-     * @param method 签署方法
-     *
+     * @param method     签署方法
      * @return url
      */
     public String getPresignedObjectUrl(FileObject fileObject, Method method) throws Exception {
@@ -402,10 +383,9 @@ public class MinioTemplate {
     /**
      * 获取预览 url
      *
-     * @param fileObject 文件对象
-     * @param method 签署方法
+     * @param fileObject     文件对象
+     * @param method         签署方法
      * @param timeProperties 过期时间配置
-     *
      * @return url
      */
     public String getPresignedObjectUrl(FileObject fileObject, Method method, TimeProperties timeProperties) throws Exception {
@@ -415,11 +395,10 @@ public class MinioTemplate {
     /**
      * 获取签署 url
      *
-     * @param fileObject 文件对象
-     * @param method 签署方法
+     * @param fileObject     文件对象
+     * @param method         签署方法
      * @param timeProperties 过期时间配置
-     * @param queryParams 扩展的查询参数
-     *
+     * @param queryParams    扩展的查询参数
      * @return url
      */
     public String getPresignedObjectUrl(FileObject fileObject, Method method, TimeProperties timeProperties, Map<String, String> queryParams) throws Exception {
@@ -431,7 +410,7 @@ public class MinioTemplate {
                 .object(fileObject.getObjectName());
 
         if (Objects.nonNull(timeProperties)) {
-            builder.expiry((int)timeProperties.getValue(), timeProperties.getUnit());
+            builder.expiry((int) timeProperties.getValue(), timeProperties.getUnit());
         }
 
         if (MapUtils.isNotEmpty(queryParams)) {
@@ -446,9 +425,7 @@ public class MinioTemplate {
      *
      * @param fromObject 来源文件
      * @param toObject   目标文件
-     *
      * @return minio API 调用响应的 ObjectWriteResponse 对象
-     *
      * @throws Exception 拷贝出错时候抛出
      */
     public ObjectWriteResponse copyObject(FileObject fromObject, FileObject toObject) throws Exception {
@@ -478,7 +455,6 @@ public class MinioTemplate {
      *
      * @param fileObject 文件对象描述
      * @param <T>        目标类型
-     *
      * @return 目标类型对象
      */
     public <T> T readJsonValue(FileObject fileObject, Class<T> targetClass) {
@@ -498,7 +474,6 @@ public class MinioTemplate {
      *
      * @param fileObject 文件对象描述
      * @param <T>        目标类型
-     *
      * @return 目标类型对象
      */
     public <T> T readJsonValue(FileObject fileObject, JavaType javaType) {
@@ -518,7 +493,6 @@ public class MinioTemplate {
      *
      * @param fileObject 文件对象描述
      * @param <T>        目标类型
-     *
      * @return 目标类型对象
      */
     public <T> T readJsonValue(FileObject fileObject, TypeReference<T> typeReference) {
@@ -580,9 +554,7 @@ public class MinioTemplate {
      * 将查询结果转换为 ObjectItem 对象
      *
      * @param results 查询结果
-     *
      * @return ObjectItem 对象集合
-     *
      */
     public List<ObjectItem> covertObjectItem(Iterable<Result<Item>> results) throws Exception {
 
@@ -599,10 +571,9 @@ public class MinioTemplate {
     /**
      * 完成分片上传，执行合并文件
      *
-     * @param fileObject       文件对象
-     * @param uploadId         上传ID
-     * @param parts            分片
-     *
+     * @param fileObject 文件对象
+     * @param uploadId   上传ID
+     * @param parts      分片
      * @return 文件对象创建情况响应体
      */
     public ObjectWriteResponse completeMultipartUpload(FileObject fileObject,
@@ -614,11 +585,10 @@ public class MinioTemplate {
     /**
      * 完成分片上传，执行合并文件
      *
-     * @param fileObject       文件对象
-     * @param uploadId         上传ID
-     * @param parts            分片
-     * @param extraHeaders     额外消息头
-     *
+     * @param fileObject   文件对象
+     * @param uploadId     上传ID
+     * @param parts        分片
+     * @param extraHeaders 额外消息头
      * @return 文件对象创建情况响应体
      */
     public ObjectWriteResponse completeMultipartUpload(FileObject fileObject,
@@ -636,7 +606,6 @@ public class MinioTemplate {
      * @param parts            分片
      * @param extraHeaders     额外消息头
      * @param extraQueryParams 额外查询参数
-     *
      * @return 文件对象创建情况响应体
      */
     public ObjectWriteResponse completeMultipartUpload(FileObject fileObject,
@@ -650,8 +619,7 @@ public class MinioTemplate {
     /**
      * 创建分片上传请求
      *
-     * @param fileObject       文件对象
-     *
+     * @param fileObject 文件对象
      * @return 创建分片上传响应体
      */
     public CreateMultipartUploadResponse createMultipartUpload(FileObject fileObject) throws Exception {
@@ -661,9 +629,8 @@ public class MinioTemplate {
     /**
      * 创建分片上传请求
      *
-     * @param fileObject       文件对象
-     * @param extraHeaders     消息头
-     *
+     * @param fileObject   文件对象
+     * @param extraHeaders 消息头
      * @return 创建分片上传响应体
      */
     public CreateMultipartUploadResponse createMultipartUpload(FileObject fileObject,
@@ -677,7 +644,6 @@ public class MinioTemplate {
      * @param fileObject       文件对象
      * @param extraHeaders     消息头
      * @param extraQueryParams 额外查询参数
-     *
      * @return 创建分片上传响应体
      */
     public CreateMultipartUploadResponse createMultipartUpload(FileObject fileObject,
@@ -690,9 +656,8 @@ public class MinioTemplate {
      * 针对文件对象查询文件分片内容
      *
      * @param fileObject 文件对象
-     * @param maxParts 文件部分内容的最大值
-     * @param uploadId 上传 id
-     *
+     * @param maxParts   文件部分内容的最大值
+     * @param uploadId   上传 id
      * @return 文件分片内容响应体
      */
     public ListPartsResponse listParts(FileObject fileObject,
@@ -704,11 +669,10 @@ public class MinioTemplate {
     /**
      * 针对文件对象查询文件分片内容
      *
-     * @param fileObject 文件对象
-     * @param maxParts 文件部分内容的最大值
+     * @param fileObject       文件对象
+     * @param maxParts         文件部分内容的最大值
      * @param partNumberMarker 文件部分内容位置编号
-     * @param uploadId 上传 id
-     *
+     * @param uploadId         上传 id
      * @return 文件分片内容响应体
      */
     public ListPartsResponse listParts(FileObject fileObject,
@@ -721,12 +685,11 @@ public class MinioTemplate {
     /**
      * 针对文件对象查询文件分片内容
      *
-     * @param fileObject 文件对象
-     * @param maxParts 文件部分内容的最大值
+     * @param fileObject       文件对象
+     * @param maxParts         文件部分内容的最大值
      * @param partNumberMarker 文件部分内容位置编号
-     * @param uploadId 上传 id
-     * @param extraHeaders 额外消息头
-     *
+     * @param uploadId         上传 id
+     * @param extraHeaders     额外消息头
      * @return 文件分片内容响应体
      */
     public ListPartsResponse listParts(FileObject fileObject,
@@ -740,13 +703,12 @@ public class MinioTemplate {
     /**
      * 针对文件对象查询文件分片内容
      *
-     * @param fileObject 文件对象
-     * @param maxParts 文件部分内容的最大值
+     * @param fileObject       文件对象
+     * @param maxParts         文件部分内容的最大值
      * @param partNumberMarker 文件部分内容位置编号
-     * @param uploadId 上传 id
-     * @param extraHeaders 额外消息头
+     * @param uploadId         上传 id
+     * @param extraHeaders     额外消息头
      * @param extraQueryParams 额外查询参数
-     *
      * @return 文件分片内容响应体
      */
     public ListPartsResponse listParts(FileObject fileObject,
@@ -762,9 +724,7 @@ public class MinioTemplate {
      * 查询对象信息
      *
      * @param fileObject 文件对象
-     *
      * @return 响应内容
-     *
      * @throws Exception 查询对象信息错误时抛出
      */
     public StatObjectResponse statObject(FileObject fileObject) throws Exception {
@@ -776,10 +736,8 @@ public class MinioTemplate {
      * 查询对象信息
      *
      * @param fileObject 文件对象
-     * @param matchEtag etag 值
-     *
+     * @param matchEtag  etag 值
      * @return 响应内容
-     *
      * @throws Exception 查询对象信息错误时抛出
      */
     public StatObjectResponse statObject(FileObject fileObject, String matchEtag) throws Exception {
@@ -791,11 +749,9 @@ public class MinioTemplate {
      * 查询对象信息
      *
      * @param fileObject 文件对象
-     * @param matchEtag etag 值
-     * @param headers 头信息
-     *
+     * @param matchEtag  etag 值
+     * @param headers    头信息
      * @return 响应内容
-     *
      * @throws Exception 查询对象信息错误时抛出
      */
     public StatObjectResponse statObject(FileObject fileObject, String matchEtag, Map<String, String> headers) throws Exception {
@@ -806,13 +762,11 @@ public class MinioTemplate {
     /**
      * 查询对象信息
      *
-     * @param fileObject 文件对象
-     * @param matchEtag etag 值
-     * @param headers 头信息
+     * @param fileObject  文件对象
+     * @param matchEtag   etag 值
+     * @param headers     头信息
      * @param queryParams 查询参数信息
-     *
      * @return 响应内容
-     *
      * @throws Exception 查询对象信息错误时抛出
      */
     public StatObjectResponse statObject(FileObject fileObject, String matchEtag, Map<String, String> headers, Map<String, String> queryParams) throws Exception {
@@ -831,9 +785,6 @@ public class MinioTemplate {
             statObjectArgs.matchETag(matchEtag);
         }
 
-        /*if (StringUtils.isNotEmpty(notMatchEtag)) {
-            statObjectArgs.notMatchETag(notMatchEtag);
-        }*/
         if (MapUtils.isNotEmpty(headers)) {
             statObjectArgs.extraHeaders(headers);
         }

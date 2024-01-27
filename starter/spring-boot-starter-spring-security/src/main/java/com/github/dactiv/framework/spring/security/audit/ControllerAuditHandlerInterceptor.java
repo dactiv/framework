@@ -18,6 +18,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -86,7 +87,7 @@ public class ControllerAuditHandlerInterceptor implements ApplicationEventPublis
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, Object handler) throws Exception {
         if (!HandlerMethod.class.isAssignableFrom(handler.getClass())) {
             return AsyncHandlerInterceptor.super.preHandle(request, response, handler);
         }
@@ -117,7 +118,7 @@ public class ControllerAuditHandlerInterceptor implements ApplicationEventPublis
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+    public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, Object handler, Exception ex) {
 
         if (!HandlerMethod.class.isAssignableFrom(handler.getClass())) {
             return;
@@ -136,7 +137,7 @@ public class ControllerAuditHandlerInterceptor implements ApplicationEventPublis
             Plugin plugin = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), Plugin.class);
             // 如果控制器方法带有 plugin 注解并且 audit 为 true 是，记录审计内容
             if (Objects.isNull(plugin) || !plugin.audit()) {
-                return ;
+                return;
             }
 
             principal = getPrincipal(null, request);
@@ -264,7 +265,7 @@ public class ControllerAuditHandlerInterceptor implements ApplicationEventPublis
     }
 
     @Override
-    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+    public void setApplicationEventPublisher(@NonNull ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
     }
 

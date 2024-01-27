@@ -2,6 +2,7 @@
 package com.github.dactiv.framework.crypto.algorithm;
 
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
 
@@ -27,7 +28,7 @@ import java.util.Arrays;
  */
 public abstract class AbstractByteSource implements ByteSource, Serializable {
 
-    
+    @Serial
     private static final long serialVersionUID = 6895494995913376511L;
     /**
      * 缓存 16 进制值的变量
@@ -80,8 +81,7 @@ public abstract class AbstractByteSource implements ByteSource, Serializable {
         if (o == this) {
             return true;
         }
-        if (o instanceof ByteSource) {
-            ByteSource bs = (ByteSource) o;
+        if (o instanceof ByteSource bs) {
             return Arrays.equals(obtainBytes(), bs.obtainBytes());
         }
         return false;

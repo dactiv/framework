@@ -3,6 +3,7 @@ package com.github.dactiv.framework.captcha;
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.TimeProperties;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -15,6 +16,7 @@ import java.util.Map;
  */
 public class SimpleInterceptToken extends ConstructionCaptchaMeta implements InterceptToken {
 
+    @Serial
     private static final long serialVersionUID = -7503502769793672985L;
 
     /**

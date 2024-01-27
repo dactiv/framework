@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -46,9 +47,9 @@ public class IpAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         List<String> ips = authenticationProperties
                 .getIpAuthentication()
@@ -61,7 +62,7 @@ public class IpAuthenticationFilter extends OncePerRequestFilter {
 
         if (CollectionUtils.isEmpty(ips)) {
             filterChain.doFilter(request, response);
-            return ;
+            return;
         }
 
         if (ips.contains(remoteIp)) {
@@ -74,7 +75,7 @@ public class IpAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
             filterChain.doFilter(request, response);
-            return ;
+            return;
         } else if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(request.getRequestURI() + " 只允许: " + ips + " 的 ip 才能访问，当前 ip 为: " + remoteIp);
         }

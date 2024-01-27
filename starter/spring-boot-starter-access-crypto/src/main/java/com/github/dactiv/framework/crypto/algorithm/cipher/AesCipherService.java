@@ -8,7 +8,6 @@ import com.github.dactiv.framework.crypto.algorithm.exception.CryptoException;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.Key;
 
 /**
  * AES 对称加密实现，特点：密钥建立时间短、灵敏性好、内存需求低、安全性高
@@ -51,8 +50,4 @@ public class AesCipherService extends SymmetricCipherService {
         super.decrypt(in, out, key, iv);
     }
 
-    @Override
-    public Key generateKey() {
-        return super.generateKey();
-    }
 }
