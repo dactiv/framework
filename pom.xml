@@ -100,7 +100,6 @@
         <module>parent</module>
         <module>commons</module>
         <module>starter</module>
-        <module>service</module>
     </modules>
 
 </project>
