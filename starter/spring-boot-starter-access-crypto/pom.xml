@@ -10,6 +10,7 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
+    <groupId>com.github.dactiv.framework.starter</groupId>
     <artifactId>spring-boot-starter-access-crypto</artifactId>
     <name>spring-boot-starter-access-crypto</name>
     <description>access crypto support</description>

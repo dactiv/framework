@@ -11,6 +11,7 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
+    <groupId>com.github.dactiv.framework.starter</groupId>
     <artifactId>spring-boot-starter-minio</artifactId>
     <name>spring-boot-starter-minio</name>
     <description>minio support</description>

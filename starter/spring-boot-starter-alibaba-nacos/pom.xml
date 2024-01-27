@@ -12,6 +12,7 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
+    <groupId>com.github.dactiv.framework.starter</groupId>
     <artifactId>spring-boot-starter-alibaba-nacos</artifactId>
     <name>spring-boot-starter-alibaba-nacos</name>
     <description>alibaba nacos support</description>

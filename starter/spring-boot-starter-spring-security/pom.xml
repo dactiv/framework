@@ -11,6 +11,7 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
+    <groupId>com.github.dactiv.framework.starter</groupId>
     <artifactId>spring-boot-starter-spring-security</artifactId>
     <name>spring-boot-starter-spring-security</name>
     <description>spring security support</description>
@@ -19,7 +20,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.github.dactiv.framework</groupId>
+            <groupId>com.github.dactiv.framework.starter</groupId>
             <artifactId>spring-boot-starter-basic-security</artifactId>
         </dependency>
 
@@ -29,23 +30,23 @@
         </dependency>
 
         <dependency>
-            <groupId>com.github.dactiv.framework</groupId>
+            <groupId>com.github.dactiv.framework.starter</groupId>
             <artifactId>spring-boot-starter-idempotent</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.github.dactiv.framework</groupId>
+            <groupId>com.github.dactiv.framework.starter</groupId>
             <artifactId>spring-boot-starter-captcha</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.github.dactiv.framework</groupId>
+            <groupId>com.github.dactiv.framework.starter</groupId>
             <artifactId>spring-boot-starter-access-crypto</artifactId>
             <optional>true</optional>
         </dependency>
 
         <dependency>
-            <groupId>com.github.dactiv.framework</groupId>
+            <groupId>com.github.dactiv.framework.starter</groupId>
             <artifactId>spring-boot-starter-mybatis-plus</artifactId>
             <optional>true</optional>
         </dependency>
@@ -55,13 +56,6 @@
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
             <optional>true</optional>
         </dependency>
-
-        <!--<dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-oauth2-authorization-server</artifactId>
-            <version>0.4.4</version>
-            <optional>true</optional>
-        </dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

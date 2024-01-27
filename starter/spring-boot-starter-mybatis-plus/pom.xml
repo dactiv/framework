@@ -12,6 +12,7 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
+    <groupId>com.github.dactiv.framework.starter</groupId>
     <packaging>jar</packaging>
     <artifactId>spring-boot-starter-mybatis-plus</artifactId>
     <name>spring-boot-starter-mybatis-plus</name>
@@ -20,17 +21,17 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.github.dactiv.framework</groupId>
+            <groupId>com.github.dactiv.framework.starter</groupId>
             <artifactId>spring-boot-starter-web-mvc</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.github.dactiv.framework</groupId>
+            <groupId>com.github.dactiv.framework.starter</groupId>
             <artifactId>spring-boot-starter-access-crypto</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.github.dactiv.framework</groupId>
+            <groupId>com.github.dactiv.framework.starter</groupId>
             <artifactId>spring-boot-starter-mybatis</artifactId>
         </dependency>
 

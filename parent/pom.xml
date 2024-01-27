@@ -183,61 +183,61 @@
             </dependency>
 
             <dependency>
-                <groupId>com.github.dactiv.framework</groupId>
+                <groupId>com.github.dactiv.framework.starter</groupId>
                 <artifactId>spring-boot-starter-alibaba-nacos</artifactId>
                 <version>${starter.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.github.dactiv.framework</groupId>
+                <groupId>com.github.dactiv.framework.starter</groupId>
                 <artifactId>spring-boot-starter-minio</artifactId>
                 <version>${starter.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.github.dactiv.framework</groupId>
+                <groupId>com.github.dactiv.framework.starter</groupId>
                 <artifactId>spring-boot-starter-captcha</artifactId>
                 <version>${starter.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.github.dactiv.framework</groupId>
+                <groupId>com.github.dactiv.framework.starter</groupId>
                 <artifactId>spring-boot-starter-access-crypto</artifactId>
                 <version>${starter.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.github.dactiv.framework</groupId>
+                <groupId>com.github.dactiv.framework.starter</groupId>
                 <artifactId>spring-boot-starter-idempotent</artifactId>
                 <version>${starter.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.github.dactiv.framework</groupId>
+                <groupId>com.github.dactiv.framework.starter</groupId>
                 <artifactId>spring-boot-starter-basic-security</artifactId>
                 <version>${starter.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.github.dactiv.framework</groupId>
+                <groupId>com.github.dactiv.framework.starter</groupId>
                 <artifactId>spring-boot-starter-spring-security</artifactId>
                 <version>${starter.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.github.dactiv.framework</groupId>
+                <groupId>com.github.dactiv.framework.starter</groupId>
                 <artifactId>spring-boot-starter-web-mvc</artifactId>
                 <version>${starter.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.github.dactiv.framework</groupId>
+                <groupId>com.github.dactiv.framework.starter</groupId>
                 <artifactId>spring-boot-starter-mybatis</artifactId>
                 <version>${starter.version}</version>
             </dependency>
 
             <dependency>
-                <groupId>com.github.dactiv.framework</groupId>
+                <groupId>com.github.dactiv.framework.starter</groupId>
                 <artifactId>spring-boot-starter-mybatis-plus</artifactId>
                 <version>${starter.version}</version>
             </dependency>
