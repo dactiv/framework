@@ -4,7 +4,10 @@ import com.github.dactiv.framework.spring.security.audit.ControllerAuditHandlerI
 import com.github.dactiv.framework.spring.security.audit.RequestBodyAttributeAdviceAdapter;
 import com.github.dactiv.framework.spring.security.authentication.AccessTokenContextRepository;
 import com.github.dactiv.framework.spring.security.authentication.UserDetailsService;
-import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
+import com.github.dactiv.framework.spring.security.authentication.config.AccessTokenProperties;
+import com.github.dactiv.framework.spring.security.authentication.config.OAuth2Properties;
+import com.github.dactiv.framework.spring.security.authentication.config.RememberMeProperties;
+import com.github.dactiv.framework.spring.security.authentication.config.SpringSecurityProperties;
 import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationFailureHandler;
 import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationFailureResponse;
 import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationSuccessHandler;
@@ -46,18 +49,18 @@ import java.util.stream.Collectors;
  */
 @Configuration
 @AutoConfigureAfter(RedissonAutoConfiguration.class)
-@EnableConfigurationProperties(AuthenticationProperties.class)
-@ConditionalOnProperty(prefix = "dactiv.authentication.spring.security", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.spring.security", value = "enabled", matchIfMissing = true)
+@EnableConfigurationProperties({SpringSecurityProperties.class, AccessTokenProperties.class, OAuth2Properties.class, RememberMeProperties.class})
 public class SpringSecurityAutoConfiguration {
 
     @Bean
-    @ConfigurationProperties("dactiv.authentication.plugin")
+    @ConfigurationProperties("dactiv.spring.security.plugin")
     PluginEndpoint pluginEndpoint(ObjectProvider<InfoContributor> infoContributor) {
         return new PluginEndpoint(infoContributor.stream().collect(Collectors.toList()));
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "dactiv.authentication.audit", name = "enabled", havingValue = "true")
+    @ConditionalOnProperty(prefix = "dactiv.spring.security.audit", name = "enabled", havingValue = "true")
     ControllerAuditHandlerInterceptor controllerAuditHandlerInterceptor() {
         return new ControllerAuditHandlerInterceptor();
     }
@@ -69,51 +72,52 @@ public class SpringSecurityAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "dactiv.authentication.access-token", value = "enable-controller", havingValue = "true")
+    @ConditionalOnProperty(prefix = "dactiv.spring.security.access-token", value = "enable-controller", havingValue = "true")
     TokenController accessTokenController(AccessTokenContextRepository accessTokenContextRepository,
-                                          RedissonClient redissonClient,
-                                          AuthenticationProperties authenticationProperties) {
-        return new TokenController(accessTokenContextRepository, redissonClient, authenticationProperties);
+                                          RedissonClient redissonClient) {
+        return new TokenController(accessTokenContextRepository, redissonClient);
     }
 
     @Bean
     DefaultUserDetailsService defaultUserDetailsService(PasswordEncoder passwordEncoder,
-                                                        AuthenticationProperties properties) {
+                                                        SpringSecurityProperties properties) {
 
         return new DefaultUserDetailsService(properties, passwordEncoder);
     }
 
     @Bean
     @ConditionalOnMissingBean(AccessTokenContextRepository.class)
-    public AccessTokenContextRepository accessTokenContextRepository(AuthenticationProperties properties,
+    public AccessTokenContextRepository accessTokenContextRepository(SpringSecurityProperties springSecurityProperties,
+                                                                     AccessTokenProperties accessTokenProperties,
                                                                      RedissonClient redissonClient) {
 
         return new AccessTokenContextRepository(
                 redissonClient,
-                properties
+                springSecurityProperties,
+                accessTokenProperties
         );
     }
 
     @Bean
     @ConditionalOnMissingBean(RememberMeServices.class)
-    public CookieRememberService cookieRememberService(AuthenticationProperties properties, RedissonClient redissonClient) {
+    public CookieRememberService cookieRememberService(SpringSecurityProperties properties, RedissonClient redissonClient) {
         return new CookieRememberService(properties, redissonClient);
     }
 
     @Bean
     @ConditionalOnMissingBean(JsonAuthenticationFailureHandler.class)
     public JsonAuthenticationFailureHandler jsonAuthenticationFailureHandler(ObjectProvider<JsonAuthenticationFailureResponse> failureResponse,
-                                                                             AuthenticationProperties authenticationProperties) {
+                                                                             SpringSecurityProperties springSecurityProperties) {
         return new JsonAuthenticationFailureHandler(
                 failureResponse.orderedStream().collect(Collectors.toList()),
-                authenticationProperties
+                springSecurityProperties
         );
     }
 
     @Bean
     @ConditionalOnMissingBean(JsonAuthenticationSuccessHandler.class)
     public JsonAuthenticationSuccessHandler jsonAuthenticationSuccessHandler(ObjectProvider<JsonAuthenticationSuccessResponse> successResponse,
-                                                                             AuthenticationProperties properties) {
+                                                                             SpringSecurityProperties properties) {
         return new JsonAuthenticationSuccessHandler(
                 successResponse.orderedStream().collect(Collectors.toList()),
                 properties
@@ -123,17 +127,17 @@ public class SpringSecurityAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(AuthenticationManager.class)
     public AuthenticationManager authenticationManager(RedissonClient redissonClient,
-                                                       AuthenticationProperties authenticationProperties,
+                                                       SpringSecurityProperties springSecurityProperties,
                                                        ObjectProvider<UserDetailsService> userDetailsService) {
         return new RequestAuthenticationProvider(
                 redissonClient,
-                authenticationProperties,
+                springSecurityProperties,
                 userDetailsService.orderedStream().collect(Collectors.toList())
         );
     }
 
     @Bean
-    public DefaultAuthenticationFailureResponse defaultAuthenticationFailureResponse(AuthenticationProperties properties) {
+    public DefaultAuthenticationFailureResponse defaultAuthenticationFailureResponse(SpringSecurityProperties properties) {
         return new DefaultAuthenticationFailureResponse(properties);
     }
 
@@ -146,7 +150,7 @@ public class SpringSecurityAutoConfiguration {
     }
 
     @Bean
-    public FeignAuthenticationTypeTokenResolver feignAuthenticationTypeTokenResolver(AuthenticationProperties properties) {
+    public FeignAuthenticationTypeTokenResolver feignAuthenticationTypeTokenResolver(SpringSecurityProperties properties) {
         if (isFeignExceptionClassAvailable()) {
             return new FeignAuthenticationTypeTokenResolver(properties);
         }
@@ -164,7 +168,7 @@ public class SpringSecurityAutoConfiguration {
 
     @Configuration
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-    @ConditionalOnProperty(prefix = "dactiv.authentication.audit", name = "enabled", havingValue = "true")
+    @ConditionalOnProperty(prefix = "dactiv.spring.security.audit", name = "enabled", havingValue = "true")
     public static class DefaultWebMvcConfigurer extends UndertowWebSocketServletWebServerCustomizer implements WebMvcConfigurer {
 
         private final ControllerAuditHandlerInterceptor controllerAuditHandlerInterceptor;

@@ -2,7 +2,7 @@ package com.github.dactiv.framework.spring.security.authentication.handler;
 
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
-import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
+import com.github.dactiv.framework.spring.security.authentication.config.SpringSecurityProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.collections4.CollectionUtils;
@@ -31,12 +31,12 @@ public class JsonAuthenticationFailureHandler implements AuthenticationFailureHa
     private final List<AntPathRequestMatcher> loginRequestMatchers = new LinkedList<>();
 
     public JsonAuthenticationFailureHandler(List<JsonAuthenticationFailureResponse> failureResponses,
-                                            AuthenticationProperties authenticationProperties) {
-        this(failureResponses, authenticationProperties, new LinkedList<>());
+                                            SpringSecurityProperties springSecurityProperties) {
+        this(failureResponses, springSecurityProperties, new LinkedList<>());
     }
 
     public JsonAuthenticationFailureHandler(List<JsonAuthenticationFailureResponse> failureResponses,
-                                            AuthenticationProperties authenticationProperties,
+                                            SpringSecurityProperties springSecurityProperties,
                                             List<AntPathRequestMatcher> antPathRequestMatchers) {
 
         this.failureResponses = failureResponses;
@@ -45,7 +45,7 @@ public class JsonAuthenticationFailureHandler implements AuthenticationFailureHa
             this.loginRequestMatchers.addAll(antPathRequestMatchers);
         }
 
-        this.loginRequestMatchers.add(new AntPathRequestMatcher(authenticationProperties.getLoginProcessingUrl(), HttpMethod.POST.name()));
+        this.loginRequestMatchers.add(new AntPathRequestMatcher(springSecurityProperties.getLoginProcessingUrl(), HttpMethod.POST.name()));
     }
 
     @Override

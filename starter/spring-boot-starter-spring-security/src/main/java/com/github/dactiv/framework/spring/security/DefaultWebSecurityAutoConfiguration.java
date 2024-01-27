@@ -3,7 +3,7 @@ package com.github.dactiv.framework.spring.security;
 import com.github.dactiv.framework.security.plugin.Plugin;
 import com.github.dactiv.framework.spring.security.authentication.*;
 import com.github.dactiv.framework.spring.security.authentication.adapter.WebSecurityConfigurerAfterAdapter;
-import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
+import com.github.dactiv.framework.spring.security.authentication.config.SpringSecurityProperties;
 import com.github.dactiv.framework.spring.security.authentication.handler.ForbiddenAccessDeniedHandler;
 import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationFailureHandler;
 import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationSuccessHandler;
@@ -44,13 +44,13 @@ import java.util.stream.Collectors;
  * @author maurice.chen
  */
 @Configuration
-@EnableConfigurationProperties(AuthenticationProperties.class)
+@EnableConfigurationProperties(SpringSecurityProperties.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 public class DefaultWebSecurityAutoConfiguration {
 
     private final AccessTokenContextRepository accessTokenContextRepository;
 
-    private final AuthenticationProperties properties;
+    private final SpringSecurityProperties properties;
 
     private final JsonAuthenticationFailureHandler jsonAuthenticationFailureHandler;
 
@@ -73,7 +73,7 @@ public class DefaultWebSecurityAutoConfiguration {
     private final ForbiddenAccessDeniedHandler forbiddenAccessDeniedHandler;
 
     public DefaultWebSecurityAutoConfiguration(AccessTokenContextRepository accessTokenContextRepository,
-                                               AuthenticationProperties properties,
+                                               SpringSecurityProperties properties,
                                                JsonAuthenticationFailureHandler jsonAuthenticationFailureHandler,
                                                JsonAuthenticationSuccessHandler jsonAuthenticationSuccessHandler,
                                                ApplicationEventPublisher eventPublisher,

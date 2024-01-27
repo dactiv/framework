@@ -3,12 +3,14 @@ package com.github.dactiv.framework.spring.security.authentication.config;
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.TimeProperties;
 import com.github.dactiv.framework.crypto.CipherAlgorithmService;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * 访问 token 配置
  *
  * @author maurice.chen
  */
+@ConfigurationProperties("dactiv.spring.security.access-token")
 public class AccessTokenProperties {
 
     public final static String DEFAULT_ACCESS_TOKEN_HEADER_NAME = "X-ACCESS-TOKEN";

@@ -20,7 +20,7 @@ import java.util.List;
 public class OperationDataTraceAuditAutoConfiguration {
 
     @Bean
-    @ConditionalOnProperty(prefix = "dactiv.authentication.audit", name = "type", havingValue = "elasticsearch")
+    @ConditionalOnProperty(prefix = "dactiv.spring.security.audit", name = "type", havingValue = "elasticsearch")
     ElasticsearchOperationDataTraceRepository elasticsearchOperationDataTraceRepository(ElasticsearchOperations elasticsearchOperations,
                                                                                         SecurityProperties securityProperties) {
         List<String> ignorePrincipals = new ArrayList<>(PluginAuditEventRepository.DEFAULT_IGNORE_PRINCIPALS);

@@ -3,7 +3,7 @@ package com.github.dactiv.framework.spring.security.authentication.service.feign
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.crypto.algorithm.Base64;
-import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
+import com.github.dactiv.framework.spring.security.authentication.config.SpringSecurityProperties;
 import com.github.dactiv.framework.spring.security.authentication.service.DefaultUserDetailsService;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
@@ -23,7 +23,7 @@ import java.nio.charset.Charset;
  * @author maurice
  */
 @Configuration
-@EnableConfigurationProperties(AuthenticationProperties.class)
+@EnableConfigurationProperties(SpringSecurityProperties.class)
 public class FeignAuthenticationConfiguration {
 
     /**
@@ -34,7 +34,7 @@ public class FeignAuthenticationConfiguration {
      * @return feign 请求拦截器
      */
     @Bean
-    public RequestInterceptor feignAuthRequestInterceptor(AuthenticationProperties properties) {
+    public RequestInterceptor feignAuthRequestInterceptor(SpringSecurityProperties properties) {
         return requestTemplate -> initRequestTemplate(requestTemplate, properties);
     }
 
@@ -44,7 +44,7 @@ public class FeignAuthenticationConfiguration {
      * @param requestTemplate request template
      * @param properties 认证配置信息
      */
-    public static void initRequestTemplate(RequestTemplate requestTemplate, AuthenticationProperties properties) {
+    public static void initRequestTemplate(RequestTemplate requestTemplate, SpringSecurityProperties properties) {
 
         SecurityProperties.User user = properties
                 .getUsers()
@@ -70,7 +70,7 @@ public class FeignAuthenticationConfiguration {
      *
      * @return 编码后的字符串
      */
-    public static String encodeUserProperties(AuthenticationProperties properties, SecurityProperties.User user) {
+    public static String encodeUserProperties(SpringSecurityProperties properties, SecurityProperties.User user) {
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
 
         requestBody.add(properties.getUsernameParamName(), user.getName());
@@ -88,7 +88,7 @@ public class FeignAuthenticationConfiguration {
      *
      * @return feign 认证的 http headers
      */
-    public static HttpHeaders of(AuthenticationProperties properties) {
+    public static HttpHeaders of(SpringSecurityProperties properties) {
         HttpHeaders httpHeaders = new HttpHeaders();
 
         SecurityProperties.User user = properties

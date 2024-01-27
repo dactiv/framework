@@ -2,7 +2,7 @@ package com.github.dactiv.framework.spring.security.authentication.service;
 
 import com.github.dactiv.framework.security.entity.RoleAuthority;
 import com.github.dactiv.framework.spring.security.authentication.AbstractUserDetailsService;
-import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
+import com.github.dactiv.framework.spring.security.authentication.config.SpringSecurityProperties;
 import com.github.dactiv.framework.spring.security.authentication.token.RequestAuthenticationToken;
 import com.github.dactiv.framework.spring.security.authentication.token.SimpleAuthenticationToken;
 import com.github.dactiv.framework.spring.security.entity.SecurityUserDetails;
@@ -27,7 +27,7 @@ public class DefaultUserDetailsService extends AbstractUserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
-    public DefaultUserDetailsService(AuthenticationProperties properties,
+    public DefaultUserDetailsService(SpringSecurityProperties properties,
                                      PasswordEncoder passwordEncoder) {
         super(properties);
         for (int i = 0; i < properties.getUsers().size(); i++) {

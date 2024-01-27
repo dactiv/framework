@@ -16,8 +16,8 @@ import java.util.List;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("dactiv.authentication")
-public class AuthenticationProperties {
+@ConfigurationProperties("dactiv.spring.security")
+public class SpringSecurityProperties {
 
     /**
      * 默认的认证类型 header 名称
@@ -58,16 +58,6 @@ public class AuthenticationProperties {
      * 登陆 url
      */
     private String loginProcessingUrl = DefaultLoginPageGeneratingFilter.DEFAULT_LOGIN_PAGE_URL;
-
-    /**
-     * 访问 token 配置
-     */
-    private AccessTokenProperties accessToken = new AccessTokenProperties();
-
-    /**
-     * oauth2 配置信息
-     */
-    private OAuth2Properties oauth2 = new OAuth2Properties();
 
     /**
      * 认证类型 header 名称
@@ -181,24 +171,6 @@ public class AuthenticationProperties {
      */
     public void setLoginProcessingUrl(String loginProcessingUrl) {
         this.loginProcessingUrl = loginProcessingUrl;
-    }
-
-    /**
-     * 获取访问 token 配置
-     *
-     * @return 访问 token 配置
-     */
-    public AccessTokenProperties getAccessToken() {
-        return accessToken;
-    }
-
-    /**
-     * 设置访问 token 配置
-     *
-     * @param accessToken 访问 token 配置
-     */
-    public void setAccessToken(AccessTokenProperties accessToken) {
-        this.accessToken = accessToken;
     }
 
     /**
@@ -417,21 +389,4 @@ public class AuthenticationProperties {
         this.allowIfEqualGrantedDeniedDecisions = allowIfEqualGrantedDeniedDecisions;
     }
 
-    /**
-     * 获取 oauth2 配置信息
-     *
-     * @return oauth2 配置信息
-     */
-    public OAuth2Properties getOauth2() {
-        return oauth2;
-    }
-
-    /**
-     * 设置 oauth2 配置信息
-     *
-     * @param oauth2 oauth2 配置信息
-     */
-    public void setOauth2(OAuth2Properties oauth2) {
-        this.oauth2 = oauth2;
-    }
 }

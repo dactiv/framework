@@ -3,7 +3,7 @@ package com.github.dactiv.framework.spring.security.authentication.service.feign
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.crypto.algorithm.Base64;
 import com.github.dactiv.framework.spring.security.authentication.AuthenticationTypeTokenResolver;
-import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
+import com.github.dactiv.framework.spring.security.authentication.config.SpringSecurityProperties;
 import com.github.dactiv.framework.spring.security.authentication.service.DefaultUserDetailsService;
 import com.github.dactiv.framework.spring.security.authentication.token.RequestAuthenticationToken;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,9 +21,9 @@ public class FeignAuthenticationTypeTokenResolver implements AuthenticationTypeT
 
     public static final String DEFAULT_TYPE = "feign";
 
-    private final AuthenticationProperties properties;
+    private final SpringSecurityProperties properties;
 
-    public FeignAuthenticationTypeTokenResolver(AuthenticationProperties properties) {
+    public FeignAuthenticationTypeTokenResolver(SpringSecurityProperties properties) {
         this.properties = properties;
     }
 

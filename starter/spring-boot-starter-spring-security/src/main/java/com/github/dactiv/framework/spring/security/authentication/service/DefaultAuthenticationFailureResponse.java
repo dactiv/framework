@@ -1,7 +1,7 @@
 package com.github.dactiv.framework.spring.security.authentication.service;
 
 import com.github.dactiv.framework.commons.RestResult;
-import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
+import com.github.dactiv.framework.spring.security.authentication.config.SpringSecurityProperties;
 import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationFailureResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
@@ -17,9 +17,9 @@ import java.util.Map;
  */
 public class DefaultAuthenticationFailureResponse implements JsonAuthenticationFailureResponse {
 
-    private final AuthenticationProperties properties;
+    private final SpringSecurityProperties properties;
 
-    public DefaultAuthenticationFailureResponse(AuthenticationProperties properties) {
+    public DefaultAuthenticationFailureResponse(SpringSecurityProperties properties) {
         this.properties = properties;
     }
 

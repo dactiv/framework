@@ -3,6 +3,7 @@ package com.github.dactiv.framework.spring.security.authentication.config;
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.TimeProperties;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author maurice.chen
  */
+@ConfigurationProperties("dactiv.spring.security.oauth2")
 public class OAuth2Properties {
 
     /**

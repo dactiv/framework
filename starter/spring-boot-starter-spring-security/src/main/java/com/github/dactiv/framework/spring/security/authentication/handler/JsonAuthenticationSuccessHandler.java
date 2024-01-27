@@ -2,7 +2,7 @@ package com.github.dactiv.framework.spring.security.authentication.handler;
 
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
-import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
+import com.github.dactiv.framework.spring.security.authentication.config.SpringSecurityProperties;
 import com.github.dactiv.framework.spring.security.entity.SecurityUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -32,12 +32,12 @@ public class JsonAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
     private final List<AntPathRequestMatcher> loginRequestMatchers = new LinkedList<>();
 
     public JsonAuthenticationSuccessHandler(List<JsonAuthenticationSuccessResponse> successResponses,
-                                            AuthenticationProperties authenticationProperties) {
-        this(successResponses, authenticationProperties, new LinkedList<>());
+                                            SpringSecurityProperties springSecurityProperties) {
+        this(successResponses, springSecurityProperties, new LinkedList<>());
     }
 
     public JsonAuthenticationSuccessHandler(List<JsonAuthenticationSuccessResponse> successResponses,
-                                            AuthenticationProperties authenticationProperties,
+                                            SpringSecurityProperties springSecurityProperties,
                                             List<AntPathRequestMatcher> antPathRequestMatchers) {
 
         this.successResponses = successResponses;
@@ -46,7 +46,7 @@ public class JsonAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
             this.loginRequestMatchers.addAll(antPathRequestMatchers);
         }
 
-        this.loginRequestMatchers.add(new AntPathRequestMatcher(authenticationProperties.getLoginProcessingUrl(), HttpMethod.POST.name()));
+        this.loginRequestMatchers.add(new AntPathRequestMatcher(springSecurityProperties.getLoginProcessingUrl(), HttpMethod.POST.name()));
     }
 
     @Override

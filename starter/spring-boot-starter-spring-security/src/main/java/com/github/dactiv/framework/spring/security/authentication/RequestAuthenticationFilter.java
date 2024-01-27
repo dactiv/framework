@@ -2,7 +2,7 @@ package com.github.dactiv.framework.spring.security.authentication;
 
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.exception.SystemException;
-import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
+import com.github.dactiv.framework.spring.security.authentication.config.SpringSecurityProperties;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
@@ -34,23 +34,23 @@ public class RequestAuthenticationFilter extends UsernamePasswordAuthenticationF
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RequestAuthenticationFilter.class);
     private final SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
-    private final AuthenticationProperties authenticationProperties;
+    private final SpringSecurityProperties springSecurityProperties;
 
     private final List<AuthenticationTypeTokenResolver> authenticationTypeTokenResolvers;
 
     private final List<UserDetailsService> userDetailsServices;
 
-    public RequestAuthenticationFilter(AuthenticationProperties authenticationProperties,
+    public RequestAuthenticationFilter(SpringSecurityProperties springSecurityProperties,
                                        List<AuthenticationTypeTokenResolver> authenticationTypeTokenResolver,
                                        List<UserDetailsService> userDetailsServices) {
-        this.authenticationProperties = authenticationProperties;
+        this.springSecurityProperties = springSecurityProperties;
 
         setRequiresAuthenticationRequestMatcher(
-                new AntPathRequestMatcher(authenticationProperties.getLoginProcessingUrl(), HttpMethod.POST.name())
+                new AntPathRequestMatcher(springSecurityProperties.getLoginProcessingUrl(), HttpMethod.POST.name())
         );
 
-        setUsernameParameter(authenticationProperties.getUsernameParamName());
-        setPasswordParameter(authenticationProperties.getPasswordParamName());
+        setUsernameParameter(springSecurityProperties.getUsernameParamName());
+        setPasswordParameter(springSecurityProperties.getPasswordParamName());
 
         this.authenticationTypeTokenResolvers = authenticationTypeTokenResolver;
         this.userDetailsServices = userDetailsServices;
@@ -83,7 +83,7 @@ public class RequestAuthenticationFilter extends UsernamePasswordAuthenticationF
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
 
         super.successfulAuthentication(request, response, chain, authResult);
-        String token = request.getHeader(authenticationProperties.getTokenHeaderName());
+        String token = request.getHeader(springSecurityProperties.getTokenHeaderName());
 
         if (StringUtils.isEmpty(StringUtils.trimToEmpty(token))) {
             return ;
@@ -135,10 +135,10 @@ public class RequestAuthenticationFilter extends UsernamePasswordAuthenticationF
             throw new AuthenticationServiceException("授权类型不正确");
         }
 
-        String token = request.getHeader(authenticationProperties.getTokenHeaderName());
+        String token = request.getHeader(springSecurityProperties.getTokenHeaderName());
 
         if (StringUtils.isNotBlank(token)) {
-            String resolverType = request.getHeader(authenticationProperties.getTokenResolverHeaderName());
+            String resolverType = request.getHeader(springSecurityProperties.getTokenResolverHeaderName());
 
             AuthenticationTypeTokenResolver resolver = authenticationTypeTokenResolvers
                     .stream()
@@ -169,10 +169,10 @@ public class RequestAuthenticationFilter extends UsernamePasswordAuthenticationF
      */
     protected String obtainType(HttpServletRequest request) {
 
-        String type = request.getHeader(authenticationProperties.getTypeHeaderName());
+        String type = request.getHeader(springSecurityProperties.getTypeHeaderName());
 
         if (StringUtils.isBlank(type)) {
-            type = request.getParameter(authenticationProperties.getTypeParamName());
+            type = request.getParameter(springSecurityProperties.getTypeParamName());
         }
 
         return type;

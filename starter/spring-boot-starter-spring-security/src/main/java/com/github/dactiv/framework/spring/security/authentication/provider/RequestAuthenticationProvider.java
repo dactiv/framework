@@ -3,7 +3,7 @@ package com.github.dactiv.framework.spring.security.authentication.provider;
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.spring.security.authentication.UserDetailsService;
-import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
+import com.github.dactiv.framework.spring.security.authentication.config.SpringSecurityProperties;
 import com.github.dactiv.framework.spring.security.authentication.rememberme.RememberMeToken;
 import com.github.dactiv.framework.spring.security.authentication.token.PrincipalAuthenticationToken;
 import com.github.dactiv.framework.spring.security.authentication.token.RememberMeAuthenticationToken;
@@ -72,7 +72,7 @@ public class RequestAuthenticationProvider implements AuthenticationManager, Aut
      */
     private boolean hideUserNotFoundExceptions = true;
 
-    private final AuthenticationProperties properties;
+    private final SpringSecurityProperties properties;
 
     /**
      * 当前用户认证供应者实现
@@ -80,7 +80,7 @@ public class RequestAuthenticationProvider implements AuthenticationManager, Aut
      * @param userDetailsServices 账户认证的用户明细服务集合
      */
     public RequestAuthenticationProvider(RedissonClient redissonClient,
-                                         AuthenticationProperties properties,
+                                         SpringSecurityProperties properties,
                                          List<UserDetailsService> userDetailsServices) {
         this.userDetailsServices = userDetailsServices;
         this.properties = properties;

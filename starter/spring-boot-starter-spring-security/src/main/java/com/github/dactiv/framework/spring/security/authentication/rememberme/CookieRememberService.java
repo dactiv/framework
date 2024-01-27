@@ -4,7 +4,7 @@ import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.crypto.algorithm.Base64;
 import com.github.dactiv.framework.security.entity.TypeUserDetails;
-import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
+import com.github.dactiv.framework.spring.security.authentication.config.SpringSecurityProperties;
 import com.github.dactiv.framework.spring.security.authentication.token.PrincipalAuthenticationToken;
 import com.github.dactiv.framework.spring.security.authentication.token.RememberMeAuthenticationToken;
 import com.github.dactiv.framework.spring.security.entity.SecurityUserDetails;
@@ -33,11 +33,11 @@ import java.util.Optional;
  */
 public class CookieRememberService implements RememberMeServices {
 
-    private final AuthenticationProperties properties;
+    private final SpringSecurityProperties properties;
 
     private final RedissonClient redissonClient;
 
-    public CookieRememberService(AuthenticationProperties properties, RedissonClient redissonClient) {
+    public CookieRememberService(SpringSecurityProperties properties, RedissonClient redissonClient) {
         this.properties = properties;
         this.redissonClient = redissonClient;
     }

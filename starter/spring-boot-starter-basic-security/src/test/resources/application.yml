@@ -24,9 +24,10 @@ spring:
       on-profile: elasticsearch
 
 dactiv:
-  authentication:
-    audit:
-      type: elasticsearch
+  spring:
+    security:
+      audit:
+        type: elasticsearch
 
 ---
 spring:
@@ -35,6 +36,7 @@ spring:
       on-profile: mongo
 
 dactiv:
-  authentication:
-    audit:
-      type: mongo
+  spring:
+    security:
+      audit:
+        type: mongo

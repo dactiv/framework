@@ -1,6 +1,6 @@
 package com.github.dactiv.framework.spring.security.authentication;
 
-import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
+import com.github.dactiv.framework.spring.security.authentication.config.SpringSecurityProperties;
 import com.github.dactiv.framework.spring.security.authentication.token.RequestAuthenticationToken;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,10 +17,10 @@ import org.springframework.security.core.Authentication;
  */
 public abstract class AbstractUserDetailsService implements UserDetailsService {
 
-    private final AuthenticationProperties authenticationProperties;
+    private final SpringSecurityProperties springSecurityProperties;
 
-    public AbstractUserDetailsService(AuthenticationProperties authenticationProperties) {
-        this.authenticationProperties = authenticationProperties;
+    public AbstractUserDetailsService(SpringSecurityProperties springSecurityProperties) {
+        this.springSecurityProperties = springSecurityProperties;
     }
 
     @Override
@@ -45,7 +45,7 @@ public abstract class AbstractUserDetailsService implements UserDetailsService {
      * @return true 记住我，否则 false
      */
     protected boolean obtainRememberMe(HttpServletRequest request) {
-        return BooleanUtils.toBoolean(request.getParameter(authenticationProperties.getRememberMe().getParamName()));
+        return BooleanUtils.toBoolean(request.getParameter(springSecurityProperties.getRememberMe().getParamName()));
     }
 
     /**
@@ -56,7 +56,7 @@ public abstract class AbstractUserDetailsService implements UserDetailsService {
      * @return 登陆账户
      */
     protected String obtainUsername(HttpServletRequest request) {
-        return request.getParameter(authenticationProperties.getUsernameParamName());
+        return request.getParameter(springSecurityProperties.getUsernameParamName());
     }
 
     /**
@@ -67,7 +67,7 @@ public abstract class AbstractUserDetailsService implements UserDetailsService {
      * @return 登陆密码
      */
     protected String obtainPassword(HttpServletRequest request) {
-        return request.getParameter(authenticationProperties.getPasswordParamName());
+        return request.getParameter(springSecurityProperties.getPasswordParamName());
     }
 
     /**
@@ -75,7 +75,7 @@ public abstract class AbstractUserDetailsService implements UserDetailsService {
      *
      * @return 配置信息
      */
-    public AuthenticationProperties getAuthenticationProperties() {
-        return authenticationProperties;
+    public SpringSecurityProperties getAuthenticationProperties() {
+        return springSecurityProperties;
     }
 }

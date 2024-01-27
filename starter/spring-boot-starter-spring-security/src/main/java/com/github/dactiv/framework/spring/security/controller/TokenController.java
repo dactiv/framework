@@ -3,7 +3,6 @@ package com.github.dactiv.framework.spring.security.controller;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.spring.security.authentication.AccessTokenContextRepository;
-import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
 import com.github.dactiv.framework.spring.security.authentication.token.AccessToken;
 import com.github.dactiv.framework.spring.security.authentication.token.RefreshToken;
 import com.github.dactiv.framework.spring.security.entity.SecurityUserDetails;
@@ -33,16 +32,12 @@ public class TokenController {
 
     private final AccessTokenContextRepository accessTokenContextRepository;
 
-    private final AuthenticationProperties authenticationProperties;
-
     private final RedissonClient redissonClient;
 
     public TokenController(AccessTokenContextRepository accessTokenContextRepository,
-                           RedissonClient redissonClient,
-                           AuthenticationProperties authenticationProperties) {
+                           RedissonClient redissonClient) {
         this.accessTokenContextRepository = accessTokenContextRepository;
         this.redissonClient = redissonClient;
-        this.authenticationProperties = authenticationProperties;
     }
 
     @PostMapping("refreshAccessToken")
@@ -53,7 +48,10 @@ public class TokenController {
         Assert.isTrue(SecurityUserDetails.class.isAssignableFrom(details.getClass()),"当前用户非安全用户明细");
 
         String refreshMd5 = DigestUtils.md5DigestAsHex(refreshToken.getBytes());
-        String refresh = authenticationProperties.getAccessToken().getRefreshTokenCache().getName(refreshMd5);
+        String refresh = accessTokenContextRepository
+                .getAccessTokenProperties()
+                .getRefreshTokenCache()
+                .getName(refreshMd5);
 
         RBucket<RefreshToken> refreshTokenBucket = redissonClient.getBucket(refresh);
         Assert.isTrue(refreshTokenBucket.isExists(), "[" + refreshToken + "] 刷新令牌已过期");
@@ -62,14 +60,22 @@ public class TokenController {
         Assert.isTrue(!refreshTokenValue.isExpired(), "[" + refreshToken + "] 刷新令牌已过期");
 
         String tokenMd5 = DigestUtils.md5DigestAsHex(refreshTokenValue.getAccessToken().getToken().getBytes());
-        String access = authenticationProperties.getAccessToken().getAccessTokenCache().getName(tokenMd5);
+        String access = accessTokenContextRepository
+                .getAccessTokenProperties()
+                .getAccessTokenCache()
+                .getName(tokenMd5);
         RBucket<AccessToken> accessTokenBucket = redissonClient.getBucket(access);
 
         AccessToken redisAccessToken = accessTokenBucket.get();
         Assert.isTrue(!redisAccessToken.isExpired(), "[" + redisAccessToken.getToken() + "] 令牌已过期");
 
         SecurityUserDetails userDetails = Casts.cast(details);
-        AccessToken securityUserAccessToken = Casts.cast(userDetails.getMeta().get(authenticationProperties.getAccessToken().getAccessTokenParamName()));
+        Object metaToken = userDetails.getMeta().get(
+                accessTokenContextRepository
+                        .getAccessTokenProperties()
+                        .getAccessTokenParamName()
+        );
+        AccessToken securityUserAccessToken = Casts.cast(metaToken);
         Assert.isTrue(StringUtils.equals(redisAccessToken.getToken(), securityUserAccessToken.getToken()), "令牌匹配不正确");
 
         RBucket<SecurityContext> securityContextBucket = accessTokenContextRepository.getSecurityContextBucket(
@@ -93,13 +99,13 @@ public class TokenController {
         }
 
         AccessToken newRefreshToken = Casts.of(refreshTokenValue, AccessToken.class);
-        userDetails.getMeta().put(authenticationProperties.getAccessToken().getAccessTokenParamName(), redisAccessToken);
-        userDetails.getMeta().put(authenticationProperties.getAccessToken().getRefreshTokenParamName(), newRefreshToken);
+        userDetails.getMeta().put(accessTokenContextRepository.getAccessTokenProperties().getAccessTokenParamName(), redisAccessToken);
+        userDetails.getMeta().put(accessTokenContextRepository.getAccessTokenProperties().getRefreshTokenParamName(), newRefreshToken);
 
         Map<String, Object> result = new LinkedHashMap<>();
 
-        result.put(authenticationProperties.getAccessToken().getRefreshTokenParamName(), newRefreshToken);
-        result.put(authenticationProperties.getAccessToken().getAccessTokenParamName(), redisAccessToken);
+        result.put(accessTokenContextRepository.getAccessTokenProperties().getRefreshTokenParamName(), newRefreshToken);
+        result.put(accessTokenContextRepository.getAccessTokenProperties().getAccessTokenParamName(), redisAccessToken);
 
         return RestResult.ofSuccess("延期 [" + redisAccessToken.getToken() + "] 令牌成功", result);
     }

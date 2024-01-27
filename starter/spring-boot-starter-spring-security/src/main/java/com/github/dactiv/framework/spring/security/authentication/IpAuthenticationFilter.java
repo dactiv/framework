@@ -2,7 +2,7 @@ package com.github.dactiv.framework.spring.security.authentication;
 
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
-import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
+import com.github.dactiv.framework.spring.security.authentication.config.SpringSecurityProperties;
 import com.github.dactiv.framework.spring.web.mvc.SpringMvcUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -40,10 +40,10 @@ public class IpAuthenticationFilter extends OncePerRequestFilter {
 
     public static final GrantedAuthority IP_WHITELIST_AUTHORITY = new SimpleGrantedAuthority("IP_WHITELIST");
 
-    private final AuthenticationProperties authenticationProperties;
+    private final SpringSecurityProperties springSecurityProperties;
 
-    public IpAuthenticationFilter(AuthenticationProperties authenticationProperties) {
-        this.authenticationProperties = authenticationProperties;
+    public IpAuthenticationFilter(SpringSecurityProperties springSecurityProperties) {
+        this.springSecurityProperties = springSecurityProperties;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class IpAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        List<String> ips = authenticationProperties
+        List<String> ips = springSecurityProperties
                 .getIpAuthentication()
                 .stream()
                 .filter(ip -> new AntPathRequestMatcher(ip.getUrl()).matches(request))

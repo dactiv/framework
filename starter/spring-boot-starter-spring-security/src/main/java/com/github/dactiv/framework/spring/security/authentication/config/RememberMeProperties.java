@@ -2,6 +2,7 @@ package com.github.dactiv.framework.spring.security.authentication.config;
 
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.TimeProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.concurrent.TimeUnit;
 
@@ -10,6 +11,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author maurice.chen
  */
+@ConfigurationProperties("dactiv.spring.security.remember-me")
 public class RememberMeProperties {
 
     /**
@@ -31,7 +33,7 @@ public class RememberMeProperties {
      * 记住我缓存信息
      */
     private CacheProperties cache = new CacheProperties(
-            "spring:security:remember-me:",
+            "dactiv:spring:security:remember-me:",
             new TimeProperties(7, TimeUnit.DAYS)
     );
 
