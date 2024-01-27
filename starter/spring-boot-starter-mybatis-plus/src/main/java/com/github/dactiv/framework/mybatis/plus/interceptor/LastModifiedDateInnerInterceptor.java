@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.ReflectionUtils;
-import com.github.dactiv.framework.mybatis.plus.annotation.LastModifiedDate;
+import com.github.dactiv.framework.commons.annotation.LastModifiedDate;
 import com.github.dactiv.framework.mybatis.plus.service.BasicService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.ibatis.executor.Executor;

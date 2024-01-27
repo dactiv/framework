@@ -113,7 +113,7 @@ public class InMemoryOperationDataTraceRepository implements OperationDataTraceR
 
     @Override
     public List<OperationDataTraceRecord> find(String target) {
-        List<OperationDataTraceRecord> result =  MEMORY.get(target);
+        List<OperationDataTraceRecord> result = MEMORY.get(target);
         result.sort(Comparator.comparing(StringIdEntity::getCreationTime).reversed());
         return result;
     }

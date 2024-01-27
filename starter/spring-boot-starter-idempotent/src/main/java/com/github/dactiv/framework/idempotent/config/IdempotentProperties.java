@@ -21,12 +21,12 @@ public class IdempotentProperties {
     /**
      * 并发锁 key 前缀
      */
-    private String concurrentKeyPrefix = "concurrent:";
+    private String concurrentKeyPrefix = "dactiv:concurrent:";
 
     /**
      * 幂等锁 key 前缀
      */
-    private String idempotentKeyPrefix = "idempotent:";
+    private String idempotentKeyPrefix = "dactiv:idempotent:";
 
     public IdempotentProperties() {
     }
