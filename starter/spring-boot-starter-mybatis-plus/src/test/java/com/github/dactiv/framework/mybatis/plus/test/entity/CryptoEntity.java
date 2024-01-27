@@ -6,8 +6,13 @@ import com.github.dactiv.framework.mybatis.plus.annotation.Decryption;
 import com.github.dactiv.framework.mybatis.plus.annotation.Encryption;
 import com.github.dactiv.framework.mybatis.plus.crypto.DataAesCryptoService;
 
+import java.io.Serial;
+
 @TableName(value = "tb_crypto_entity", autoResultMap = true)
 public class CryptoEntity implements BasicIdentification<Integer> {
+
+    @Serial
+    private static final long serialVersionUID = 650230682419248793L;
 
     private Integer id;
 

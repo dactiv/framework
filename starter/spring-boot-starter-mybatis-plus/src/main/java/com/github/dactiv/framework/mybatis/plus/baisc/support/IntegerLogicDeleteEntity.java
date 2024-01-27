@@ -5,12 +5,17 @@ import com.github.dactiv.framework.commons.enumerate.support.YesOrNo;
 import com.github.dactiv.framework.commons.id.number.IntegerIdEntity;
 import com.github.dactiv.framework.mybatis.plus.baisc.LogicDeleteEntity;
 
+import java.io.Serial;
+
 /**
  * 整形，且带版本号和逻辑删除标识的实体基类
  *
  * @author maurice.chen
  */
 public class IntegerLogicDeleteEntity extends IntegerIdEntity implements LogicDeleteEntity<Integer> {
+
+    @Serial
+    private static final long serialVersionUID = -5433811021786205200L;
 
     /**
      * 是否删除标识: {@link YesOrNo#Yes} 已删除， {@link YesOrNo#No} 未删除

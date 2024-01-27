@@ -54,6 +54,7 @@ public class AuditConfiguration {
 
     public static class AuditImportSelector implements ImportSelector {
 
+        @NonNull
         @Override
         public String[] selectImports(@NonNull AnnotationMetadata importingClassMetadata) {
             List<String> imports = new LinkedList<>();

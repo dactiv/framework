@@ -10,6 +10,7 @@ import com.github.dactiv.framework.mybatis.plus.baisc.LogicDeleteEntity;
 import com.github.dactiv.framework.mybatis.plus.baisc.VersionEntity;
 import org.apache.commons.collections4.CollectionUtils;
 
+import java.io.Serial;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,6 +22,9 @@ import java.util.List;
  * @author maurice.chen
  */
 public class IntegerVersionLogicDeleteEntity<V> extends IntegerIdEntity implements VersionEntity<V, Integer>, LogicDeleteEntity<Integer> {
+
+    @Serial
+    private static final long serialVersionUID = -4632411104670339864L;
 
     @Version
     private V version;

@@ -21,7 +21,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.lang.NonNull;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * nacos 的 spring 事件管理器

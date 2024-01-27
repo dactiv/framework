@@ -2,6 +2,7 @@ package com.github.dactiv.framework.spring.security.authentication.token;
 
 import com.github.dactiv.framework.commons.TimeProperties;
 
+import java.io.Serial;
 import java.util.Date;
 
 /**
@@ -11,6 +12,8 @@ import java.util.Date;
  */
 public class AccessToken implements ExpiredToken {
 
+    @Serial
+    private static final long serialVersionUID = 4836691124554143118L;
     /**
      * 创建时间
      */

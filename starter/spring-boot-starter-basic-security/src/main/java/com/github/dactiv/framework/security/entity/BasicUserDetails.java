@@ -1,5 +1,6 @@
 package com.github.dactiv.framework.security.entity;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -8,6 +9,9 @@ import java.io.Serializable;
  * @author maurice.chen
  */
 public class BasicUserDetails<T> implements Serializable, TypeUserDetails<T> {
+
+    @Serial
+    private static final long serialVersionUID = 5537911068639279149L;
 
     /**
      * 用户 id 字段名称

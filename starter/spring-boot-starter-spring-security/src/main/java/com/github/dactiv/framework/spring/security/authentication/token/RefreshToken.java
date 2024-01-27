@@ -2,12 +2,17 @@ package com.github.dactiv.framework.spring.security.authentication.token;
 
 import com.github.dactiv.framework.commons.TimeProperties;
 
+import java.io.Serial;
+
 /**
  * 刷新 token
  *
  * @author maurice.chen
  */
 public class RefreshToken extends AccessToken {
+
+    @Serial
+    private static final long serialVersionUID = -2688750703716825163L;
 
     /**
      * 对应的访问 token

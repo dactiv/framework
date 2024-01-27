@@ -40,6 +40,7 @@ public class ConcurrentPointcutAdvisor extends AbstractPointcutAdvisor {
     }
 
     @Override
+    @NonNull
     public Advice getAdvice() {
         return concurrentInterceptor;
     }
