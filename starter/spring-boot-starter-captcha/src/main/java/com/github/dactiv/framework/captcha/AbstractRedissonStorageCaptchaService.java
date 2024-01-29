@@ -1,6 +1,5 @@
 package com.github.dactiv.framework.captcha;
 
-import com.github.dactiv.framework.captcha.intercept.Interceptor;
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
@@ -11,9 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RBucket;
-import org.redisson.api.RedissonClient;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.Validator;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -21,12 +18,6 @@ import java.util.Objects;
 
 public abstract class AbstractRedissonStorageCaptchaService<B> extends AbstractRedissonCaptchaService<B> {
 
-    public AbstractRedissonStorageCaptchaService(CaptchaProperties captchaProperties,
-                                                 Interceptor interceptor,
-                                                 Validator validator,
-                                                 RedissonClient redissonClient) {
-        super(captchaProperties, interceptor, validator, redissonClient);
-    }
 
     @Override
     protected Object generateCaptcha(InterceptToken buildToken, B requestBody, HttpServletRequest request) throws Exception {
@@ -53,7 +44,7 @@ public abstract class AbstractRedissonStorageCaptchaService<B> extends AbstractR
         captcha.setExpireTime(getCaptchaExpireTime());
         captcha.setValue(value);
 
-        String verifySuccessDelete = StringUtils.defaultString(request.getParameter(captchaProperties.getVerifySuccessDeleteParamName()), Boolean.TRUE.toString());
+        String verifySuccessDelete = StringUtils.defaultString(request.getParameter(getCaptchaProperties().getVerifySuccessDeleteParamName()), Boolean.TRUE.toString());
         captcha.setVerifySuccessDelete(BooleanUtils.toBoolean(verifySuccessDelete));
 
         TimeProperties retryTime = getRetryTime();
@@ -115,7 +106,7 @@ public abstract class AbstractRedissonStorageCaptchaService<B> extends AbstractR
         String token = request.getParameter(getTokenParamName());
         BuildToken buildToken = getBuildToken(token);
 
-        String verifyTokenExist = StringUtils.defaultString(request.getParameter(captchaProperties.getVerifyTokenExistParamName()), Boolean.TRUE.toString());
+        String verifyTokenExist = StringUtils.defaultString(request.getParameter(getCaptchaProperties().getVerifyTokenExistParamName()), Boolean.TRUE.toString());
 
         if (Objects.isNull(buildToken) && BooleanUtils.toBoolean(verifyTokenExist)) {
             return RestResult.ofException(ErrorCodeException.CONTENT_EXIST, new SystemException("找不到 token 为 [" + token + "] 的验证码 token 信息"));
@@ -178,7 +169,7 @@ public abstract class AbstractRedissonStorageCaptchaService<B> extends AbstractR
      * @return 绑定 token 桶
      */
     public RBucket<SimpleCaptcha> getCaptchaBucket(InterceptToken token) {
-        return redissonClient.getBucket(getCaptchaKey(token));
+        return getRedissonClient().getBucket(getCaptchaKey(token));
     }
 
     /**
@@ -188,7 +179,7 @@ public abstract class AbstractRedissonStorageCaptchaService<B> extends AbstractR
      * @return 绑定 token 桶
      */
     public RBucket<SimpleCaptcha> getCaptchaBucket(String token) {
-        return redissonClient.getBucket(getCaptchaKey(token));
+        return getRedissonClient().getBucket(getCaptchaKey(token));
     }
 
     /**
@@ -212,7 +203,7 @@ public abstract class AbstractRedissonStorageCaptchaService<B> extends AbstractR
 
     private String getCaptchaKey(String key) {
         String name = getType() + CacheProperties.DEFAULT_SEPARATOR + SimpleCaptcha.class.getSimpleName().toLowerCase() + CacheProperties.DEFAULT_SEPARATOR + key;
-        return captchaProperties.getBuildTokenCache().getName(name);
+        return getCaptchaProperties().getBuildTokenCache().getName(name);
     }
 
 }

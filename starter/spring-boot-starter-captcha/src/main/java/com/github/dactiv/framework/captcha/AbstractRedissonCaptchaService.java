@@ -1,11 +1,9 @@
 package com.github.dactiv.framework.captcha;
 
-import com.github.dactiv.framework.captcha.intercept.Interceptor;
 import com.github.dactiv.framework.commons.CacheProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
-import org.springframework.validation.Validator;
 
 import java.util.Objects;
 
@@ -16,13 +14,13 @@ import java.util.Objects;
  */
 public abstract class AbstractRedissonCaptchaService<B> extends AbstractCaptchaService<B> {
 
-    protected final RedissonClient redissonClient;
+    private RedissonClient redissonClient;
 
-    public AbstractRedissonCaptchaService(CaptchaProperties captchaProperties,
-                                          Interceptor interceptor,
-                                          Validator validator,
-                                          RedissonClient redissonClient) {
-        super(captchaProperties, validator, interceptor);
+    public RedissonClient getRedissonClient() {
+        return redissonClient;
+    }
+
+    public void setRedissonClient(RedissonClient redissonClient) {
         this.redissonClient = redissonClient;
     }
 
@@ -68,7 +66,7 @@ public abstract class AbstractRedissonCaptchaService<B> extends AbstractCaptchaS
      */
     public String getBuildTokenKey(String token) {
         String name = getType() + CacheProperties.DEFAULT_SEPARATOR + token;
-        return captchaProperties.getBuildTokenCache().getName(name);
+        return getCaptchaProperties().getBuildTokenCache().getName(name);
     }
 
     /**
@@ -89,7 +87,7 @@ public abstract class AbstractRedissonCaptchaService<B> extends AbstractCaptchaS
      */
     public String getInterceptTokenKey(String token) {
         String name = getType() + CacheProperties.DEFAULT_SEPARATOR + token;
-        return captchaProperties.getInterceptorTokenCache().getName(name);
+        return getCaptchaProperties().getInterceptorTokenCache().getName(name);
     }
 
     /**

@@ -65,7 +65,7 @@ public class TianaiCaptchaService extends AbstractRedissonStorageCaptchaService<
     private final ImageCaptchaGenerator imageCaptchaGenerator;
 
 
-    private final TianaiCaptchaProperties tianaiCaptchaProperties;
+    private TianaiCaptchaProperties tianaiCaptchaProperties;
 
     // 负责计算一些数据存到缓存中，用于校验使用
     // ImageCaptchaValidator负责校验用户滑动滑块是否正确和生成滑块的一些校验数据; 比如滑块到凹槽的百分比值
@@ -75,12 +75,25 @@ public class TianaiCaptchaService extends AbstractRedissonStorageCaptchaService<
     private final Map<String, List<ResourceMap>> templateResourceTagMap = new HashMap<>(2);
     private final Map<String, List<Resource>> resourceTagMap = new HashMap<>(2);
 
+    public TianaiCaptchaService() {
+        this(null);
+    }
+
+    public TianaiCaptchaService(TianaiCaptchaProperties tianaiCaptchaProperties) {
+        this(null, null, null, null, tianaiCaptchaProperties);
+    }
+
     public TianaiCaptchaService(CaptchaProperties captchaProperties,
                                 Validator validator,
                                 Interceptor interceptor,
                                 RedissonClient redissonClient,
                                 TianaiCaptchaProperties tianaiCaptchaProperties) {
-        super(captchaProperties, interceptor, validator, redissonClient);
+        super();
+
+        setCaptchaProperties(captchaProperties);
+        setValidator(validator);
+        setInterceptor(interceptor);
+        setRedissonClient(redissonClient);
 
         tianaiCaptchaProperties
                 .getTemplateMap()
@@ -91,10 +104,14 @@ public class TianaiCaptchaService extends AbstractRedissonStorageCaptchaService<
                 .forEach((key, value) -> value.forEach(r -> addResource(key, new Resource(r.getType(), r.getData(), r.getTag()))));
 
         this.tianaiCaptchaProperties = tianaiCaptchaProperties;
+
         ImageCaptchaResourceManager imageCaptchaResourceManager = new DefaultImageCaptchaResourceManager(this);
         ImageTransform imageTransform = new Base64ImageTransform();
-
         this.imageCaptchaGenerator = new MultiImageCaptchaGenerator(imageCaptchaResourceManager,imageTransform).init(false);
+    }
+
+    public void setTianaiCaptchaProperties(TianaiCaptchaProperties tianaiCaptchaProperties) {
+        this.tianaiCaptchaProperties = tianaiCaptchaProperties;
     }
 
     public TianaiCaptchaProperties getTianaiCaptchaProperties() {

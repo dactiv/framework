@@ -96,12 +96,12 @@ public abstract class Casts {
     /**
      *  map 类型范型引用
      */
-    public static final TypeReference<Map<String, Object>> MAP_TYPE_REFERENCE = new TypeReference<Map<String, Object>>() {};
+    public static final TypeReference<Map<String, Object>> MAP_TYPE_REFERENCE = new TypeReference<>() {};
 
     /**
      * list map 类型范型引用
      */
-    public static final TypeReference<List<Map<String, Object>>> LIST_MAP_TYPE_REFERENCE = new TypeReference<List<Map<String, Object>>>() {};
+    public static final TypeReference<List<Map<String, Object>>> LIST_MAP_TYPE_REFERENCE = new TypeReference<>() {};
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 

@@ -17,7 +17,10 @@ import org.springframework.security.core.Authentication;
  */
 public abstract class AbstractUserDetailsService implements UserDetailsService {
 
-    private final SpringSecurityProperties springSecurityProperties;
+    private SpringSecurityProperties springSecurityProperties;
+
+    public AbstractUserDetailsService() {
+    }
 
     public AbstractUserDetailsService(SpringSecurityProperties springSecurityProperties) {
         this.springSecurityProperties = springSecurityProperties;
@@ -75,7 +78,16 @@ public abstract class AbstractUserDetailsService implements UserDetailsService {
      *
      * @return 配置信息
      */
-    public SpringSecurityProperties getAuthenticationProperties() {
+    public SpringSecurityProperties getSpringSecurityProperties() {
         return springSecurityProperties;
+    }
+
+    /**
+     * 设置配置信息
+     *
+     * @param springSecurityProperties 配置信息
+     */
+    public void setSpringSecurityProperties(SpringSecurityProperties springSecurityProperties) {
+        this.springSecurityProperties = springSecurityProperties;
     }
 }

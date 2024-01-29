@@ -12,7 +12,7 @@
       "defaultValue": true
     },
     {
-      "name": "dactiv.captcha.constrooler.enabled",
+      "name": "dactiv.captcha.controller.enabled",
       "type": "java.lang.Boolean",
       "description": "是否开启验证码控制器支持 .",
       "defaultValue": true
