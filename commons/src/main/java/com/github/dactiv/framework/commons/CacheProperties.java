@@ -2,6 +2,7 @@ package com.github.dactiv.framework.commons;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -12,6 +13,7 @@ import java.io.Serializable;
 public class CacheProperties implements Serializable {
 
     
+    @Serial
     private static final long serialVersionUID = 3266643181504654737L;
 
     /**

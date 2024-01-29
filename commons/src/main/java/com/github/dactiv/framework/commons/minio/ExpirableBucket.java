@@ -2,6 +2,8 @@ package com.github.dactiv.framework.commons.minio;
 
 import com.github.dactiv.framework.commons.TimeProperties;
 
+import java.io.Serial;
+
 
 /**
  * 可过期的桶
@@ -9,8 +11,8 @@ import com.github.dactiv.framework.commons.TimeProperties;
  * @author maurice.chen
  */
 public class ExpirableBucket extends Bucket {
-
     
+    @Serial
     private static final long serialVersionUID = -2648131524041207239L;
 
     /**

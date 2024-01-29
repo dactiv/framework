@@ -535,7 +535,7 @@ public class BasicService<M extends BaseMapper<T>, T extends Serializable> {
      * 设置 mapper 实现
      * @param baseMapper mapper 实现
      */
-    @Autowired
+    @Autowired(required = false)
     public void setBaseMapper(M baseMapper) {
         this.baseMapper = baseMapper;
     }

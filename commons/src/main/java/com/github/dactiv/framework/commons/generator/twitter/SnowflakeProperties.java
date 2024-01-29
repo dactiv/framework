@@ -16,7 +16,7 @@
 package com.github.dactiv.framework.commons.generator.twitter;
 
 
-import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.rng.simple.RandomSource;
 
 /**
  * twitter 的 snowflake id 生成算法配置信息
@@ -28,12 +28,12 @@ public class SnowflakeProperties {
     /**
      * 最小节点值
      */
-    public static int MIN_NUMBER = 0;
+    public static final int MIN_NUMBER = 0;
 
     /**
      * 最大节点值
      */
-    public static int MAX_NUMBER = 31;
+    public static final int MAX_NUMBER = 31;
 
     /**
      * 数据中心编号，最大支持数据中心节点数 0~31，一共 32 个
@@ -61,9 +61,9 @@ public class SnowflakeProperties {
      * @param serviceId    服务编号（业务编号），共3位以字符串组成，000~999，共1000个
      */
     public SnowflakeProperties(String serviceId) {
-        this.dataCenterId = RandomUtils.nextInt(MIN_NUMBER, MAX_NUMBER);
+        this.dataCenterId = RandomSource.XO_RO_SHI_RO_128_PP.create().nextInt(MIN_NUMBER, MAX_NUMBER);
         this.serviceId = serviceId;
-        this.workerId = RandomUtils.nextInt(MIN_NUMBER, MAX_NUMBER);
+        this.workerId = RandomSource.XO_RO_SHI_RO_128_PP.create().nextInt(MIN_NUMBER, MAX_NUMBER);
     }
 
     /**

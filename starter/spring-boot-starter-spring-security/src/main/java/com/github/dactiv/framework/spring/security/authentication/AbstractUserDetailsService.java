@@ -9,6 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
+import java.util.Objects;
+
 /**
  * 抽象的用户明细服务实现，实现创建认证 token，等部分公用功能
  *
@@ -31,8 +33,8 @@ public abstract class AbstractUserDetailsService implements UserDetailsService {
         String username = obtainUsername(request);
         String password = obtainPassword(request);
 
-        username = StringUtils.defaultString(username, StringUtils.EMPTY).trim();
-        password = StringUtils.defaultString(password, StringUtils.EMPTY);
+        username = Objects.toString(username, StringUtils.EMPTY).trim();
+        password = Objects.toString(password, StringUtils.EMPTY);
 
         boolean rememberMe = obtainRememberMe(request);
         UsernamePasswordAuthenticationToken usernamePasswordToken = new UsernamePasswordAuthenticationToken(username, password);

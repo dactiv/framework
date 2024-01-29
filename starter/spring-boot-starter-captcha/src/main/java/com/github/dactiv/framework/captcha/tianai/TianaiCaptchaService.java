@@ -29,8 +29,8 @@ import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.commons.TimeProperties;
 import com.github.dactiv.framework.commons.exception.ErrorCodeException;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.rng.simple.RandomSource;
 import org.apache.commons.text.CaseUtils;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
@@ -208,7 +208,7 @@ public class TianaiCaptchaService extends AbstractRedissonStorageCaptchaService<
                                                       HttpServletRequest request) {
         String type = requestBody.getGenerateImageType();
         if (RandomValuePropertySource.RANDOM_PROPERTY_SOURCE_NAME.equals(requestBody.getGenerateImageType())) {
-            type = tianaiCaptchaProperties.getRandomCaptchaType().get(RandomUtils.nextInt(0, tianaiCaptchaProperties.getRandomCaptchaType().size()));
+            type = tianaiCaptchaProperties.getRandomCaptchaType().get(RandomSource.XO_RO_SHI_RO_128_PP.create().nextInt(0, tianaiCaptchaProperties.getRandomCaptchaType().size()));
         }
         // 生成滑块验证码图片, 可选项
         // SLIDER (滑块验证码)

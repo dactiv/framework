@@ -1,6 +1,7 @@
 package com.github.dactiv.framework.commons.minio;
 
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -12,12 +13,13 @@ import java.io.Serializable;
 public class Bucket implements Serializable {
 
     
+    @Serial
     private static final long serialVersionUID = -8374508623316725573L;
 
     /**
      * minio 桶名称
      */
-    public static String MINIO_BUCKET_NAME = "bucket";
+    public static final String MINIO_BUCKET_NAME = "bucket";
 
     /**
      * 桶名称

@@ -1,6 +1,7 @@
 package com.github.dactiv.framework.commons.minio;
 
 
+import java.io.Serial;
 import java.util.Map;
 
 /**
@@ -9,6 +10,9 @@ import java.util.Map;
  * @author maurice.chen
  */
 public class FileObject extends Bucket {
+
+    @Serial
+    private static final long serialVersionUID = 3325877878659487154L;
 
     /**
      * minio e 标签
@@ -23,9 +27,7 @@ public class FileObject extends Bucket {
     /**
      * minio 对象名称
      */
-    public static String MINIO_OBJECT_NAME = "object";
-
-    private static final long serialVersionUID = 3325877878659487154L;
+    public static final String MINIO_OBJECT_NAME = "object";
 
     /**
      * 对象文件名称

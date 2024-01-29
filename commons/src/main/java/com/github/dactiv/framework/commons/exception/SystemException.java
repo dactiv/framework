@@ -1,11 +1,16 @@
 package com.github.dactiv.framework.commons.exception;
 
+import java.io.Serial;
+
 /**
  * 系统异常基类
  *
  * @author maurice
  */
 public class SystemException extends RuntimeException {
+
+    @Serial
+    private static final long serialVersionUID = 2623553019157158620L;
 
     /**
      * 系统异常

@@ -1,11 +1,12 @@
 package com.github.dactiv.framework.commons.test;
 
+import com.github.dactiv.framework.commons.id.StringIdEntity;
 import com.github.dactiv.framework.commons.tree.Tree;
 import com.github.dactiv.framework.commons.tree.TreeUtils;
-import com.github.dactiv.framework.commons.id.StringIdEntity;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -72,7 +73,7 @@ public class TreeUtilsTest {
 
     public static class Data extends StringIdEntity implements Tree<String, Data> {
 
-        
+        @Serial
         private static final long serialVersionUID = -9159953609644122758L;
 
         String name;

@@ -44,7 +44,7 @@ public abstract class AbstractRedissonStorageCaptchaService<B> extends AbstractR
         captcha.setExpireTime(getCaptchaExpireTime());
         captcha.setValue(value);
 
-        String verifySuccessDelete = StringUtils.defaultString(request.getParameter(getCaptchaProperties().getVerifySuccessDeleteParamName()), Boolean.TRUE.toString());
+        String verifySuccessDelete = Objects.toString(request.getParameter(getCaptchaProperties().getVerifySuccessDeleteParamName()), Boolean.TRUE.toString());
         captcha.setVerifySuccessDelete(BooleanUtils.toBoolean(verifySuccessDelete));
 
         TimeProperties retryTime = getRetryTime();
@@ -106,7 +106,7 @@ public abstract class AbstractRedissonStorageCaptchaService<B> extends AbstractR
         String token = request.getParameter(getTokenParamName());
         BuildToken buildToken = getBuildToken(token);
 
-        String verifyTokenExist = StringUtils.defaultString(request.getParameter(getCaptchaProperties().getVerifyTokenExistParamName()), Boolean.TRUE.toString());
+        String verifyTokenExist = Objects.toString(request.getParameter(getCaptchaProperties().getVerifyTokenExistParamName()), Boolean.TRUE.toString());
 
         if (Objects.isNull(buildToken) && BooleanUtils.toBoolean(verifyTokenExist)) {
             return RestResult.ofException(ErrorCodeException.CONTENT_EXIST, new SystemException("找不到 token 为 [" + token + "] 的验证码 token 信息"));

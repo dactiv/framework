@@ -1,11 +1,16 @@
 package com.github.dactiv.framework.commons.exception;
 
+import java.io.Serial;
+
 /**
  * key value 枚举找不到内容异常
  *
  * @author maurice
  */
 public class ValueEnumNotFoundException extends SystemException {
+
+    @Serial
+    private static final long serialVersionUID = 743566104062686552L;
 
     /**
      * key value 枚举找不到内容异常

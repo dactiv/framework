@@ -645,7 +645,7 @@ public abstract class Casts {
                 .stream()
                 .map(StringUtils::trimToEmpty)
                 .filter(variableValue::containsKey)
-                .collect(Collectors.toList());
+                .toList();
 
         String temp = url;
 

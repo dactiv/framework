@@ -444,7 +444,7 @@ public class MinioTemplate {
                 .builder()
                 .bucket(toObject.getBucketName().toLowerCase())
                 .region(toObject.getRegion())
-                .object(StringUtils.defaultString(toObject.getObjectName(), fromObject.getObjectName()))
+                .object(Objects.toString(toObject.getObjectName(), fromObject.getObjectName()))
                 .source(copySource.build());
 
         return minioClient.copyObject(args.build()).get();
