@@ -4,6 +4,7 @@ import cloud.tianai.captcha.validator.common.model.dto.ImageCaptchaTrack;
 import com.github.dactiv.framework.captcha.BuildToken;
 import com.github.dactiv.framework.captcha.CaptchaProperties;
 import com.github.dactiv.framework.captcha.DelegateCaptchaService;
+import com.github.dactiv.framework.captcha.InterceptToken;
 import com.github.dactiv.framework.captcha.intercept.Interceptor;
 import com.github.dactiv.framework.captcha.tianai.TianaiCaptchaService;
 import com.github.dactiv.framework.captcha.tianai.config.TianaiCaptchaProperties;
@@ -153,5 +154,34 @@ public class CaptchaController {
         Assert.hasText(token, tianaiCaptchaService.getTokenParamName() + "参数不能为空");
 
         return tianaiCaptchaService.clientVerify(track, token);
+    }
+
+    /**
+     * 创建生成验证码拦截
+     *
+     * @param token         要拦截的 token
+     * @param type          拦截类型
+     * @param interceptType 拦截的 token 类型
+     * @return 绑定 token
+     */
+    @PostMapping("createCaptchaIntercept")
+    public InterceptToken createCaptchaIntercept(@RequestParam String token,
+                                                 @RequestParam String type,
+                                                 @RequestParam String interceptType) {
+        if (StringUtils.isEmpty(type)) {
+            type = captchaProperties.getDefaultCaptchaType();
+        }
+        return interceptor.generateCaptchaIntercept(token, type, interceptType);
+    }
+
+    /**
+     * 删除验证码
+     *
+     * @param request http servlet request
+     * @return rest 结果集
+     */
+    @PostMapping("deleteCaptcha")
+    public RestResult<Map<String, Object>> deleteCaptcha(HttpServletRequest request) {
+        return delegateCaptchaService.delete(request);
     }
 }

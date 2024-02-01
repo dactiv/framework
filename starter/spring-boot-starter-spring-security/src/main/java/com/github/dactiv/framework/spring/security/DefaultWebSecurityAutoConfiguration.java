@@ -16,7 +16,6 @@ import org.springframework.aop.support.Pointcuts;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationEventPublisher;
@@ -33,7 +32,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.RequestCacheConfigurer;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -142,12 +140,6 @@ public class DefaultWebSecurityAutoConfiguration {
         httpSecurity.addFilterBefore(new IpAuthenticationFilter(this.properties), RequestAuthenticationFilter.class);
 
         return httpSecurity.build();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(AccessDeniedHandler.class)
-    public ForbiddenAccessDeniedHandler forbiddenAccessDeniedHandler() {
-        return new ForbiddenAccessDeniedHandler();
     }
 
     @Bean

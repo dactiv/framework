@@ -6,9 +6,45 @@
   ],
   "properties": [
     {
-      "name": "dactiv.spring.security.spring-security.enabled",
+      "name": "dactiv.spring.security.enabled",
       "type": "java.lang.Boolean",
       "description": "是否开启 spring security 支持 .",
+      "defaultValue": true
+    },
+    {
+      "name": "dactiv.spring.security.audit.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否开启 spring security 审计功能支持 .",
+      "defaultValue": true
+    },
+    {
+      "name": "dactiv.spring.security.oauth2.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否开启 spring security oauth 2 功能支持 .",
+      "defaultValue": false
+    },
+    {
+      "name": "dactiv.spring.security.access-token.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否开启 spring security 访问令牌鉴权功能支持 .",
+      "defaultValue": true
+    },
+    {
+      "name": "dactiv.spring.security.plugin.base-packages",
+      "type": "java.lang.Boolean",
+      "description": "需要扫描的接口 controller 包路径.",
+      "defaultValue": true
+    },
+    {
+      "name": "dactiv.spring.security.plugin.generate-sources",
+      "type": "java.lang.Boolean",
+      "description": "生成插件的来源类型集合，用于通过该值去配合 {@link com.github.dactiv.framework.security.plugin.Plugin#sources()} 来判断构造 info 中的 plugin 时，否添加到 plugin 中.",
+      "defaultValue": true
+    },
+    {
+      "name": "dactiv.spring.security.plugin.parent",
+      "type": "java.lang.Boolean",
+      "description": "默认的父类分类信息，用于对应 {@link com.github.dactiv.framework.security.plugin.Plugin#parent()} 时，controller 所在哪个节点下使用.",
       "defaultValue": true
     }
   ]

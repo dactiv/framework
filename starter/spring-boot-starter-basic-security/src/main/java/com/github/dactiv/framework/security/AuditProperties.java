@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("dactiv.spring.security.audit")
+@ConfigurationProperties("dactiv.security.audit")
 public class AuditProperties {
 
     /**

@@ -16,6 +16,8 @@ spring:
       field-naming-strategy: org.springframework.data.mapping.model.SnakeCaseFieldNamingStrategy
   elasticsearch:
     uris: http://localhost:9200
+    username: elastic
+    password: 20160826
 
 ---
 spring:
@@ -24,10 +26,9 @@ spring:
       on-profile: elasticsearch
 
 dactiv:
-  spring:
-    security:
-      audit:
-        type: elasticsearch
+  security:
+    audit:
+      type: elasticsearch
 
 ---
 spring:
@@ -36,7 +37,6 @@ spring:
       on-profile: mongo
 
 dactiv:
-  spring:
-    security:
-      audit:
-        type: mongo
+  security:
+    audit:
+      type: mongo

@@ -8,10 +8,7 @@ import com.github.dactiv.framework.spring.security.authentication.config.AccessT
 import com.github.dactiv.framework.spring.security.authentication.config.OAuth2Properties;
 import com.github.dactiv.framework.spring.security.authentication.config.RememberMeProperties;
 import com.github.dactiv.framework.spring.security.authentication.config.SpringSecurityProperties;
-import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationFailureHandler;
-import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationFailureResponse;
-import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationSuccessHandler;
-import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationSuccessResponse;
+import com.github.dactiv.framework.spring.security.authentication.handler.*;
 import com.github.dactiv.framework.spring.security.authentication.provider.RequestAuthenticationProvider;
 import com.github.dactiv.framework.spring.security.authentication.rememberme.CookieRememberService;
 import com.github.dactiv.framework.spring.security.authentication.service.DefaultAuthenticationFailureResponse;
@@ -28,7 +25,6 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.boot.autoconfigure.websocket.servlet.UndertowWebSocketServletWebServerCustomizer;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -36,6 +32,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -55,31 +52,31 @@ public class SpringSecurityAutoConfiguration {
 
     @Bean
     @ConfigurationProperties("dactiv.spring.security.plugin")
-    PluginEndpoint pluginEndpoint(ObjectProvider<InfoContributor> infoContributor) {
+    public PluginEndpoint pluginEndpoint(ObjectProvider<InfoContributor> infoContributor) {
         return new PluginEndpoint(infoContributor.stream().collect(Collectors.toList()));
     }
 
     @Bean
     @ConditionalOnProperty(prefix = "dactiv.spring.security.audit", name = "enabled", havingValue = "true")
-    ControllerAuditHandlerInterceptor controllerAuditHandlerInterceptor() {
+    public ControllerAuditHandlerInterceptor controllerAuditHandlerInterceptor() {
         return new ControllerAuditHandlerInterceptor();
     }
 
     @Bean
     @ConditionalOnMissingBean(PasswordEncoder.class)
-    PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
     @ConditionalOnProperty(prefix = "dactiv.spring.security.access-token", value = "enable-controller", havingValue = "true")
-    TokenController accessTokenController(AccessTokenContextRepository accessTokenContextRepository,
+    public TokenController accessTokenController(AccessTokenContextRepository accessTokenContextRepository,
                                           RedissonClient redissonClient) {
         return new TokenController(accessTokenContextRepository, redissonClient);
     }
 
     @Bean
-    DefaultUserDetailsService defaultUserDetailsService(PasswordEncoder passwordEncoder,
+    public DefaultUserDetailsService defaultUserDetailsService(PasswordEncoder passwordEncoder,
                                                         SpringSecurityProperties properties) {
 
         return new DefaultUserDetailsService(properties, passwordEncoder);
@@ -102,6 +99,11 @@ public class SpringSecurityAutoConfiguration {
     @ConditionalOnMissingBean(RememberMeServices.class)
     public CookieRememberService cookieRememberService(SpringSecurityProperties properties, RedissonClient redissonClient) {
         return new CookieRememberService(properties, redissonClient);
+    }
+    @Bean
+    @ConditionalOnMissingBean(AccessDeniedHandler.class)
+    public ForbiddenAccessDeniedHandler forbiddenAccessDeniedHandler() {
+        return new ForbiddenAccessDeniedHandler();
     }
 
     @Bean
@@ -169,7 +171,7 @@ public class SpringSecurityAutoConfiguration {
     @Configuration
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
     @ConditionalOnProperty(prefix = "dactiv.spring.security.audit", name = "enabled", havingValue = "true")
-    public static class DefaultWebMvcConfigurer extends UndertowWebSocketServletWebServerCustomizer implements WebMvcConfigurer {
+    public static class DefaultWebMvcConfigurer implements WebMvcConfigurer {
 
         private final ControllerAuditHandlerInterceptor controllerAuditHandlerInterceptor;
 

@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 @AutoConfigureBefore(SpringSecurityAutoConfiguration.class)
 @EnableConfigurationProperties({OAuth2Properties.class, SpringSecurityProperties.class})
 @ConditionalOnClass(OAuth2AuthorizationServerConfigurer.class)
-@ConditionalOnProperty(prefix = "dactiv.spring.security.spring.security.oauth2", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.spring.security.oauth2", value = "enabled", havingValue = "true")
 public class OAuth2WebSecurityAutoConfiguration {
 
     private static final RsaCipherService cipherService = new RsaCipherService();
@@ -67,32 +67,6 @@ public class OAuth2WebSecurityAutoConfiguration {
                 .build();
         JWKSet jwkSet = new JWKSet(rsaKey);
         return new ImmutableJWKSet<>(jwkSet);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(JsonAuthenticationSuccessHandler.class)
-    public JsonAuthenticationSuccessHandler jsonAuthenticationSuccessHandler(ObjectProvider<JsonAuthenticationSuccessResponse> successResponse,
-                                                                             SpringSecurityProperties springSecurityProperties,
-                                                                             OAuth2Properties oAuth2Properties) {
-
-        return new JsonAuthenticationSuccessHandler(
-                successResponse.orderedStream().collect(Collectors.toList()),
-                springSecurityProperties,
-                oAuth2Properties.getOauth2Urls()
-        );
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(JsonAuthenticationFailureHandler.class)
-    public JsonAuthenticationFailureHandler jsonAuthenticationFailureHandler(ObjectProvider<JsonAuthenticationFailureResponse> failureHandlers,
-                                                                             SpringSecurityProperties springSecurityProperties,
-                                                                             OAuth2Properties oAuth2Properties) {
-
-        return new JsonAuthenticationFailureHandler(
-                failureHandlers.orderedStream().collect(Collectors.toList()),
-                springSecurityProperties,
-                oAuth2Properties.getOauth2Urls()
-        );
     }
 
     @Bean

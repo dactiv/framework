@@ -1,0 +1,9 @@
+spring:
+  data:
+    redis:
+      password: 19880602
+
+dactiv:
+  security:
+    audit:
+      enabled: false

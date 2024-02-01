@@ -51,10 +51,11 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <starter.version>1.1.0-SNAPSHOT</starter.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
         <commons.rng.version>1.5</commons.rng.version>
+        <starter.version>1.1.0-SNAPSHOT</starter.version>
+        <redisson.version>3.26.0</redisson.version>
     </properties>
 
     <dependencyManagement>
@@ -173,7 +174,13 @@
             <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson-spring-boot-starter</artifactId>
-                <version>3.26.0</version>
+                <version>${redisson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson-spring-data-32</artifactId>
+                <version>${redisson.version}</version>
             </dependency>
 
             <dependency>
