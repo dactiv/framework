@@ -39,7 +39,6 @@ import java.security.interfaces.RSAPublicKey;
 import java.util.stream.Collectors;
 
 @Configuration
-@AutoConfigureBefore(SpringSecurityAutoConfiguration.class)
 @EnableConfigurationProperties({OAuth2Properties.class, SpringSecurityProperties.class})
 @ConditionalOnClass(OAuth2AuthorizationServerConfigurer.class)
 @ConditionalOnProperty(prefix = "dactiv.spring.security.oauth2", value = "enabled", havingValue = "true")
