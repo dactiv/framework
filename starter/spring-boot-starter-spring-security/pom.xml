@@ -36,11 +36,6 @@
 
         <dependency>
             <groupId>com.github.dactiv.framework.starter</groupId>
-            <artifactId>spring-boot-starter-captcha</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.dactiv.framework.starter</groupId>
             <artifactId>spring-boot-starter-access-crypto</artifactId>
             <optional>true</optional>
         </dependency>
