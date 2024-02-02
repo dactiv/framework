@@ -115,29 +115,6 @@ public class SpringSecurityProperties {
     private boolean allowIfEqualGrantedDeniedDecisions = false;
 
     /**
-     * 验证校验配置
-     */
-    private CaptchaVerificationProperties captchaVerification = new CaptchaVerificationProperties();
-
-    /**
-     * 获取验证码校验配置
-     *
-     * @return 验证码校验配置
-     */
-    public CaptchaVerificationProperties getCaptchaVerification() {
-        return captchaVerification;
-    }
-
-    /**
-     * 设置验证码校验配置
-     *
-     * @param captchaVerification 验证码校验配置
-     */
-    public void setCaptchaVerification(CaptchaVerificationProperties captchaVerification) {
-        this.captchaVerification = captchaVerification;
-    }
-
-    /**
      * 获取默认用户信息集合
      *
      * @return 默认用户信息集合
