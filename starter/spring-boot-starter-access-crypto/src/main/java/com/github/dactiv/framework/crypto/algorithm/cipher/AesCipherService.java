@@ -16,7 +16,7 @@ import java.io.OutputStream;
  */
 public class AesCipherService extends SymmetricCipherService {
 
-    private static final int DEFAULT_KEY_SIZE = 128;
+    private static final int DEFAULT_KEY_SIZE = 256;
 
     /**
      * AES 对称加密实现
