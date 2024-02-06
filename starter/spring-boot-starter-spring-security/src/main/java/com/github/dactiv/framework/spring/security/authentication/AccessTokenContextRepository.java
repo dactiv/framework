@@ -31,10 +31,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.web.context.SaveContextOnUpdateOrErrorResponseWrapper;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.util.WebUtils;
 
 import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
@@ -207,19 +205,14 @@ public class AccessTokenContextRepository extends HttpSessionSecurityContextRepo
 
     @Override
     public void saveContext(SecurityContext context, HttpServletRequest request, HttpServletResponse response) {
-        SaveContextOnUpdateOrErrorResponseWrapper responseWrapper = WebUtils.getNativeResponse(response,
-                SaveContextOnUpdateOrErrorResponseWrapper.class);
-        if (Objects.nonNull(responseWrapper)) {
-            super.saveContext(context, request, response);
-        }
-
+        super.saveContext(context, request, response);
         saveRedissonSecurityContext(context, request, response);
     }
 
     /**
      * 删除缓存
      *
-     * @param userDetails 移动端的用户明细实现
+     * @param userDetails 用户明细实现
      */
     public void deleteContext(SecurityUserDetails userDetails) {
         RBucket<SecurityContext> bucket = getSecurityContextBucket(userDetails.getType(), userDetails.getId());
@@ -316,9 +309,14 @@ public class AccessTokenContextRepository extends HttpSessionSecurityContextRepo
 
     @Override
     public boolean containsContext(HttpServletRequest request) {
-        boolean superValue = super.containsContext(request);
-        SecurityContext context = readSecurityContextFromRequest(request);
-        return superValue || Objects.nonNull(context);
+        boolean containsValue = super.containsContext(request);
+
+        if (!containsValue) {
+            SecurityContext context = readSecurityContextFromRequest(request);
+            containsValue = Objects.nonNull(context);
+        }
+
+        return containsValue;
     }
 
     public AccessTokenProperties getAccessTokenProperties() {

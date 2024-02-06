@@ -2,14 +2,12 @@ package com.github.dactiv.framework.spring.security.authentication.handler;
 
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
-import com.github.dactiv.framework.spring.security.authentication.config.SpringSecurityProperties;
 import com.github.dactiv.framework.spring.security.entity.SecurityUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -31,13 +29,11 @@ public class JsonAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
 
     private final List<AntPathRequestMatcher> loginRequestMatchers = new LinkedList<>();
 
-    public JsonAuthenticationSuccessHandler(List<JsonAuthenticationSuccessResponse> successResponses,
-                                            SpringSecurityProperties springSecurityProperties) {
-        this(successResponses, springSecurityProperties, new LinkedList<>());
+    public JsonAuthenticationSuccessHandler(List<JsonAuthenticationSuccessResponse> successResponses) {
+        this(successResponses, new LinkedList<>());
     }
 
     public JsonAuthenticationSuccessHandler(List<JsonAuthenticationSuccessResponse> successResponses,
-                                            SpringSecurityProperties springSecurityProperties,
                                             List<AntPathRequestMatcher> antPathRequestMatchers) {
 
         this.successResponses = successResponses;
@@ -45,8 +41,6 @@ public class JsonAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
         if (CollectionUtils.isNotEmpty(antPathRequestMatchers)) {
             this.loginRequestMatchers.addAll(antPathRequestMatchers);
         }
-
-        this.loginRequestMatchers.add(new AntPathRequestMatcher(springSecurityProperties.getLoginProcessingUrl(), HttpMethod.POST.name()));
     }
 
     @Override

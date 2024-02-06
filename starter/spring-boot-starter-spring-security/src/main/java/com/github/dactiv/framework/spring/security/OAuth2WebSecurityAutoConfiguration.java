@@ -27,24 +27,59 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Configuration
+@AutoConfigureBefore(SpringSecurityAutoConfiguration.class)
 @EnableConfigurationProperties({OAuth2Properties.class, SpringSecurityProperties.class})
 @ConditionalOnClass(OAuth2AuthorizationServerConfigurer.class)
 @ConditionalOnProperty(prefix = "dactiv.spring.security.oauth2", value = "enabled", havingValue = "true")
 public class OAuth2WebSecurityAutoConfiguration {
 
     private static final RsaCipherService cipherService = new RsaCipherService();
+
+    @Bean
+    @ConditionalOnMissingBean(JsonAuthenticationFailureHandler.class)
+    public JsonAuthenticationFailureHandler jsonAuthenticationFailureHandler(ObjectProvider<JsonAuthenticationFailureResponse> failureResponse,
+                                                                             OAuth2Properties oAuth2Properties,
+                                                                             SpringSecurityProperties springSecurityProperties) {
+
+        List<AntPathRequestMatcher> list = new LinkedList<>(oAuth2Properties.getOauth2Urls());
+        list.add(new AntPathRequestMatcher(springSecurityProperties.getLoginProcessingUrl(), HttpMethod.POST.name()));
+
+        return new JsonAuthenticationFailureHandler(
+                failureResponse.orderedStream().collect(Collectors.toList()),
+                list
+        );
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(JsonAuthenticationSuccessHandler.class)
+    public JsonAuthenticationSuccessHandler jsonAuthenticationSuccessHandler(ObjectProvider<JsonAuthenticationSuccessResponse> successResponse,
+                                                                             OAuth2Properties oAuth2Properties,
+                                                                             SpringSecurityProperties springSecurityProperties) {
+
+        List<AntPathRequestMatcher> list = new LinkedList<>(oAuth2Properties.getOauth2Urls());;
+        list.add(new AntPathRequestMatcher(springSecurityProperties.getLoginProcessingUrl(), HttpMethod.POST.name()));
+
+        return new JsonAuthenticationSuccessHandler(
+                successResponse.orderedStream().collect(Collectors.toList()),
+                list
+        );
+    }
 
     /**
      * jwk source 配置

@@ -2,11 +2,9 @@ package com.github.dactiv.framework.spring.security.authentication.handler;
 
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
-import com.github.dactiv.framework.spring.security.authentication.config.SpringSecurityProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
@@ -30,13 +28,11 @@ public class JsonAuthenticationFailureHandler implements AuthenticationFailureHa
 
     private final List<AntPathRequestMatcher> loginRequestMatchers = new LinkedList<>();
 
-    public JsonAuthenticationFailureHandler(List<JsonAuthenticationFailureResponse> failureResponses,
-                                            SpringSecurityProperties springSecurityProperties) {
-        this(failureResponses, springSecurityProperties, new LinkedList<>());
+    public JsonAuthenticationFailureHandler(List<JsonAuthenticationFailureResponse> failureResponses) {
+        this(failureResponses, new LinkedList<>());
     }
 
     public JsonAuthenticationFailureHandler(List<JsonAuthenticationFailureResponse> failureResponses,
-                                            SpringSecurityProperties springSecurityProperties,
                                             List<AntPathRequestMatcher> antPathRequestMatchers) {
 
         this.failureResponses = failureResponses;
@@ -45,7 +41,6 @@ public class JsonAuthenticationFailureHandler implements AuthenticationFailureHa
             this.loginRequestMatchers.addAll(antPathRequestMatchers);
         }
 
-        this.loginRequestMatchers.add(new AntPathRequestMatcher(springSecurityProperties.getLoginProcessingUrl(), HttpMethod.POST.name()));
     }
 
     @Override

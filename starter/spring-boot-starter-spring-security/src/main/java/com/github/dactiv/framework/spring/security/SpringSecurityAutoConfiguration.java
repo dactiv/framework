@@ -29,14 +29,17 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -112,17 +115,17 @@ public class SpringSecurityAutoConfiguration {
                                                                              SpringSecurityProperties springSecurityProperties) {
         return new JsonAuthenticationFailureHandler(
                 failureResponse.orderedStream().collect(Collectors.toList()),
-                springSecurityProperties
+                List.of(new AntPathRequestMatcher(springSecurityProperties.getLoginProcessingUrl(), HttpMethod.POST.name()))
         );
     }
 
     @Bean
     @ConditionalOnMissingBean(JsonAuthenticationSuccessHandler.class)
     public JsonAuthenticationSuccessHandler jsonAuthenticationSuccessHandler(ObjectProvider<JsonAuthenticationSuccessResponse> successResponse,
-                                                                             SpringSecurityProperties properties) {
+                                                                             SpringSecurityProperties springSecurityProperties) {
         return new JsonAuthenticationSuccessHandler(
                 successResponse.orderedStream().collect(Collectors.toList()),
-                properties
+                List.of(new AntPathRequestMatcher(springSecurityProperties.getLoginProcessingUrl(), HttpMethod.POST.name()))
         );
     }
 

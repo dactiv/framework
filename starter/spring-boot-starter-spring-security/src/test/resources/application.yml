@@ -7,3 +7,7 @@ dactiv:
   security:
     audit:
       enabled: false
+  spring:
+    security:
+      oauth2:
+        enabled: true
