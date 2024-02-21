@@ -45,7 +45,7 @@ public class BindingResultErrorResultResolver implements ErrorResultResolver {
                     .stream()
                     .filter(o -> FieldError.class.isAssignableFrom(o.getClass()))
                     .map(o -> (FieldError) o)
-                    .collect(Collectors.toList());
+                    .toList();
         }
 
 

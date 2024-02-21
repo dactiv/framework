@@ -8,6 +8,7 @@ import com.github.dactiv.framework.crypto.algorithm.CodecUtils;
 import com.github.dactiv.framework.crypto.algorithm.SimpleByteSource;
 import com.github.dactiv.framework.crypto.algorithm.exception.CodecException;
 import com.github.dactiv.framework.crypto.algorithm.exception.UnknownAlgorithmException;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -92,9 +93,10 @@ public class Hash extends AbstractByteSource implements Serializable {
      * @param hashIterations hash 迭代次数
      */
     public Hash(String algorithmName, Object source, Object salt, int hashIterations) {
-        if (algorithmName == null || "".equals(algorithmName.trim())) {
+        if (StringUtils.isEmpty(algorithmName)) {
             throw new IllegalArgumentException("算法参数不能空");
         }
+
         this.algorithmName = algorithmName;
         this.iterations = Math.max(DEFAULT_ITERATIONS, hashIterations);
         ByteSource saltBytes = null;

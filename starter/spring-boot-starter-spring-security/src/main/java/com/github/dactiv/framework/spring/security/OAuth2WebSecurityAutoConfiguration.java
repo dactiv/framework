@@ -72,7 +72,7 @@ public class OAuth2WebSecurityAutoConfiguration {
                                                                              OAuth2Properties oAuth2Properties,
                                                                              SpringSecurityProperties springSecurityProperties) {
 
-        List<AntPathRequestMatcher> list = new LinkedList<>(oAuth2Properties.getOauth2Urls());;
+        List<AntPathRequestMatcher> list = new LinkedList<>(oAuth2Properties.getOauth2Urls());
         list.add(new AntPathRequestMatcher(springSecurityProperties.getLoginProcessingUrl(), HttpMethod.POST.name()));
 
         return new JsonAuthenticationSuccessHandler(

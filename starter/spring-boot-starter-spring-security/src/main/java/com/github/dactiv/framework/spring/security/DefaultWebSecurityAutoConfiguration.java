@@ -123,6 +123,15 @@ public class DefaultWebSecurityAutoConfiguration {
             }
         }
 
+        RequestAuthenticationFilter filter = getRequestAuthenticationFilter();
+
+        httpSecurity.addFilter(filter);
+        httpSecurity.addFilterBefore(new IpAuthenticationFilter(this.properties), RequestAuthenticationFilter.class);
+
+        return httpSecurity.build();
+    }
+
+    private RequestAuthenticationFilter getRequestAuthenticationFilter() {
         RequestAuthenticationFilter filter = new RequestAuthenticationFilter(
                 properties,
                 authenticationTypeTokenResolvers,
@@ -135,11 +144,7 @@ public class DefaultWebSecurityAutoConfiguration {
         filter.setAuthenticationSuccessHandler(jsonAuthenticationSuccessHandler);
         filter.setAuthenticationFailureHandler(jsonAuthenticationFailureHandler);
         filter.setSecurityContextRepository(accessTokenContextRepository);
-
-        httpSecurity.addFilter(filter);
-        httpSecurity.addFilterBefore(new IpAuthenticationFilter(this.properties), RequestAuthenticationFilter.class);
-
-        return httpSecurity.build();
+        return filter;
     }
 
     @Bean

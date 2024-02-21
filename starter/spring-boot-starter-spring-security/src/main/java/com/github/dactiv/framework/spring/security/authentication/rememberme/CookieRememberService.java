@@ -256,6 +256,6 @@ public class CookieRememberService implements RememberMeServices {
      */
     private String getCookiePath(HttpServletRequest request) {
         String contextPath = request.getContextPath();
-        return contextPath.length() > 0 ? contextPath : AntPathMatcher.DEFAULT_PATH_SEPARATOR;
+        return !contextPath.isEmpty() ? contextPath : AntPathMatcher.DEFAULT_PATH_SEPARATOR;
     }
 }
