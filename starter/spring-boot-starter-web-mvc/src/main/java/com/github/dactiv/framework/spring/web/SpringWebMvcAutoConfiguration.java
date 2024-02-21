@@ -31,7 +31,7 @@ import com.github.dactiv.framework.spring.web.result.error.support.ErrorCodeResu
 import com.github.dactiv.framework.spring.web.result.error.support.MissingServletRequestParameterResolver;
 import com.github.dactiv.framework.spring.web.result.filter.FilterResultAnnotationBuilder;
 import com.github.dactiv.framework.spring.web.result.filter.FilterResultSerializerProvider;
-import com.github.dactiv.framework.spring.web.result.filter.holder.ClearFilterResultHolderFilter;
+import com.github.dactiv.framework.spring.web.result.filter.ControllerRestResultFilterInterceptor;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
@@ -49,6 +49,7 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.time.LocalDate;
@@ -77,12 +78,21 @@ public class SpringWebMvcAutoConfiguration {
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
     public static class DefaultWebMvcConfigurer extends UndertowWebSocketServletWebServerCustomizer implements WebMvcConfigurer {
 
+        private final ControllerRestResultFilterInterceptor controllerRestResultFilterInterceptor;
+
+        public DefaultWebMvcConfigurer(ControllerRestResultFilterInterceptor controllerRestResultFilterInterceptor) {
+            this.controllerRestResultFilterInterceptor = controllerRestResultFilterInterceptor;
+        }
+
         @Override
         public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
             argumentResolvers.add(new GenericsListHandlerMethodArgumentResolver(getValidator()));
             argumentResolvers.add(new DeviceHandlerMethodArgumentResolver());
         }
-
+        @Override
+        public void addInterceptors(InterceptorRegistry registry) {
+            registry.addInterceptor(controllerRestResultFilterInterceptor);
+        }
     }
 
     @Bean
@@ -183,8 +193,8 @@ public class SpringWebMvcAutoConfiguration {
     }
 
     @Bean
-    public ClearFilterResultHolderFilter clearFilterResultHolderFilter() {
-        return new ClearFilterResultHolderFilter();
+    public ControllerRestResultFilterInterceptor clearFilterResultHolderFilter() {
+        return new ControllerRestResultFilterInterceptor();
     }
 
 }

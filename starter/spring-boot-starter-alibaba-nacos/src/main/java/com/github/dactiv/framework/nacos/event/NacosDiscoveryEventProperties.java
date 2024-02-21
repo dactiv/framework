@@ -30,7 +30,7 @@ public class NacosDiscoveryEventProperties {
     /**
      * 是否实例注册后马上广播事件
      */
-    private boolean instanceRegisteredSubscribe = false;
+    private boolean instanceRegisteredSubscribe = true;
 
     /**
      * 过期取消订阅时间
