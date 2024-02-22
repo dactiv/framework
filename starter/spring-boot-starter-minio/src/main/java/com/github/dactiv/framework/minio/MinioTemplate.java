@@ -57,12 +57,17 @@ public class MinioTemplate {
     /**
      * 上传者 id
      */
-    public static final String UPLOADER_ID = "uploaderId";
+    public static final String UPLOADER_ID = "uploader-id";
+
+    /**
+     * 上传者名称
+     */
+    public static final String UPLOADER_NAME = "uploader-name";
 
     /**
      * 上传者类型
      */
-    public static final String UPLOADER_TYPE = "uploaderType";
+    public static final String UPLOADER_TYPE = "uploader-type";
 
     /**
      * 用户元数据信息
