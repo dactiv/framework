@@ -5,6 +5,7 @@ import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.commons.exception.ErrorCodeException;
 import com.github.dactiv.framework.commons.exception.ServiceException;
+import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.spring.web.result.error.ErrorResultResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,8 @@ public class RestResultErrorAttributes extends DefaultErrorAttributes {
 
     public static final List<Class<? extends Exception>> DEFAULT_MESSAGE_EXCEPTION = Arrays.asList(
             IllegalArgumentException.class,
-            ServiceException.class
+            ServiceException.class,
+            SystemException.class
     );
 
     public static final List<HttpStatus> DEFAULT_HTTP_STATUSES_MESSAGE = Arrays.asList(

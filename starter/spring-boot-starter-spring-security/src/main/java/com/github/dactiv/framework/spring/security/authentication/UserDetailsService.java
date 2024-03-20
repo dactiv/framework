@@ -13,6 +13,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -131,15 +132,34 @@ public interface UserDetailsService {
         throw new UnsupportedOperationException(getType() + "类型用户不支持获取记住我用户明细操作");
     }
 
+    /**
+     * 是否支持缓存
+     *
+     * @param token 用户认证 token
+     *
+     * @return true 是，否则 false
+     */
     default boolean isSupportCache(SimpleAuthenticationToken token) {
         return true;
     }
 
+    /**
+     * 当认证内容需要缓存时，触发次方法
+     *
+     * @param userDetails 当前用户信息
+     */
     default void onAuthenticationCache(SecurityUserDetails userDetails) {
 
     }
 
-    default String adminRestPassword(Integer id) {
+    /**
+     * 管理员重置密码
+     *
+     * @param id 用户主键 id
+     *
+     * @return 新密码
+     */
+    default String adminRestPassword(Serializable id) {
         throw new UnsupportedOperationException(getType() + "类型用户不支持管理员重置密码操作");
     }
 
