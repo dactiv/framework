@@ -1,0 +1,7 @@
+com.github.dactiv.framework.spring.security.FeignSpringSecurityAutoConfiguration
+com.github.dactiv.framework.spring.security.RedissonOperationAutoConfiguration
+com.github.dactiv.framework.spring.security.SpringSecurityAutoConfiguration
+com.github.dactiv.framework.spring.security.OAuth2WebSecurityAutoConfiguration
+com.github.dactiv.framework.spring.security.DefaultWebSecurityAutoConfiguration
+com.github.dactiv.framework.spring.security.SecurityOperationDataTraceRepositoryAutoConfiguration
+com.github.dactiv.framework.spring.security.CaptchaExtendAutoConfiguration

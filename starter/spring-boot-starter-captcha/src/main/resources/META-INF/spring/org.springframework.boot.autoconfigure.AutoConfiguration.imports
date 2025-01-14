@@ -1,0 +1,2 @@
+com.github.dactiv.framework.captcha.RedissonStorageAutoConfiguration
+com.github.dactiv.framework.captcha.CaptchaAutoConfiguration
