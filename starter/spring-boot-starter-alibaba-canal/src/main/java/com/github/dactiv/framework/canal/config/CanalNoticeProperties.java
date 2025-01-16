@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.canal.notice")
+@ConfigurationProperties("dactiv.canal.notice")
 public class CanalNoticeProperties {
 
     /**

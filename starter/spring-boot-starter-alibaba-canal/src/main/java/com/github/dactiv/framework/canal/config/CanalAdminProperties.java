@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.canal.admin")
+@ConfigurationProperties("dactiv.canal.admin")
 public class CanalAdminProperties {
 
     /**

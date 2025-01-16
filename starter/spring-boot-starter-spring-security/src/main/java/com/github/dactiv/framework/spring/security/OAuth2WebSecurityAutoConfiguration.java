@@ -1,7 +1,6 @@
 package com.github.dactiv.framework.spring.security;
 
 
-import com.github.dactiv.framework.spring.security.authentication.handler.*;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.crypto.algorithm.Base64;
 import com.github.dactiv.framework.crypto.algorithm.cipher.RsaCipherService;
@@ -10,6 +9,7 @@ import com.github.dactiv.framework.spring.security.authentication.adapter.OAuth2
 import com.github.dactiv.framework.spring.security.authentication.adapter.OAuth2WebSecurityConfigurerAfterAdapter;
 import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
 import com.github.dactiv.framework.spring.security.authentication.config.OAuth2Properties;
+import com.github.dactiv.framework.spring.security.authentication.handler.*;
 import com.github.dactiv.framework.spring.security.authentication.oidc.OidcUserInfoAuthenticationMapper;
 import com.github.dactiv.framework.spring.security.authentication.oidc.OidcUserInfoAuthenticationResolver;
 import com.github.dactiv.framework.spring.security.authentication.service.TypeSecurityPrincipalManager;
@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 @AutoConfigureBefore(SpringSecurityAutoConfiguration.class)
 @EnableConfigurationProperties(AuthenticationProperties.class)
 @ConditionalOnClass({OAuth2AuthorizationServerConfigurer.class, SpringSecurityAutoConfiguration.class})
-@ConditionalOnProperty(prefix = "healthan.authentication.spring.security.oauth2", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.authentication.spring.security.oauth2", value = "enabled", matchIfMissing = true)
 public class OAuth2WebSecurityAutoConfiguration {
 
     private static final RsaCipherService cipherService = new RsaCipherService();

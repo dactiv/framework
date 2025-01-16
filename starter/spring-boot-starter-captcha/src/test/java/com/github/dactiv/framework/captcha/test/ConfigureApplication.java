@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
         exclude = {
                DataSourceAutoConfiguration.class
         },
-        scanBasePackages = "com.github.dactiv.healthan.captcha.test"
+        scanBasePackages = "com.github.dactiv.framework.captcha.test"
 )
 public class ConfigureApplication {
 

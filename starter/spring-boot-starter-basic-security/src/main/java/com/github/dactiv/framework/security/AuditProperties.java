@@ -10,7 +10,7 @@ import java.io.Serializable;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.security.audit")
+@ConfigurationProperties("dactiv.security.audit")
 public class AuditProperties implements Serializable {
 
 

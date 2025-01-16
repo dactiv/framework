@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
 @ConditionalOnClass(RedissonClient.class)
 @AutoConfigureAfter(RedissonAutoConfiguration.class)
 @EnableConfigurationProperties(IdempotentProperties.class)
-@ConditionalOnProperty(prefix = "healthan.idempotent", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.idempotent", value = "enabled", matchIfMissing = true)
 public class IdempotentAutoConfiguration {
 
     @Bean

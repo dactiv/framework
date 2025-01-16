@@ -35,7 +35,7 @@ import java.util.*;
 @Configuration
 @EnableConfigurationProperties(AuditProperties.class)
 @Import(AuditConfiguration.AuditImportSelector.class)
-@ConditionalOnProperty(prefix = "healthan.security.audit", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.security.audit", value = "enabled", matchIfMissing = true)
 public class AuditConfiguration {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AuditConfiguration.class);
@@ -89,7 +89,7 @@ public class AuditConfiguration {
 
                 BindResult<AuditType> specified = Binder
                         .get(environment)
-                        .bind("healthan.security.audit.type", AuditType.class);
+                        .bind("dactiv.security.audit.type", AuditType.class);
 
                 if (AnnotationMetadata.class.isAssignableFrom(metadata.getClass())) {
 

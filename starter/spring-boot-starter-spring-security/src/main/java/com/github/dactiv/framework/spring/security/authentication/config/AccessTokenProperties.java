@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.authentication.access-token")
+@ConfigurationProperties("dactiv.authentication.access-token")
 public class AccessTokenProperties {
 
     public final static String DEFAULT_ACCESS_TOKEN_HEADER_NAME = "X-ACCESS-TOKEN";

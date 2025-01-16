@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
  * @author maurice.chen
  */
 @Configuration
-@ConditionalOnProperty(prefix = "healthan.mybatis", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.mybatis", value = "enabled", matchIfMissing = true)
 public class MybatisAutoConfiguration {
 
     @Bean
@@ -25,7 +25,7 @@ public class MybatisAutoConfiguration {
 
     @Bean
     @ConditionalOnBean(OperationDataTraceResolver.class)
-    @ConditionalOnProperty(prefix = "healthan.mybatis.operation-data-trace", value = "enabled", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dactiv.mybatis.operation-data-trace", value = "enabled", matchIfMissing = true)
     public OperationDataTraceInterceptor operationDataTraceInterceptor(OperationDataTraceResolver operationDataTraceResolver) {
         return new OperationDataTraceInterceptor(operationDataTraceResolver);
     }

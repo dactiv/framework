@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Bean;
 @AutoConfigureBefore(MybatisPlusAutoConfiguration.class)
 @ConditionalOnMissingBean(MybatisPlusOperationDataTraceResolver.class)
 @EnableConfigurationProperties(SecurityPrincipalDataOwnerProperties.class)
-@ConditionalOnProperty(prefix = "healthan.mybatis.operation-data-trace", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.mybatis.operation-data-trace", value = "enabled", matchIfMissing = true)
 public class SecurityOperationDataTraceRepositoryAutoConfiguration {
 
     @Bean

@@ -23,7 +23,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
                 ElasticsearchRepositoriesAutoConfiguration.class,
                 ElasticsearchRestClientAutoConfiguration.class
         },
-        scanBasePackages = "com.github.dactiv.healthan.spring.security.test"
+        scanBasePackages = "com.github.dactiv.framework.spring.security.test"
 )
 public class ConfigureApplication {
 

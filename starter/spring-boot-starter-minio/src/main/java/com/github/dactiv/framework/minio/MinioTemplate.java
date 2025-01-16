@@ -146,13 +146,16 @@ public class MinioTemplate {
      */
     public boolean isBucketExist(Bucket bucket) throws Exception {
 
-        BucketExistsArgs builder = BucketExistsArgs
+        BucketArgs.Builder<BucketExistsArgs.Builder, BucketExistsArgs> builder = BucketExistsArgs
                 .builder()
-                .bucket(bucket.getBucketName().toLowerCase())
-                .region(bucket.getRegion())
-                .build();
+                .bucket(bucket.getBucketName().toLowerCase());
+                //.region(bucket.getRegion());
+                //.build();
+        if (StringUtils.isNotEmpty(bucket.getRegion())) {
+            builder.region(bucket.getRegion());
+        }
 
-        return minioClient.bucketExists(builder).get();
+        return minioClient.bucketExists(builder.build()).get();
     }
 
     /**

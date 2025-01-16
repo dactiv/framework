@@ -7,7 +7,7 @@ dactiv:
     remember-me:
       always: true
       enabled: true
-      key: healthan
+      key: dactiv
       login-processing-url: /operate/isAuthenticated
     captcha-verification:
       verify-urls:

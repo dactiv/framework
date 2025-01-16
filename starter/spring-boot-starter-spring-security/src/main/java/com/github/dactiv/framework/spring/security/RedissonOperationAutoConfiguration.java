@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnClass(RedissonAutoConfiguration.class)
 @AutoConfigureBefore(OAuth2WebSecurityAutoConfiguration.class)
-@ConditionalOnProperty(prefix = "healthan.authentication.spring.security", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.authentication.spring.security", value = "enabled", matchIfMissing = true)
 public class RedissonOperationAutoConfiguration {
 
     @Bean

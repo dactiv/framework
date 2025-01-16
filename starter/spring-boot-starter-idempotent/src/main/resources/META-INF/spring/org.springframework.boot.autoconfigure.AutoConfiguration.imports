@@ -1,1 +1,1 @@
-config.com.github.dactiv.framework.idempotent.IdempotentAutoConfiguration
+com.github.dactiv.framework.idempotent.config.IdempotentAutoConfiguration

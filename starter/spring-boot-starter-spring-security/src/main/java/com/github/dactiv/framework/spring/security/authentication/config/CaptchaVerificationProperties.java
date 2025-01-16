@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.authentication.captcha-verification")
+@ConfigurationProperties("dactiv.authentication.captcha-verification")
 public class CaptchaVerificationProperties {
 
     public static final String DEFAULT_CAPTCHA_TYPE_HEADER_NAME = "X-CAPTCHA-TYPE";

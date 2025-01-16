@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @AutoConfigureBefore(MybatisAutoConfiguration.class)
 @EnableConfigurationProperties({CryptoProperties.class, OperationDataTraceProperties.class})
-@ConditionalOnProperty(prefix = "healthan.mybatis.plus", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.mybatis.plus", value = "enabled", matchIfMissing = true)
 public class MybatisPlusAutoConfiguration {
 
     @Bean
@@ -43,7 +43,7 @@ public class MybatisPlusAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(OperationDataTraceResolver.class)
-    @ConditionalOnProperty(prefix = "healthan.mybatis.operation-data-trace", value = "enabled", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dactiv.mybatis.operation-data-trace", value = "enabled", matchIfMissing = true)
     public MybatisPlusOperationDataTraceResolver mybatisPlusOperationDataTraceRepository(OperationDataTraceProperties operationDataTraceProperties) {
         return new MybatisPlusOperationDataTraceResolver(operationDataTraceProperties);
     }
@@ -69,14 +69,14 @@ public class MybatisPlusAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(DataAesCryptoService.class)
-    @ConditionalOnProperty(prefix = "healthan.mybatis.plus.crypto", value = "enabled", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dactiv.mybatis.plus.crypto", value = "enabled", matchIfMissing = true)
     public DataAesCryptoService dataAesCryptoService(CryptoProperties cryptoProperties) {
         return new DataAesCryptoService(new AesCipherService(), cryptoProperties.getDataAesCryptoKey());
     }
 
     @Bean
     @ConditionalOnMissingBean(DataRsaCryptoService.class)
-    @ConditionalOnProperty(prefix = "healthan.mybatis.plus.crypto", value = "enabled", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dactiv.mybatis.plus.crypto", value = "enabled", matchIfMissing = true)
     public DataRsaCryptoService dataRsaCryptoService(CryptoProperties cryptoProperties) {
         return new DataRsaCryptoService(new RsaCipherService(), cryptoProperties.getDataRasCryptoPublicKey(), cryptoProperties.getDataRasCryptoPrivateKey());
     }

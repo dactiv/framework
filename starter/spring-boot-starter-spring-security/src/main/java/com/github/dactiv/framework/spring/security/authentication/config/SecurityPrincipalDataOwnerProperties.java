@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.authentication.data-owner")
+@ConfigurationProperties("dactiv.authentication.data-owner")
 public class SecurityPrincipalDataOwnerProperties {
 
     /**

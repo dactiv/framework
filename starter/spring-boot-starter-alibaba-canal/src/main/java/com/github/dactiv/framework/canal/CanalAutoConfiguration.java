@@ -30,12 +30,12 @@ import java.util.stream.Collectors;
  */
 @Configuration
 @EnableConfigurationProperties({CanalProperties.class, CanalAdminProperties.class, CanalNoticeProperties.class})
-@ConditionalOnProperty(prefix = "healthan.canal", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.canal", value = "enabled", matchIfMissing = true)
 public class CanalAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(CanalInstanceManager.class)
-    @ConditionalOnProperty(prefix = "healthan.canal.admin", value = "enabled", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dactiv.canal.admin", value = "enabled", matchIfMissing = true)
     public CanalAdminService canalAdminService(CanalAdminProperties canalAdminProperties,
                                                RestTemplate restTemplate,
                                                CanalInstanceManager canalInstanceManager,
@@ -76,7 +76,7 @@ public class CanalAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "healthan.canal.notice", value = "enabled", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dactiv.canal.notice", value = "enabled", matchIfMissing = true)
     public NotifiableTableEndpoint notifiableTableEndpoint(ObjectProvider<InfoContributor> infoContributors,
                                                            DataSource dataSource,
                                                            CanalNoticeProperties noticeProperties) {

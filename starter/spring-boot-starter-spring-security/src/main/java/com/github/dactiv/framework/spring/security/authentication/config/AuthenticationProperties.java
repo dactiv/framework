@@ -14,7 +14,7 @@ import java.util.*;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.authentication")
+@ConfigurationProperties("dactiv.authentication")
 public class AuthenticationProperties {
 
     /**

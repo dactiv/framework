@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.captcha.tianai")
+@ConfigurationProperties("dactiv.captcha.tianai")
 public class TianaiCaptchaProperties {
 
     /**

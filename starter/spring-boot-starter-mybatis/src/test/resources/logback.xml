@@ -7,8 +7,6 @@
         </encoder>
     </appender>
 
-    <logger name="net.healthan.mdm.mybatis" level="DEBUG"/>
-
     <root level="INFO">
         <appender-ref ref="CONSOLE-APPENDER"/>
     </root>

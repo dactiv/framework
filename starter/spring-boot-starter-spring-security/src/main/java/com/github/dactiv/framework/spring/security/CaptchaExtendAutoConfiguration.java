@@ -22,11 +22,11 @@ import org.springframework.context.annotation.Lazy;
 @AutoConfigureAfter(CaptchaAutoConfiguration.class)
 @EnableConfigurationProperties(CaptchaProperties.class)
 @ConditionalOnClass(SpringSecurityAutoConfiguration.class)
-@ConditionalOnProperty(prefix = "healthan.captcha", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.captcha", value = "enabled", matchIfMissing = true)
 public class CaptchaExtendAutoConfiguration {
 
     @Bean
-    @ConditionalOnProperty(prefix = "healthan.captcha.controller", value = "enabled", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dactiv.captcha.controller", value = "enabled", matchIfMissing = true)
     public CaptchaExtendController captchaExtendController(@Lazy Interceptor interceptor,
                                                            CaptchaProperties captchaProperties,
                                                            DelegateCaptchaService delegateCaptchaService) {

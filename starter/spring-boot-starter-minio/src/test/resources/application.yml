@@ -6,6 +6,6 @@ management:
 
 dactiv:
   minio:
-    endpoint: http://127.0.0.1:9000
-    access-key: admin
-    secret-key: 19880602
+    endpoint: http://127.0.0.1:9490
+    access-key: minio
+    secret-key: 20160826

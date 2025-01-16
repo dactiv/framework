@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  */
 @Configuration
 @EnableConfigurationProperties({CaptchaProperties.class, TianaiCaptchaProperties.class})
-@ConditionalOnProperty(prefix = "healthan.captcha", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.captcha", value = "enabled", matchIfMissing = true)
 public class CaptchaAutoConfiguration {
 
     @Bean

@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.canal")
+@ConfigurationProperties("dactiv.canal")
 public class CanalProperties {
 
     /**

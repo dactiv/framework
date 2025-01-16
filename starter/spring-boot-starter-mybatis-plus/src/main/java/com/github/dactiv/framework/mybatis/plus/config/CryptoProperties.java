@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author maurice.chen
  *
  */
-@ConfigurationProperties("healthan.mybatis.plus.crypto")
+@ConfigurationProperties("dactiv.mybatis.plus.crypto")
 public class CryptoProperties {
 
     /**

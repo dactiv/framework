@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.mybatis.plus.operation-data-trace")
+@ConfigurationProperties("dactiv.mybatis.plus.operation-data-trace")
 public class OperationDataTraceProperties {
 
     public static final String DEFAULT_AUDIT_PREFIX_NAME = "OPERATION_DATA_AUDIT";

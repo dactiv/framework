@@ -8,7 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.authentication.controller.audit")
+@ConfigurationProperties("dactiv.authentication.controller.audit")
 public class ControllerAuditProperties {
 
     public static final String DEFAULT_AUDIT_EVENT_ATTR_NAME = "controllerAuditEvent";

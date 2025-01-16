@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @ConditionalOnMissingBean(AuditEventRepository.class)
 @EnableConfigurationProperties(AuditIndexProperties.class)
 @Conditional(AuditConfiguration.AuditImportSelectorCondition.class)
-@ConditionalOnProperty(prefix = "healthan.security.audit", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.security.audit", value = "enabled", matchIfMissing = true)
 public class ElasticsearchAuditConfiguration {
 
     @Bean

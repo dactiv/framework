@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.authentication.oauth2")
+@ConfigurationProperties("dactiv.authentication.oauth2")
 public class OAuth2Properties {
 
     /**

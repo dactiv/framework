@@ -50,17 +50,17 @@ import java.util.stream.Collectors;
         OAuth2Properties.class
 })
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-@ConditionalOnProperty(prefix = "healthan.authentication.spring.security", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.authentication.spring.security", value = "enabled", matchIfMissing = true)
 public class SpringSecurityAutoConfiguration {
 
     @Bean
-    @ConfigurationProperties("healthan.authentication.plugin")
+    @ConfigurationProperties("dactiv.authentication.plugin")
     public PluginEndpoint pluginEndpoint(ObjectProvider<InfoContributor> infoContributor) {
         return new PluginEndpoint(infoContributor.stream().collect(Collectors.toList()));
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "healthan.security.audit", name = "enabled", havingValue = "true")
+    @ConditionalOnProperty(prefix = "dactiv.security.audit", name = "enabled", havingValue = "true")
     public ControllerAuditHandlerInterceptor controllerAuditHandlerInterceptor(ControllerAuditProperties controllerAuditProperties) {
         return new ControllerAuditHandlerInterceptor(controllerAuditProperties);
     }
@@ -72,7 +72,7 @@ public class SpringSecurityAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "healthan.authentication.access-token", value = "enable-controller", havingValue = "true")
+    @ConditionalOnProperty(prefix = "dactiv.authentication.access-token", value = "enable-controller", havingValue = "true")
     public TokenController accessTokenController(CacheManager cacheManager,
                                           AccessTokenProperties accessTokenProperties) {
         return new TokenController(cacheManager, accessTokenProperties);
@@ -119,7 +119,7 @@ public class SpringSecurityAutoConfiguration {
 
     @Configuration
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-    @ConditionalOnProperty(prefix = "healthan.security.audit", name = "enabled", havingValue = "true")
+    @ConditionalOnProperty(prefix = "dactiv.security.audit", name = "enabled", havingValue = "true")
     public static class DefaultWebMvcConfigurer extends UndertowWebSocketServletWebServerCustomizer implements WebMvcConfigurer {
 
         private final ControllerAuditHandlerInterceptor controllerAuditHandlerInterceptor;

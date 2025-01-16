@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.captcha")
+@ConfigurationProperties("dactiv.captcha")
 public class CaptchaProperties {
 
     public static final String DEFAULT_IGNORE_INTERCEPTOR_PARAM_NAME = "ignoreInterceptor";

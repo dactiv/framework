@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.minio.auto-delete")
+@ConfigurationProperties("dactiv.minio.auto-delete")
 public class AutoDeleteProperties {
     /**
      * 自动删除调度表达式

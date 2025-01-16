@@ -6,7 +6,7 @@ import org.springframework.security.web.authentication.rememberme.AbstractRememb
 /**
  * 记住我配置
  */
-@ConfigurationProperties("healthan.authentication.remember-me")
+@ConfigurationProperties("dactiv.authentication.remember-me")
 public class RememberMeProperties {
 
 

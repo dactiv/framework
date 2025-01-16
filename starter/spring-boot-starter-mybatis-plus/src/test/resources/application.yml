@@ -1,8 +1,8 @@
 mybatis-plus:
-  type-aliases-package: net.healthan.mdm.mybatis.plus.test.entity
+  type-aliases-package: com.github.dactiv.framework.mybatis.plus.test.entity
   configuration:
     call-setters-on-nulls: on
-    default-enum-type-handler: com.github.dactiv.healthan.mybatis.handler.NameValueEnumTypeHandler
+    default-enum-type-handler: com.github.dactiv.framework.mybatis.handler.NameValueEnumTypeHandler
   global-config:
     db-config:
       id-type: auto

@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.spring.web.mvc")
+@ConfigurationProperties("dactiv.spring.web.mvc")
 public class SpringWebMvcProperties {
 
     /**

@@ -28,7 +28,7 @@ import org.springframework.validation.Validator;
 public class CaptchaExtAutoConfiguration {
 
     @Bean
-    @ConditionalOnProperty(prefix = "healthan.captcha.controller", value = "enabled", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dactiv.captcha.controller", value = "enabled", matchIfMissing = true)
     public CaptchaController captchaController(@Lazy Interceptor interceptor,
                                                CaptchaProperties captchaProperties,
                                                TianaiCaptchaService captchaService,
@@ -39,7 +39,7 @@ public class CaptchaExtAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(TianaiCaptchaService.class)
-    @ConditionalOnProperty(prefix = "healthan.captcha", value = "enabled", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = "dactiv.captcha", value = "enabled", matchIfMissing = true)
     public ControllerTianaiCaptchaService controllerTianaiCaptchaService(CaptchaProperties captchaProperties,
                                                                          @Qualifier("mvcValidator") Validator validator,
                                                                          @Lazy Interceptor interceptor,

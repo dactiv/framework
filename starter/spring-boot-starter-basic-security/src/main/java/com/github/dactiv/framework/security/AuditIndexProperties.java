@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author maurice.chen
  */
-@ConfigurationProperties("healthan.security.audit.index")
+@ConfigurationProperties("dactiv.security.audit.index")
 public class AuditIndexProperties implements Serializable {
     public static final String DEFAULT_PATTERN = "yyyy_MM_dd";
     /**

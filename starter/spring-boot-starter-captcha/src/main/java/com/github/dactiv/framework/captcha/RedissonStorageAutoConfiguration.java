@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConditionalOnClass(RedissonAutoConfiguration.class)
-@ConditionalOnProperty(prefix = "healthan.captcha", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.captcha", value = "enabled", matchIfMissing = true)
 public class RedissonStorageAutoConfiguration {
 
     @Bean
