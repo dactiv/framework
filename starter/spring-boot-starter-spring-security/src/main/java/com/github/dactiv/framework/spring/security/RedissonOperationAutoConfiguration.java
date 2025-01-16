@@ -5,7 +5,7 @@ import com.github.dactiv.framework.spring.security.authentication.cache.CacheMan
 import com.github.dactiv.framework.spring.security.authentication.cache.support.RedissonCacheManager;
 import com.github.dactiv.framework.spring.security.authentication.config.OAuth2Properties;
 import org.redisson.api.RedissonClient;
-import org.redisson.spring.starter.RedissonAutoConfiguration;
+import org.redisson.spring.starter.RedissonAutoConfigurationV2;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Configuration;
  * @author maurice.chen
  */
 @Configuration
-@ConditionalOnClass(RedissonAutoConfiguration.class)
+@ConditionalOnClass(RedissonAutoConfigurationV2.class)
 @AutoConfigureBefore(OAuth2WebSecurityAutoConfiguration.class)
 @ConditionalOnProperty(prefix = "dactiv.authentication.spring.security", value = "enabled", matchIfMissing = true)
 public class RedissonOperationAutoConfiguration {

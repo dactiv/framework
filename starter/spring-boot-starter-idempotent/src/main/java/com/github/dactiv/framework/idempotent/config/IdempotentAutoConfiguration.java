@@ -6,7 +6,7 @@ import com.github.dactiv.framework.idempotent.advisor.concurrent.ConcurrentInter
 import com.github.dactiv.framework.idempotent.advisor.concurrent.ConcurrentPointcutAdvisor;
 import com.github.dactiv.framework.idempotent.generator.SpelExpressionValueGenerator;
 import org.redisson.api.RedissonClient;
-import org.redisson.spring.starter.RedissonAutoConfiguration;
+import org.redisson.spring.starter.RedissonAutoConfigurationV2;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ConditionalOnClass(RedissonClient.class)
-@AutoConfigureAfter(RedissonAutoConfiguration.class)
+@AutoConfigureAfter(RedissonAutoConfigurationV2.class)
 @EnableConfigurationProperties(IdempotentProperties.class)
 @ConditionalOnProperty(prefix = "dactiv.idempotent", value = "enabled", matchIfMissing = true)
 public class IdempotentAutoConfiguration {

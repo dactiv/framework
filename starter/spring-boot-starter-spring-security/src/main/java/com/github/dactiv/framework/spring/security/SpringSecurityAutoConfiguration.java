@@ -16,7 +16,7 @@ import com.github.dactiv.framework.spring.security.authentication.handler.JsonAu
 import com.github.dactiv.framework.spring.security.authentication.service.TypeSecurityPrincipalManager;
 import com.github.dactiv.framework.spring.security.controller.TokenController;
 import com.github.dactiv.framework.spring.security.plugin.PluginEndpoint;
-import org.redisson.spring.starter.RedissonAutoConfiguration;
+import org.redisson.spring.starter.RedissonAutoConfigurationV2;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.actuate.info.InfoContributor;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
  * @author maurice
  */
 @Configuration
-@AutoConfigureAfter(RedissonAutoConfiguration.class)
+@AutoConfigureAfter(RedissonAutoConfigurationV2.class)
 @EnableConfigurationProperties({
         AuthenticationProperties.class,
         AccessTokenProperties.class,
@@ -74,7 +74,7 @@ public class SpringSecurityAutoConfiguration {
     @Bean
     @ConditionalOnProperty(prefix = "dactiv.authentication.access-token", value = "enable-controller", havingValue = "true")
     public TokenController accessTokenController(CacheManager cacheManager,
-                                          AccessTokenProperties accessTokenProperties) {
+                                                 AccessTokenProperties accessTokenProperties) {
         return new TokenController(cacheManager, accessTokenProperties);
     }
 
