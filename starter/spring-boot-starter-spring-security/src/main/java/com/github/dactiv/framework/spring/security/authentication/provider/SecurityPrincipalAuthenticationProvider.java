@@ -29,18 +29,6 @@ import java.util.Objects;
 public class SecurityPrincipalAuthenticationProvider implements AuthenticationManager, AuthenticationProvider, MessageSourceAware {
 
     /**
-     * 认证缓存块名称
-     */
-    @Deprecated
-    public static String DEFAULT_AUTHENTICATION_KEY_NAME = "dactiv:spring:security:authentication:";
-
-    /**
-     * 授权缓存块名称
-     */
-    @Deprecated
-    public static String DEFAULT_AUTHORIZATION_KEY_NAME = "dactiv:spring:security:authorization:";
-
-    /**
      * 国际化信息
      */
     protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();

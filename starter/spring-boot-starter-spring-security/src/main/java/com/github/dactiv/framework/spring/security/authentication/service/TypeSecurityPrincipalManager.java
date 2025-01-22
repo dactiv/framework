@@ -124,7 +124,7 @@ public class TypeSecurityPrincipalManager implements InitializingBean {
     public Collection<GrantedAuthority> getSecurityPrincipalGrantedAuthorities(TypeAuthenticationToken token,
                                                                                SecurityPrincipal principal) {
         TypeSecurityPrincipalService typeSecurityPrincipalService = getTypeSecurityPrincipalService(token.getType());
-        CacheProperties authorizationCache = typeSecurityPrincipalService.getAuthorizationCache(token, principal);
+        CacheProperties authorizationCache = typeSecurityPrincipalService.getAuthorizationCache(token);
 
         // 如果启用授权缓存，从授权缓存里获取授权信息
         if (Objects.nonNull(authorizationCache)) {
@@ -134,8 +134,8 @@ public class TypeSecurityPrincipalManager implements InitializingBean {
             }
 
             if (CollectionUtils.isNotEmpty(grantedAuthorities)) {
-                CacheProperties cacheProperties = typeSecurityPrincipalService.getAuthorizationCache(token, principal);
-                cacheManager.saveGrantedAuthorities(grantedAuthorities, cacheProperties);
+                CacheProperties cacheProperties = typeSecurityPrincipalService.getAuthorizationCache(token);
+                cacheManager.saveGrantedAuthorities(grantedAuthorities, CacheProperties.of(cacheProperties.getName(principal.getName()), cacheProperties.getExpiresTime()));
             }
 
             return grantedAuthorities;
@@ -206,5 +206,23 @@ public class TypeSecurityPrincipalManager implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         Assert.notNull(typeSecurityPrincipalServices, "至少要一个" + TypeSecurityPrincipalService.class.getName() + "接口的实现");
+    }
+
+    /**
+     * 获取带类型的安全用户服务的集合
+     *
+     * @return 带类型的安全用户服务集合
+     */
+    public List<TypeSecurityPrincipalService> getTypeSecurityPrincipalServices() {
+        return typeSecurityPrincipalServices;
+    }
+
+    /**
+     * 获取缓存配置
+     *
+     * @return 缓存配置
+     */
+    public CacheManager getCacheManager() {
+        return cacheManager;
     }
 }

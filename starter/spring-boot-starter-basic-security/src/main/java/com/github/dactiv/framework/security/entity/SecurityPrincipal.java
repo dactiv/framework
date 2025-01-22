@@ -55,7 +55,7 @@ public interface SecurityPrincipal extends Principal, BasicIdentification<Object
     boolean isCredentialsNonExpired();
 
     /**
-     * 判断账户是否启用
+     * 判断账户是否禁用
      *
      * @return true 是，否则 false
      */

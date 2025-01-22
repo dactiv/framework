@@ -6,6 +6,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.util.MultiValueMap;
 
 import java.io.Serial;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 /**
@@ -19,6 +21,8 @@ public class RequestAuthenticationToken extends TypeAuthenticationToken {
     private static final long serialVersionUID = 8070060147431763553L;
 
     private final MultiValueMap<String, String> parameterMap;
+
+    private final Map<String, Object> metadata = new LinkedHashMap<>();
 
     public RequestAuthenticationToken(MultiValueMap<String, String> parameterMap,
                                       Object principal,
@@ -38,7 +42,21 @@ public class RequestAuthenticationToken extends TypeAuthenticationToken {
         parameterMap = details.getRequestParameters();
     }
 
+    /**
+     * 获取请求参数信息
+     *
+     * @return 请求参数信息
+     */
     public MultiValueMap<String, String> getParameterMap() {
         return parameterMap;
+    }
+
+    /**
+     * 获取附加元数据信息
+     *
+     * @return 元数据信息
+     */
+    public Map<String, Object> getMetadata() {
+        return metadata;
     }
 }

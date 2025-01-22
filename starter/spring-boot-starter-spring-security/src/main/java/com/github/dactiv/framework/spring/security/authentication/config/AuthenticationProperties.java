@@ -143,6 +143,11 @@ public class AuthenticationProperties {
     private Map<String, List<String>> ignoreAuthenticationSuccessDataMap = new LinkedHashMap<>();
 
     /**
+     * 认证成功后要对数据加 * 的数据内容映射
+     */
+    private Map<String, List<String>> authenticationSuccessDesensitizeDataMap = new LinkedHashMap<>();
+
+    /**
      * 获取用户类型表决器默认同意的来源类型
      *
      * @return 用户类型表决器默认同意的来源类型
@@ -482,5 +487,23 @@ public class AuthenticationProperties {
      */
     public void setIgnoreAuthenticationSuccessDataMap(Map<String, List<String>> ignoreAuthenticationSuccessDataMap) {
         this.ignoreAuthenticationSuccessDataMap = ignoreAuthenticationSuccessDataMap;
+    }
+
+    /**
+     * 获取认证成功后要对数据加 * 的数据内容映射
+     *
+     * @return 认证成功后要对数据加 * 的数据内容映射
+     */
+    public Map<String, List<String>> getAuthenticationSuccessDesensitizeDataMap() {
+        return authenticationSuccessDesensitizeDataMap;
+    }
+
+    /**
+     * 设置认证成功后要对数据加 * 的数据内容映射
+     *
+     * @param authenticationSuccessDesensitizeDataMap 认证成功后要对数据加 * 的数据内容映射
+     */
+    public void setAuthenticationSuccessDesensitizeDataMap(Map<String, List<String>> authenticationSuccessDesensitizeDataMap) {
+        this.authenticationSuccessDesensitizeDataMap = authenticationSuccessDesensitizeDataMap;
     }
 }

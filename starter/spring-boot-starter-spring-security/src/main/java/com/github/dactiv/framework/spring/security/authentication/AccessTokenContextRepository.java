@@ -182,7 +182,7 @@ public class AccessTokenContextRepository extends HttpSessionSecurityContextRepo
         Map<String, Object> json = new LinkedHashMap<>();
 
         json.put(NumberIdEntity.CREATION_TIME_FIELD_NAME, System.currentTimeMillis());
-        json.put(IdAuditEvent.TYPE_FIELD_NAME, token.getPrincipalType());
+        json.put(IdAuditEvent.TYPE_FIELD_NAME, token.getType());
         json.put(IdEntity.ID_FIELD_NAME, token.getSecurityPrincipal().getId());
         json.put(AuthenticationProperties.SECURITY_FORM_USERNAME_PARAM_NAME, token.getSecurityPrincipal().getUsername());
 

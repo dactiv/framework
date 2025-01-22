@@ -2,14 +2,14 @@ package com.github.dactiv.framework.spring.security.authentication.token;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.dactiv.framework.commons.CacheProperties;
-import com.github.dactiv.framework.security.audit.IdAuditEvent;
 import com.github.dactiv.framework.security.entity.SecurityPrincipal;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.io.Serial;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.Date;
+import java.util.LinkedHashSet;
 
 /**
  * 简单的用户认证审计 token
@@ -20,8 +20,6 @@ public class AuditAuthenticationToken extends AbstractAuthenticationToken {
 
     @Serial
     private static final long serialVersionUID = 3747271533448473641L;
-
-    public static final String PRINCIPAL_KEY = "principal";
 
     public static final String DETAILS_KEY = "details";
 
@@ -40,7 +38,7 @@ public class AuditAuthenticationToken extends AbstractAuthenticationToken {
     /**
      * 当前用户类型
      */
-    private final String principalType;
+    private final String type;
 
     /**
      * 是否记住我认证
@@ -54,12 +52,12 @@ public class AuditAuthenticationToken extends AbstractAuthenticationToken {
      * @param authorities 授权信息
      */
     public AuditAuthenticationToken(SecurityPrincipal principal,
-                                    String principalType,
+                                    String type,
                                     Collection<? extends GrantedAuthority> authorities,
                                     Date lastAuthenticationTime) {
         super(authorities);
         this.principal = principal;
-        this.principalType = principalType;
+        this.type = type;
         this.lastAuthenticationTime = lastAuthenticationTime;
     }
 
@@ -91,7 +89,7 @@ public class AuditAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public String getName() {
-        return getPrincipalType() + CacheProperties.DEFAULT_SEPARATOR + principal.getName();
+        return getType() + CacheProperties.DEFAULT_SEPARATOR + principal.getName();
     }
 
     /**
@@ -99,8 +97,8 @@ public class AuditAuthenticationToken extends AbstractAuthenticationToken {
      *
      * @return 用户类型
      */
-    public String getPrincipalType() {
-        return principalType;
+    public String getType() {
+        return type;
     }
 
     /**
@@ -131,35 +129,11 @@ public class AuditAuthenticationToken extends AbstractAuthenticationToken {
     }
 
     /**
-     * 转换为 map 数据
+     * 获取字符串数组形式的授权信息集合
      *
-     * @return map 数据
+     * @return 字符串数组形式的授权信息集合
      */
-    public Map<String, Object> toMap() {
-        return toMap(true);
-    }
-
-    /**
-     * 转换为 map 数据
-     *
-     * @param loadAuthorities 是否加载 权限信息
-     *
-     * @return map 数据
-     */
-    public Map<String, Object> toMap(boolean loadAuthorities) {
-        Map<String, Object> map = new LinkedHashMap<>();
-        map.put(IdAuditEvent.TYPE_FIELD_NAME, getPrincipalType());
-        map.put(PRINCIPAL_KEY, getPrincipal());
-        map.put(DETAILS_KEY, getDetails());
-
-        if (loadAuthorities) {
-            List<String> authorities = getAuthorities()
-                    .stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList());
-            map.put(AUTHORITIES_KEY, authorities);
-        }
-
-        return map;
+    public Collection<String> getGrantedAuthorities() {
+        return getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
     }
 }

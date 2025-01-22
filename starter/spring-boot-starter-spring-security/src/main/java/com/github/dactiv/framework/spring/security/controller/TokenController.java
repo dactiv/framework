@@ -83,7 +83,7 @@ public class TokenController {
         );
 
         SecurityContext context = cacheManager.getSecurityContext(
-                authenticationToken.getPrincipalType(),
+                authenticationToken.getType(),
                 authenticationToken.getSecurityPrincipal().getId(),
                 accessTokenProperties.getAccessTokenCache()
         );

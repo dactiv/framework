@@ -1,7 +1,6 @@
 package com.github.dactiv.framework.spring.security.authentication;
 
 import com.github.dactiv.framework.commons.CacheProperties;
-import com.github.dactiv.framework.security.entity.SecurityPrincipal;
 import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
 import com.github.dactiv.framework.spring.security.authentication.token.TypeAuthenticationToken;
 
@@ -32,10 +31,9 @@ public abstract class AbstractTypeSecurityPrincipalService implements TypeSecuri
     }
 
     @Override
-    public CacheProperties getAuthorizationCache(TypeAuthenticationToken token, SecurityPrincipal principal) {
-        String suffix = token.getType() + CacheProperties.DEFAULT_SEPARATOR + principal.getName();
+    public CacheProperties getAuthorizationCache(TypeAuthenticationToken token) {
         return CacheProperties.of(
-                authenticationProperties.getAuthorizationCache().getName(suffix),
+                authenticationProperties.getAuthorizationCache().getName(token.getType()),
                 authenticationProperties.getAuthorizationCache().getExpiresTime()
         ) ;
     }

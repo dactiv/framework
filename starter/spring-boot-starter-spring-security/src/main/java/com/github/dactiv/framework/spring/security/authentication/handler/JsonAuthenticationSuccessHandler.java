@@ -3,7 +3,6 @@ package com.github.dactiv.framework.spring.security.authentication.handler;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
-import com.github.dactiv.framework.spring.security.authentication.token.AuditAuthenticationToken;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -68,12 +67,7 @@ public class JsonAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
                                         Authentication authentication) throws IOException{
 
         RestResult<Object> result = RestResult.of(HttpStatus.OK.getReasonPhrase());
-        if (authentication instanceof AuditAuthenticationToken) {
-            AuditAuthenticationToken auditAuthenticationToken = Casts.cast(authentication);
-            result.setData(auditAuthenticationToken.toMap());
-        } else {
-            result.setData(authentication);
-        }
+        result.setData(authentication);
 
         if (CollectionUtils.isNotEmpty(successResponses)) {
             successResponses.forEach(f -> f.setting(result, request));

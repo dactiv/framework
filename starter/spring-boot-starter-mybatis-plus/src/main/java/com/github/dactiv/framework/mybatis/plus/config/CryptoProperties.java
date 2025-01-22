@@ -12,6 +12,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("dactiv.mybatis.plus.crypto")
 public class CryptoProperties {
 
+    public static final String MYBATIS_PLUS_DATA_AES_CRYPTO_SERVICE_NAME = "mybatisPlusDataAesCryptoService";
+
+    public static final String MYBATIS_PLUS_DATA_RSA_CRYPTO_SERVICE_NAME = "mybatisPlusDataRsaCryptoService";
+
     /**
      * aes 加密 key
      */

@@ -17,7 +17,7 @@ import java.lang.annotation.*;
 public @interface Encryption {
 
     /**
-     * spring bean 名称
+     * spring bean 名称，如果该值存在，先去找 beanName 的实例，找不到该实例后再去找 {@link #serviceClass()} 实例
      *
      * @return spring bean 名称
      */

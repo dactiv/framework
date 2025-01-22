@@ -140,6 +140,11 @@ public interface TypeSecurityPrincipalService {
     default AuditAuthenticationSuccessDetails getPrincipalDetails(Object principal,
                                                                   Authentication token,
                                                                   Collection<? extends GrantedAuthority> grantedAuthorities) {
+
+        if (token instanceof RequestAuthenticationToken requestAuthenticationToken) {
+            return new AuditAuthenticationSuccessDetails(token.getDetails(), requestAuthenticationToken.getMetadata());
+        }
+
         return new AuditAuthenticationSuccessDetails(token.getDetails(), new LinkedHashMap<>());
     }
 
@@ -157,10 +162,9 @@ public interface TypeSecurityPrincipalService {
      * 获取授权缓存配置
      *
      * @param token     请求认证 token
-     * @param principal 当前用户
      * @return 缓存配置
      */
-    default CacheProperties getAuthorizationCache(TypeAuthenticationToken token, SecurityPrincipal principal) {
+    default CacheProperties getAuthorizationCache(TypeAuthenticationToken token) {
         return null;
     }
 }

@@ -67,15 +67,15 @@ public class MybatisPlusAutoConfiguration {
         return new DecryptInterceptor(applicationContext);
     }
 
-    @Bean
     @ConditionalOnMissingBean(DataAesCryptoService.class)
+    @Bean(CryptoProperties.MYBATIS_PLUS_DATA_AES_CRYPTO_SERVICE_NAME)
     @ConditionalOnProperty(prefix = "dactiv.mybatis.plus.crypto", value = "enabled", matchIfMissing = true)
     public DataAesCryptoService dataAesCryptoService(CryptoProperties cryptoProperties) {
         return new DataAesCryptoService(new AesCipherService(), cryptoProperties.getDataAesCryptoKey());
     }
 
-    @Bean
     @ConditionalOnMissingBean(DataRsaCryptoService.class)
+    @Bean(CryptoProperties.MYBATIS_PLUS_DATA_RSA_CRYPTO_SERVICE_NAME)
     @ConditionalOnProperty(prefix = "dactiv.mybatis.plus.crypto", value = "enabled", matchIfMissing = true)
     public DataRsaCryptoService dataRsaCryptoService(CryptoProperties cryptoProperties) {
         return new DataRsaCryptoService(new RsaCipherService(), cryptoProperties.getDataRasCryptoPublicKey(), cryptoProperties.getDataRasCryptoPrivateKey());

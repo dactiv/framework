@@ -104,6 +104,12 @@ public class OAuth2WebSecurityAutoConfiguration {
         return new IgnoreAuthenticationSuccessDataResponse(properties);
     }
 
+    @Bean
+    @ConditionalOnMissingBean(AuthenticationSuccessDesensitizeDataResponse.class)
+    public AuthenticationSuccessDesensitizeDataResponse authenticationSuccessDesensitizeDataResponse(AuthenticationProperties properties) {
+        return new AuthenticationSuccessDesensitizeDataResponse(properties);
+    }
+
     /**
      * 配置jwt解析器
      *

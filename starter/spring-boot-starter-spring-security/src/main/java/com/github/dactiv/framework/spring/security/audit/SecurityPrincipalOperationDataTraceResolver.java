@@ -5,6 +5,7 @@ import com.github.dactiv.framework.commons.id.number.NumberIdEntity;
 import com.github.dactiv.framework.mybatis.interceptor.audit.OperationDataTraceRecord;
 import com.github.dactiv.framework.mybatis.plus.audit.MybatisPlusOperationDataTraceResolver;
 import com.github.dactiv.framework.mybatis.plus.config.OperationDataTraceProperties;
+import com.github.dactiv.framework.security.audit.IdAuditEvent;
 import com.github.dactiv.framework.spring.security.audit.config.ControllerAuditProperties;
 import com.github.dactiv.framework.spring.security.authentication.token.AuditAuthenticationToken;
 import com.github.dactiv.framework.spring.security.entity.SecurityPrincipalOperationDataTraceRecord;
@@ -110,7 +111,7 @@ public class SecurityPrincipalOperationDataTraceResolver extends MybatisPlusOper
 
         Map<String, Object> dataTraceRecordMap = Casts.convertValue(dataTraceRecord, Casts.MAP_TYPE_REFERENCE);
         dataTraceRecordMap.remove(NumberIdEntity.CREATION_TIME_FIELD_NAME);
-        dataTraceRecordMap.remove(AuditAuthenticationToken.PRINCIPAL_KEY);
+        dataTraceRecordMap.remove(IdAuditEvent.PRINCIPAL_FIELD_NAME);
 
         Map<String, Object> data = new LinkedHashMap<>();
         data.put(AuditAuthenticationToken.DETAILS_KEY, authenticationToken.getDetails());

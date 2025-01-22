@@ -36,7 +36,7 @@ public class OidcUserInfoAuthenticationMapper implements Function<OidcUserInfoAu
 
             Optional<OidcUserInfoAuthenticationResolver> optional = oidcUserInfoAuthenticationResolvers
                     .stream()
-                    .filter(s -> s.isSupport(authenticationToken.getPrincipalType()))
+                    .filter(s -> s.isSupport(authenticationToken.getType()))
                     .findFirst();
 
             if (optional.isPresent()) {

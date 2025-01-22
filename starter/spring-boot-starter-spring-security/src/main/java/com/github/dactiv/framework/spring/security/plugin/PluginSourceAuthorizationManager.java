@@ -58,7 +58,7 @@ public class PluginSourceAuthorizationManager implements AuthorizationManager<Me
 
         AuditAuthenticationToken token = Casts.cast(authentication);
 
-        if (!resourceTypes.contains(token.getPrincipalType())) {
+        if (!resourceTypes.contains(token.getType())) {
             return new AuthorizationDecision(false);
         } else {
             return new AuthorizationDecision(true);
