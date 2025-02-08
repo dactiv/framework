@@ -54,7 +54,6 @@ public class FeignAuthenticationConfiguration {
                 .findFirst()
                 .orElseThrow(() -> new SystemException("找不到类型为:" + DEFAULT_TYPE + "的默认用户"));
 
-
         String base64 = encodeUserProperties(user);
 
         requestTemplate.header(HttpHeaders.AUTHORIZATION, BasicAuthenticationConverter.AUTHENTICATION_SCHEME_BASIC + StringUtils.SPACE + base64);

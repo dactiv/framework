@@ -11,6 +11,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.Enumeration;
+import java.util.Objects;
 
 public class AuditAuthenticationDetailsSource extends WebAuthenticationDetailsSource {
 
@@ -25,7 +26,7 @@ public class AuditAuthenticationDetailsSource extends WebAuthenticationDetailsSo
         WebAuthenticationDetails webAuthenticationDetails = super.buildDetails(context);
         String type = context.getParameter(authenticationProperties.getTypeParamName());
         if (StringUtils.isEmpty(type)) {
-            type = context.getHeader(authenticationProperties.getTypeHeaderName());
+            type = Objects.toString(context.getHeader(authenticationProperties.getTypeHeaderName()), StringUtils.EMPTY);
         }
         context.getHeaderNames();
         return new AuditAuthenticationDetails(
