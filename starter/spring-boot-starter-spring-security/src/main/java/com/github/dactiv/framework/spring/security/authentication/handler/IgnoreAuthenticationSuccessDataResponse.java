@@ -14,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.AntPathMatcher;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 认证成功后的忽略相应字段处理
@@ -40,15 +39,7 @@ public class IgnoreAuthenticationSuccessDataResponse implements JsonAuthenticati
 
         Object details = result.getData();
         DocumentContext documentContext = createDocumentContext(details);
-
-        for (String property : properties) {
-            Object value = documentContext.read(property);
-            if (Objects.isNull(value)) {
-                continue;
-            }
-            documentContext.delete(property);
-        }
-
+        properties.forEach(documentContext::delete);
         result.setData(documentContext.json());
     }
 
