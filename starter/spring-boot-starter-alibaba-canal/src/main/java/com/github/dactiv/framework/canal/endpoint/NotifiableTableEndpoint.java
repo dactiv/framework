@@ -3,7 +3,7 @@ package com.github.dactiv.framework.canal.endpoint;
 import com.github.dactiv.framework.canal.MysqlUtils;
 import com.github.dactiv.framework.canal.annotation.NotifiableTable;
 import com.github.dactiv.framework.canal.config.CanalNoticeProperties;
-import com.github.dactiv.framework.canal.domain.meta.TableMeta;
+import com.github.dactiv.framework.canal.domain.meta.TableMetadata;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
@@ -106,9 +106,9 @@ public class NotifiableTableEndpoint {
                     info.putAll(details);
                 }
 
-                List<TableMeta> tableMetas = resolveTableMeta();
+                List<TableMetadata> tableMetadata = resolveTableMeta();
 
-                info.put(DEFAULT_ENDPOINT_NAME, tableMetas);
+                info.put(DEFAULT_ENDPOINT_NAME, tableMetadata);
 
                 CACHE.putAll(info);
             }
@@ -120,10 +120,10 @@ public class NotifiableTableEndpoint {
 
     }
 
-    public List<TableMeta> resolveTableMeta() throws Exception {
-        List<TableMeta> tableMetas = new LinkedList<>();
+    public List<TableMetadata> resolveTableMeta() throws Exception {
+        List<TableMetadata> tableMetadataList = new LinkedList<>();
         if (CollectionUtils.isEmpty(noticeProperties.getBasePackages())) {
-            return tableMetas;
+            return tableMetadataList;
         }
 
         TypeFilter filter = new AnnotationTypeFilter(NotifiableTable.class);
@@ -142,17 +142,17 @@ public class NotifiableTableEndpoint {
 
                 if (filter.match(metadataReader, metadataReaderFactory)) {
                     NotifiableTable notifiableTable = AnnotationUtils.findAnnotation(targetClass, NotifiableTable.class);
-                    TableMeta tableMeta = new TableMeta();
-                    tableMeta.setDatabase(noticeProperties.getDatabaseName());
-                    tableMeta.setName(notifiableTable.value());
-                    tableMeta.setComment(notifiableTable.comment());
-                    tableMeta.setColumnInfoMetas(MysqlUtils.getTableColumns(tableMeta.getName(), noticeProperties.getDatabaseName(), dataSource.getConnection()));
-                    tableMetas.add(tableMeta);
+                    TableMetadata metadata = new TableMetadata();
+                    metadata.setDatabase(noticeProperties.getDatabaseName());
+                    metadata.setName(notifiableTable.value());
+                    metadata.setComment(notifiableTable.comment());
+                    metadata.setColumnInfoMetas(MysqlUtils.getTableColumns(metadata.getName(), noticeProperties.getDatabaseName(), dataSource.getConnection()));
+                    tableMetadataList.add(metadata);
                 }
             }
         }
 
-        return tableMetas;
+        return tableMetadataList;
 
     }
 

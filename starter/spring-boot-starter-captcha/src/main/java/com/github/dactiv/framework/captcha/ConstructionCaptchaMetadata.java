@@ -9,7 +9,7 @@ import java.util.Map;
  *
  * @author maurice.chen
  */
-public class ConstructionCaptchaMeta implements Serializable {
+public class ConstructionCaptchaMetadata implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -2135082237130733550L;
@@ -18,10 +18,10 @@ public class ConstructionCaptchaMeta implements Serializable {
 
     private Map<String, Object> args;
 
-    public ConstructionCaptchaMeta() {
+    public ConstructionCaptchaMetadata() {
     }
 
-    public ConstructionCaptchaMeta(String type, Map<String, Object> args) {
+    public ConstructionCaptchaMetadata(String type, Map<String, Object> args) {
         this.type = type;
         this.args = args;
     }

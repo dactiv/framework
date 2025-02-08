@@ -1,6 +1,6 @@
 package com.github.dactiv.framework.captcha.token.support;
 
-import com.github.dactiv.framework.captcha.ConstructionCaptchaMeta;
+import com.github.dactiv.framework.captcha.ConstructionCaptchaMetadata;
 import com.github.dactiv.framework.captcha.token.InterceptToken;
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.TimeProperties;
@@ -16,7 +16,7 @@ import java.util.Map;
  *
  * @author maurice
  */
-public class SimpleInterceptToken extends ConstructionCaptchaMeta implements InterceptToken {
+public class SimpleInterceptToken extends ConstructionCaptchaMetadata implements InterceptToken {
 
     @Serial
     private static final long serialVersionUID = -7503502769793672985L;

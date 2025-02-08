@@ -9,7 +9,8 @@ import com.github.dactiv.framework.spring.security.authentication.adapter.OAuth2
 import com.github.dactiv.framework.spring.security.authentication.adapter.OAuth2WebSecurityConfigurerAfterAdapter;
 import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
 import com.github.dactiv.framework.spring.security.authentication.config.OAuth2Properties;
-import com.github.dactiv.framework.spring.security.authentication.handler.*;
+import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationFailureHandler;
+import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationSuccessHandler;
 import com.github.dactiv.framework.spring.security.authentication.oidc.OidcUserInfoAuthenticationMapper;
 import com.github.dactiv.framework.spring.security.authentication.oidc.OidcUserInfoAuthenticationResolver;
 import com.github.dactiv.framework.spring.security.authentication.service.TypeSecurityPrincipalManager;
@@ -70,44 +71,6 @@ public class OAuth2WebSecurityAutoConfiguration {
                 .build();
         JWKSet jwkSet = new JWKSet(rsaKey);
         return new ImmutableJWKSet<>(jwkSet);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(JsonAuthenticationSuccessHandler.class)
-    public JsonAuthenticationSuccessHandler jsonAuthenticationSuccessHandler(ObjectProvider<JsonAuthenticationSuccessResponse> successResponse,
-                                                                             AuthenticationProperties properties,
-                                                                             OAuth2Properties oAuth2Properties) {
-
-        return new JsonAuthenticationSuccessHandler(
-                successResponse.orderedStream().collect(Collectors.toList()),
-                properties,
-                oAuth2Properties.getOauth2Urls()
-        );
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(JsonAuthenticationFailureHandler.class)
-    public JsonAuthenticationFailureHandler jsonAuthenticationFailureHandler(ObjectProvider<JsonAuthenticationFailureResponse> failureHandlers,
-                                                                             AuthenticationProperties properties,
-                                                                             OAuth2Properties oAuth2Properties) {
-
-        return new JsonAuthenticationFailureHandler(
-                failureHandlers.orderedStream().collect(Collectors.toList()),
-                properties,
-                oAuth2Properties.getOauth2Urls()
-        );
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(IgnoreAuthenticationSuccessDataResponse.class)
-    public IgnoreAuthenticationSuccessDataResponse ignoreAuthenticationSuccessDataResponse(AuthenticationProperties properties) {
-        return new IgnoreAuthenticationSuccessDataResponse(properties);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(AuthenticationSuccessDesensitizeDataResponse.class)
-    public AuthenticationSuccessDesensitizeDataResponse authenticationSuccessDesensitizeDataResponse(AuthenticationProperties properties) {
-        return new AuthenticationSuccessDesensitizeDataResponse(properties);
     }
 
     /**

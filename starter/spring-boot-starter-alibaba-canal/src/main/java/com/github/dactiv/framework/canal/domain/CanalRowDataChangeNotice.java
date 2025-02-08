@@ -1,6 +1,6 @@
 package com.github.dactiv.framework.canal.domain;
 
-import com.github.dactiv.framework.commons.domain.meta.ProtocolMeta;
+import com.github.dactiv.framework.commons.domain.metadata.ProtocolMetadata;
 import com.github.dactiv.framework.commons.enumerate.support.YesOrNo;
 
 import java.io.Serializable;
@@ -12,7 +12,7 @@ import java.util.Map;
  *
  * @author maurice.chen
  */
-public interface CanalRowDataChangeNotice extends Serializable, ProtocolMeta {
+public interface CanalRowDataChangeNotice extends Serializable, ProtocolMetadata {
 
     /**
      * 获取表名称

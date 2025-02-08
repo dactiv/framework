@@ -10,7 +10,7 @@ import com.alibaba.otter.canal.protocol.FlatMessage;
 import com.alibaba.otter.canal.protocol.Message;
 import com.github.dactiv.framework.canal.config.CanalInstanceProperties;
 import com.github.dactiv.framework.canal.config.CanalProperties;
-import com.github.dactiv.framework.canal.domain.CanalEntryRowDataMeta;
+import com.github.dactiv.framework.canal.domain.CanalEntryRowData;
 import com.github.dactiv.framework.canal.domain.CanalMessage;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.ReflectionUtils;
@@ -159,7 +159,7 @@ public class CanalSubscribeRunner implements Runnable {
                     .findFirst()
                     .ifPresent(t -> canalMessage.setTransactionId(t.getTransactionId()));
 
-            CanalEntryRowDataMeta[] entryRowData = buildMessageData(message, buildExecutor);
+            CanalEntryRowData[] entryRowData = buildMessageData(message, buildExecutor);
             List<FlatMessage> flatMessages = messageConverter(entryRowData, message.getId());
 
             canalMessage.setFlatMessageList(flatMessages);
@@ -209,11 +209,11 @@ public class CanalSubscribeRunner implements Runnable {
         }
     }
 
-    public static CanalEntryRowDataMeta[] buildMessageData(Message message, ThreadPoolExecutor executor) {
+    public static CanalEntryRowData[] buildMessageData(Message message, ThreadPoolExecutor executor) {
         ExecutorTemplate template = new ExecutorTemplate(executor);
         if (message.isRaw()) {
             List<ByteString> rawEntries = message.getRawEntries();
-            final CanalEntryRowDataMeta[] data = new CanalEntryRowDataMeta[rawEntries.size()];
+            final CanalEntryRowData[] data = new CanalEntryRowData[rawEntries.size()];
             int i = 0;
             for (ByteString byteString : rawEntries) {
                 final int index = i;
@@ -222,7 +222,7 @@ public class CanalSubscribeRunner implements Runnable {
                         CanalEntry.Entry entry = CanalEntry.Entry.parseFrom(byteString);
                         CanalEntry.RowChange rowChange = CanalEntry.RowChange.parseFrom(entry.getStoreValue());
 
-                        data[index] = new CanalEntryRowDataMeta();
+                        data[index] = new CanalEntryRowData();
                         data[index].setEntry(entry);
                         data[index].setRowChange(rowChange);
 
@@ -237,14 +237,14 @@ public class CanalSubscribeRunner implements Runnable {
             template.waitForResult();
             return data;
         } else {
-            final CanalEntryRowDataMeta[] dataArray = new CanalEntryRowDataMeta[message.getEntries().size()];
+            final CanalEntryRowData[] dataArray = new CanalEntryRowData[message.getEntries().size()];
             int i = 0;
             for (CanalEntry.Entry entry : message.getEntries()) {
                 final int index = i;
                 template.submit(() -> {
                     try {
                         CanalEntry.RowChange rowChange = CanalEntry.RowChange.parseFrom(entry.getStoreValue());
-                        dataArray[index] = new CanalEntryRowDataMeta();
+                        dataArray[index] = new CanalEntryRowData();
                         dataArray[index].setEntry(entry);
                         dataArray[index].setRowChange(rowChange);
                     } catch (InvalidProtocolBufferException e) {
@@ -260,9 +260,9 @@ public class CanalSubscribeRunner implements Runnable {
         }
     }
 
-    public static List<FlatMessage> messageConverter(CanalEntryRowDataMeta[] dataArray, long id) {
+    public static List<FlatMessage> messageConverter(CanalEntryRowData[] dataArray, long id) {
         List<FlatMessage> flatMessages = new ArrayList<>();
-        for (CanalEntryRowDataMeta entryRowData : dataArray) {
+        for (CanalEntryRowData entryRowData : dataArray) {
             CanalEntry.Entry entry = entryRowData.getEntry();
             CanalEntry.RowChange rowChange = entryRowData.getRowChange();
             // 如果有分区路由,则忽略begin/end事件

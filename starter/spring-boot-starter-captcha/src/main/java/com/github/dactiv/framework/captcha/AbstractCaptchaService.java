@@ -141,8 +141,8 @@ public abstract class AbstractCaptchaService<B> implements CaptchaService, Captc
     }
 
     @Override
-    public ConstructionCaptchaMeta createConstructionCaptchaMeta(HttpServletRequest request) {
-        return new ConstructionCaptchaMeta(getType(), this.getCreateArgs());
+    public ConstructionCaptchaMetadata createConstructionCaptchaMeta(HttpServletRequest request) {
+        return new ConstructionCaptchaMetadata(getType(), this.getCreateArgs());
     }
 
     @Override

@@ -10,7 +10,7 @@ import java.util.Map;
  *
  * @author maurice.chen
  */
-public class HttpCanalRowDataChangeNoticeMeta implements Serializable {
+public class HttpCanalRowDataChangeNoticeMetadata implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -463158192265749962L;
@@ -23,7 +23,7 @@ public class HttpCanalRowDataChangeNoticeMeta implements Serializable {
 
     private Map<String, Object> body = new LinkedHashMap<>();
 
-    public HttpCanalRowDataChangeNoticeMeta() {
+    public HttpCanalRowDataChangeNoticeMetadata() {
     }
 
     public String getUrl() {

@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 
 /**
  * redisson 缓存管理配置
@@ -19,8 +20,8 @@ import org.springframework.context.annotation.Configuration;
  * @author maurice.chen
  */
 @Configuration
-@ConditionalOnClass(RedissonAutoConfigurationV2.class)
 @AutoConfigureBefore(OAuth2WebSecurityAutoConfiguration.class)
+@ConditionalOnClass({RedissonAutoConfigurationV2.class, OAuth2AuthorizationService.class})
 @ConditionalOnProperty(prefix = "dactiv.authentication.spring.security", value = "enabled", matchIfMissing = true)
 public class RedissonOperationAutoConfiguration {
 

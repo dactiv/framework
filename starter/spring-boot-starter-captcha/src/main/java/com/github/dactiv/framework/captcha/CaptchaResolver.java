@@ -20,7 +20,7 @@ public interface CaptchaResolver {
      *
      * @return 构造验证码元数据
      */
-    ConstructionCaptchaMeta createConstructionCaptchaMeta(HttpServletRequest request);
+    ConstructionCaptchaMetadata createConstructionCaptchaMeta(HttpServletRequest request);
 
     /**
      * 所属类型

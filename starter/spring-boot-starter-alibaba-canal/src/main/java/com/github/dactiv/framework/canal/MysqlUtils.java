@@ -1,6 +1,6 @@
 package com.github.dactiv.framework.canal;
 
-import com.github.dactiv.framework.canal.domain.meta.TableColumnInfoMeta;
+import com.github.dactiv.framework.canal.domain.meta.TableColumnInfoMetadata;
 import com.github.dactiv.framework.commons.Casts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +16,9 @@ public class MysqlUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MysqlUtils.class);
 
-    public static List<TableColumnInfoMeta> getTableColumns(String tableName, String databaseName, Connection connection) {
+    public static List<TableColumnInfoMetadata> getTableColumns(String tableName, String databaseName, Connection connection) {
 
-        List<TableColumnInfoMeta> columns = new LinkedList<>();
+        List<TableColumnInfoMetadata> columns = new LinkedList<>();
 
 
         ResultSet resultSet = null;
@@ -33,17 +33,17 @@ public class MysqlUtils {
             resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
-                String columnName = resultSet.getString(TableColumnInfoMeta.MYSQL_COLUMN_NAME);
-                String columnComment = resultSet.getString(TableColumnInfoMeta.MYSQL_COLUMN_COMMENT);
+                String columnName = resultSet.getString(TableColumnInfoMetadata.MYSQL_COLUMN_NAME);
+                String columnComment = resultSet.getString(TableColumnInfoMetadata.MYSQL_COLUMN_COMMENT);
                 String camelName = Casts.castSnakeCaseToCamelCase(columnName);
 
-                TableColumnInfoMeta tableColumnInfoMeta = new TableColumnInfoMeta();
+                TableColumnInfoMetadata tableColumnInfoMetadata = new TableColumnInfoMetadata();
 
-                tableColumnInfoMeta.setComment(columnComment);
-                tableColumnInfoMeta.setId(camelName);
-                tableColumnInfoMeta.setName(columnName);
+                tableColumnInfoMetadata.setComment(columnComment);
+                tableColumnInfoMetadata.setId(camelName);
+                tableColumnInfoMetadata.setName(columnName);
 
-                columns.add(tableColumnInfoMeta);
+                columns.add(tableColumnInfoMetadata);
             }
         } catch (Exception e) {
             LOGGER.warn("读取 {} 表的列内容出现错误", tableName, e);

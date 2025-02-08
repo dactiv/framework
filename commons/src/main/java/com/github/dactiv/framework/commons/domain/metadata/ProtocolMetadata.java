@@ -1,4 +1,4 @@
-package com.github.dactiv.framework.commons.domain.meta;
+package com.github.dactiv.framework.commons.domain.metadata;
 
 import com.github.dactiv.framework.commons.enumerate.support.Protocol;
 
@@ -10,7 +10,7 @@ import java.util.Map;
  *
  * @author maurice.chen
  */
-public interface ProtocolMeta extends Serializable {
+public interface ProtocolMetadata extends Serializable {
 
     /**
      * 获取消息协议信息

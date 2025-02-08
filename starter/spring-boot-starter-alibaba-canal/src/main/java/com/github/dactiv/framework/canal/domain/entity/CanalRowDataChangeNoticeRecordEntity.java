@@ -2,12 +2,12 @@ package com.github.dactiv.framework.canal.domain.entity;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.dactiv.framework.canal.domain.CanalMessage;
-import com.github.dactiv.framework.canal.domain.meta.HttpCanalRowDataChangeNoticeMeta;
+import com.github.dactiv.framework.canal.domain.meta.HttpCanalRowDataChangeNoticeMetadata;
 import com.github.dactiv.framework.canal.service.CanalRowDataChangeNoticeService;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.domain.AckMessage;
 import com.github.dactiv.framework.commons.domain.body.AckResponseBody;
-import com.github.dactiv.framework.commons.domain.meta.ProtocolMeta;
+import com.github.dactiv.framework.commons.domain.metadata.ProtocolMetadata;
 import com.github.dactiv.framework.commons.enumerate.support.ExecuteStatus;
 import com.github.dactiv.framework.commons.enumerate.support.Protocol;
 
@@ -78,16 +78,16 @@ public class CanalRowDataChangeNoticeRecordEntity implements AckMessage {
 
     }
 
-    public static List<CanalRowDataChangeNoticeRecordEntity> of(ProtocolMeta notice, Map<String, Object> body) {
+    public static List<CanalRowDataChangeNoticeRecordEntity> of(ProtocolMetadata notice, Map<String, Object> body) {
         List<CanalRowDataChangeNoticeRecordEntity> result = new ArrayList<>();
         if (Protocol.HTTP_OR_HTTPS.equals(notice.getProtocol())) {
 
-            List<HttpCanalRowDataChangeNoticeMeta> metas = Casts.convertValue(
+            List<HttpCanalRowDataChangeNoticeMetadata> metas = Casts.convertValue(
                     notice.getProtocolMeta().get(CanalRowDataChangeNoticeService.HTTP_ENTITY_FIELD),
                     new TypeReference<>() {
                     }
             );
-            for (HttpCanalRowDataChangeNoticeMeta map : metas) {
+            for (HttpCanalRowDataChangeNoticeMetadata map : metas) {
                 CanalRowDataChangeNoticeRecordEntity entity = Casts.of(
                         notice,
                         CanalRowDataChangeNoticeRecordEntity.class,
@@ -115,7 +115,7 @@ public class CanalRowDataChangeNoticeRecordEntity implements AckMessage {
         return result;
     }
 
-    public static List<CanalRowDataChangeNoticeRecordEntity> of(ProtocolMeta meta, CanalMessage message) {
+    public static List<CanalRowDataChangeNoticeRecordEntity> of(ProtocolMetadata meta, CanalMessage message) {
         return of(meta, Casts.convertValue(message, Casts.MAP_TYPE_REFERENCE));
     }
 

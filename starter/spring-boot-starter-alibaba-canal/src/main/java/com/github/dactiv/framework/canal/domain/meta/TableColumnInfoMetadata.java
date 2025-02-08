@@ -8,7 +8,7 @@ import java.io.Serializable;
  *
  * @author maurice.chen
  */
-public class TableColumnInfoMeta implements Serializable {
+public class TableColumnInfoMetadata implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 485451195258828391L;
@@ -32,10 +32,10 @@ public class TableColumnInfoMeta implements Serializable {
      */
     private String id;
 
-    public TableColumnInfoMeta() {
+    public TableColumnInfoMetadata() {
     }
 
-    public TableColumnInfoMeta(String name, String comment, String id) {
+    public TableColumnInfoMetadata(String name, String comment, String id) {
         this.name = name;
         this.comment = comment;
         this.id = id;

@@ -1,6 +1,6 @@
 package com.github.dactiv.framework.canal.resolver.support;
 
-import com.github.dactiv.framework.canal.domain.meta.HttpCanalRowDataChangeNoticeMeta;
+import com.github.dactiv.framework.canal.domain.meta.HttpCanalRowDataChangeNoticeMetadata;
 import com.github.dactiv.framework.canal.resolver.CanalRowDataChangeNoticeResolver;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
@@ -73,9 +73,9 @@ public class HttpCanalRowDataChangeNoticeResolver implements CanalRowDataChangeN
      * @return 执行结果
      */
     private ResponseEntity<Map<String, Object>> exchangeNotification(AckMessage entity) {
-        HttpCanalRowDataChangeNoticeMeta meta = Casts.convertValue(
+        HttpCanalRowDataChangeNoticeMetadata meta = Casts.convertValue(
                 entity.getProtocolMeta(),
-                HttpCanalRowDataChangeNoticeMeta.class
+                HttpCanalRowDataChangeNoticeMetadata.class
         );
 
         String url = meta.getUrl();
@@ -137,9 +137,9 @@ public class HttpCanalRowDataChangeNoticeResolver implements CanalRowDataChangeN
                                     AckMessage entity,
                                     Consumer<AckMessage> consumer) {
 
-        HttpCanalRowDataChangeNoticeMeta meta = Casts.convertValue(
+        HttpCanalRowDataChangeNoticeMetadata meta = Casts.convertValue(
                 entity.getProtocolMeta(),
-                HttpCanalRowDataChangeNoticeMeta.class
+                HttpCanalRowDataChangeNoticeMetadata.class
         );
         // 1.如果不成功记录错误信息。
         // 2.如果成功看看响应的结果是否有 ack 确认信息，

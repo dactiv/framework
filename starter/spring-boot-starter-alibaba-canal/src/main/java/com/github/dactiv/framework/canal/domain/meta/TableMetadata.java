@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author maurice.chen
  */
-public class TableMeta implements Serializable {
+public class TableMetadata implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -3280652379059502703L;
@@ -32,12 +32,12 @@ public class TableMeta implements Serializable {
     /**
      * 表列信息
      */
-    private List<TableColumnInfoMeta> columnInfoMetas;
+    private List<TableColumnInfoMetadata> columnInfoMetas;
 
-    public TableMeta() {
+    public TableMetadata() {
     }
 
-    public TableMeta(String database, String name, String comment, List<TableColumnInfoMeta> columnInfoMetas) {
+    public TableMetadata(String database, String name, String comment, List<TableColumnInfoMetadata> columnInfoMetas) {
         this.database = database;
         this.name = name;
         this.comment = comment;
@@ -68,11 +68,11 @@ public class TableMeta implements Serializable {
         this.comment = comment;
     }
 
-    public List<TableColumnInfoMeta> getColumnInfoMetas() {
+    public List<TableColumnInfoMetadata> getColumnInfoMetas() {
         return columnInfoMetas;
     }
 
-    public void setColumnInfoMetas(List<TableColumnInfoMeta> columnInfoMetas) {
+    public void setColumnInfoMetas(List<TableColumnInfoMetadata> columnInfoMetas) {
         this.columnInfoMetas = columnInfoMetas;
     }
 }

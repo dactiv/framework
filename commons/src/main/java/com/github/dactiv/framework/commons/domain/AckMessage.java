@@ -1,7 +1,7 @@
 package com.github.dactiv.framework.commons.domain;
 
 import com.github.dactiv.framework.commons.domain.body.AckResponseBody;
-import com.github.dactiv.framework.commons.domain.meta.ProtocolMeta;
+import com.github.dactiv.framework.commons.domain.metadata.ProtocolMetadata;
 import com.github.dactiv.framework.commons.enumerate.support.ExecuteStatus;
 import com.github.dactiv.framework.commons.retry.Retryable;
 
@@ -13,7 +13,7 @@ import java.util.Map;
  *
  * @author maurice.chen
  */
-public interface AckMessage extends Serializable, Retryable, ExecuteStatus.Body, ProtocolMeta {
+public interface AckMessage extends Serializable, Retryable, ExecuteStatus.Body, ProtocolMetadata {
 
     /**
      * 获取消息请求体
