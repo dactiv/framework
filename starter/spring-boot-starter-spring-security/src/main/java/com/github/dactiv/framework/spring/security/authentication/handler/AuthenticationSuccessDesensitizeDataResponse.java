@@ -1,13 +1,10 @@
 package com.github.dactiv.framework.spring.security.authentication.handler;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.commons.jackson.serializer.DesensitizeSerializer;
 import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
 import com.jayway.jsonpath.DocumentContext;
-import com.jayway.jsonpath.JsonPath;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -40,9 +37,8 @@ public class AuthenticationSuccessDesensitizeDataResponse implements JsonAuthent
         }
 
         Object details = result.getData();
-        JsonNode rootNode = Casts.getObjectMapper().valueToTree(details);
-        JsonNode desensitizeNode = rootNode.deepCopy();
-        DocumentContext documentContext = JsonPath.parse(desensitizeNode.toString());
+        DocumentContext documentContext = IgnoreAuthenticationSuccessDataResponse.createDocumentContext(details);
+
         for (String property : properties) {
             Object value = documentContext.read(property);
             if (Objects.isNull(value)) {

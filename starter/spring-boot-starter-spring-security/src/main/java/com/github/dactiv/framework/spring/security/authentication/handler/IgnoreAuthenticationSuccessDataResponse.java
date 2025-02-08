@@ -4,8 +4,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
+import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.Option;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -37,10 +39,8 @@ public class IgnoreAuthenticationSuccessDataResponse implements JsonAuthenticati
         }
 
         Object details = result.getData();
-        JsonNode rootNode = Casts.getObjectMapper().valueToTree(details);
-        JsonNode filteredNode = rootNode.deepCopy();
+        DocumentContext documentContext = createDocumentContext(details);
 
-        DocumentContext documentContext = JsonPath.parse(filteredNode.toString());
         for (String property : properties) {
             Object value = documentContext.read(property);
             if (Objects.isNull(value)) {
@@ -50,6 +50,15 @@ public class IgnoreAuthenticationSuccessDataResponse implements JsonAuthenticati
         }
 
         result.setData(documentContext.json());
+    }
+
+    public static DocumentContext createDocumentContext(Object data) {
+        JsonNode rootNode = Casts.getObjectMapper().valueToTree(data);
+        JsonNode filteredNode = rootNode.deepCopy();
+
+        Configuration conf = Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL);
+
+        return JsonPath.using(conf).parse(filteredNode.toString());
     }
 
 }
