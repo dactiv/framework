@@ -83,19 +83,21 @@ public class DefaultWebSecurityAutoConfiguration {
     private final List<ErrorResultResolver> resultResolvers;
 
     private final TypeSecurityPrincipalManager typeSecurityPrincipalManager;
+    private final PasswordEncoder passwordEncoder;
 
     public DefaultWebSecurityAutoConfiguration(AccessTokenContextRepository accessTokenContextRepository,
                                                AuthenticationProperties authenticationProperties,
                                                RememberMeProperties rememberMeProperties,
                                                TypeSecurityPrincipalManager typeSecurityPrincipalManager,
                                                ObjectProvider<ErrorResultResolver> errorResultResolvers,
-                                               ObjectProvider<WebSecurityConfigurerAfterAdapter> webSecurityConfigurerAfterAdapter) {
+                                               ObjectProvider<WebSecurityConfigurerAfterAdapter> webSecurityConfigurerAfterAdapter, PasswordEncoder passwordEncoder) {
         this.accessTokenContextRepository = accessTokenContextRepository;
         this.authenticationProperties = authenticationProperties;
         this.rememberMeProperties = rememberMeProperties;
         this.typeSecurityPrincipalManager = typeSecurityPrincipalManager;
         this.webSecurityConfigurerAfterAdapters = webSecurityConfigurerAfterAdapter.stream().collect(Collectors.toList());
         this.resultResolvers = errorResultResolvers.stream().collect(Collectors.toList());
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Bean
@@ -175,7 +177,7 @@ public class DefaultWebSecurityAutoConfiguration {
         } catch (Exception e){
             httpSecurity
                     .rememberMe(r -> r
-                            .rememberMeServices(new TypeTokenBasedRememberMeServices(rememberMeProperties, typeSecurityPrincipalManager))
+                            .rememberMeServices(new TypeTokenBasedRememberMeServices(rememberMeProperties, typeSecurityPrincipalManager, userDetailsService(authenticationProperties, passwordEncoder)))
                     );
         }
         AuthenticationProvider authenticationProvider = new TypeRememberMeAuthenticationProvider(

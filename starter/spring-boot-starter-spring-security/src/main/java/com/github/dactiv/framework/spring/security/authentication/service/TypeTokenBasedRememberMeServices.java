@@ -5,6 +5,7 @@ import com.github.dactiv.framework.spring.security.authentication.config.Remembe
 import com.github.dactiv.framework.spring.security.authentication.token.AuditAuthenticationToken;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 
 /**
@@ -14,8 +15,9 @@ public class TypeTokenBasedRememberMeServices extends TokenBasedRememberMeServic
 
 
     public TypeTokenBasedRememberMeServices(RememberMeProperties rememberMeProperties,
-                                            TypeSecurityPrincipalManager typeSecurityPrincipalManager) {
-        super(rememberMeProperties.getKey(), new TypeTokenBasedRememberMeUserDetailsService(typeSecurityPrincipalManager));
+                                            TypeSecurityPrincipalManager typeSecurityPrincipalManager,
+                                            InMemoryUserDetailsManager inMemoryUserDetailsManager) {
+        super(rememberMeProperties.getKey(), new TypeTokenBasedRememberMeUserDetailsService(typeSecurityPrincipalManager, inMemoryUserDetailsManager));
         setAlwaysRemember(rememberMeProperties.isAlways());
         setParameter(rememberMeProperties.getParamName());
         setCookieName(rememberMeProperties.getCookieName());

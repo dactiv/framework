@@ -43,14 +43,9 @@ public class AuthenticationProperties {
     public static final String SECURITY_FORM_PASSWORD_PARAM_NAME = "password";
 
     /**
-     * 默认同意的来源类型值
-     */
-    public static final List<String> DEFAULT_PLUGIN_AUTHORIZATION_MANAGER_SOURCES = Arrays.asList("SYSTEM","ALL");
-
-    /**
      * 用户类型表决器默认同意的来源类型
      */
-    private List<String> pluginAuthorizationManagerSources = DEFAULT_PLUGIN_AUTHORIZATION_MANAGER_SOURCES;
+    private List<String> pluginAuthorizationManagerSources = new LinkedList<>();
 
     /**
      * 方法的接口路径

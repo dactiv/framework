@@ -27,9 +27,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -107,10 +110,19 @@ public class SpringSecurityAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(JsonAuthenticationSuccessHandler.class)
     public JsonAuthenticationSuccessHandler jsonAuthenticationSuccessHandler(ObjectProvider<JsonAuthenticationSuccessResponse> successResponse,
-                                                                             AuthenticationProperties properties) {
+                                                                             AuthenticationProperties properties,
+                                                                             OAuth2Properties oAuth2Properties) {
+
+        List<AntPathRequestMatcher> antPathRequestMatchers = new LinkedList<>();
+
+        antPathRequestMatchers.add(new AntPathRequestMatcher(oAuth2Properties.getAuthorizeEndpoint()));
+        antPathRequestMatchers.add(new AntPathRequestMatcher(oAuth2Properties.getTokenEndpoint()));
+        antPathRequestMatchers.add(new AntPathRequestMatcher(oAuth2Properties.getOidcUserInfoEndpoint()));
+
         return new JsonAuthenticationSuccessHandler(
                 successResponse.orderedStream().collect(Collectors.toList()),
-                properties
+                properties,
+                antPathRequestMatchers
         );
     }
 

@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -21,14 +22,22 @@ public class TypeTokenBasedRememberMeUserDetailsService implements UserDetailsSe
 
     private final TypeSecurityPrincipalManager typeSecurityPrincipalManager;
 
+    private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
+
     private MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
-    public TypeTokenBasedRememberMeUserDetailsService(TypeSecurityPrincipalManager typeSecurityPrincipalManager) {
+    public TypeTokenBasedRememberMeUserDetailsService(TypeSecurityPrincipalManager typeSecurityPrincipalManager, InMemoryUserDetailsManager inMemoryUserDetailsManager) {
         this.typeSecurityPrincipalManager = typeSecurityPrincipalManager;
+        this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserDetails userDetails = getInMemoryUserDetails(username);
+        if (Objects.nonNull(userDetails)) {
+            return userDetails;
+        }
+
         TypeAuthenticationToken token = typeSecurityPrincipalManager.createTypeAuthenticationToken(
                 username,
                 null,
@@ -46,6 +55,14 @@ public class TypeTokenBasedRememberMeUserDetailsService implements UserDetailsSe
         }
 
         return new User(username, principal.getCredentials().toString(), new LinkedHashSet<>());
+    }
+
+    private UserDetails getInMemoryUserDetails(String username) {
+        try {
+            return inMemoryUserDetailsManager.loadUserByUsername(username);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public void setMessages(MessageSourceAccessor messages) {
