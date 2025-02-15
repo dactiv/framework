@@ -31,8 +31,14 @@ public abstract class AbstractExtendAuditEventRepository implements ExtendAuditE
                 return ;
             }
         }
-
-        doAdd(event);
+        // 统一将 data 转换为 map，让一下没有构造函数的对象可以反序列化
+        AuditEvent convert = new AuditEvent(
+                event.getTimestamp(),
+                event.getPrincipal(),
+                event.getType(),
+                Casts.convertValue(event.getData(), Casts.MAP_TYPE_REFERENCE)
+        );
+        doAdd(convert);
 
         interceptors.forEach(i -> i.postAddHandle(event));
     }

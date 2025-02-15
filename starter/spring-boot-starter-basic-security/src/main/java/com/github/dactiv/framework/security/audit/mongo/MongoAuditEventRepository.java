@@ -20,10 +20,7 @@ import org.springframework.util.Assert;
 
 import java.sql.Date;
 import java.time.Instant;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * mongo 审计事件仓库实现
@@ -67,29 +64,37 @@ public class MongoAuditEventRepository extends AbstractExtendAuditEventRepositor
 
     @Override
     public List<AuditEvent> find(String principal, Instant after, String type) {
-        Assert.notNull(after, "查询 mongo 审计数据时 after 参数不能为空");
+        Map<String, Object> query = new LinkedHashMap<>();
 
-        Criteria criteria = createCriteria(principal, after, type);
-
-        Query query = new Query(criteria).with(Sort.by(Sort.Order.desc(RestResult.DEFAULT_TIMESTAMP_NAME)));
-
-        return findData(getCollectionName(after), query);
+        query.put(IdAuditEvent.PRINCIPAL_FIELD_NAME, principal);
+        query.put(IdAuditEvent.TYPE_FIELD_NAME, type);
+        return find(after, query);
     }
 
     @Override
-    public Page<AuditEvent> findPage(PageRequest pageRequest, String principal, Instant after, String type) {
+    public Page<AuditEvent> findPage(PageRequest pageRequest, Instant after, Map<String, Object> query) {
 
         Assert.notNull(after, "查询 mongo 审计f分页数据时 after 参数不能为空");
 
-        Criteria criteria = createCriteria(principal, after, type);
+        Criteria criteria = createCriteria(after, query);
 
-        Query query = new Query(criteria)
+        Query mongodbQuery = new Query(criteria)
                 .with(org.springframework.data.domain.PageRequest.of(pageRequest.getNumber() - 1, pageRequest.getSize()))
                 .with(Sort.by(Sort.Order.desc(RestResult.DEFAULT_TIMESTAMP_NAME)));
 
-        List<AuditEvent> data = findData(getCollectionName(after), query);
+        List<AuditEvent> data = findData(getCollectionName(after), mongodbQuery);
 
         return new Page<>(pageRequest, data);
+    }
+
+    @Override
+    public List<AuditEvent> find(Instant after, Map<String, Object> query) {
+        Assert.notNull(after, "查询 mongo 审计数据时 after 参数不能为空");
+        Criteria criteria = createCriteria(after, query);
+
+        Query mongodbQuery = new Query(criteria).with(Sort.by(Sort.Order.desc(RestResult.DEFAULT_TIMESTAMP_NAME)));
+
+        return findData(getCollectionName(after), mongodbQuery);
     }
 
     private List<AuditEvent> findData(String index, Query query) {
@@ -133,20 +138,21 @@ public class MongoAuditEventRepository extends AbstractExtendAuditEventRepositor
     /**
      * 创建查询条件
      *
-     * @param principal 操作人
      * @param after     在什么时间之后的
-     * @param type      类型
+     * @param query     查询条件
      *
      * @return 查询条件
      */
-    private Criteria createCriteria(String principal, Instant after, String type) {
+    private Criteria createCriteria(Instant after, Map<String, Object> query) {
 
         Criteria criteria = new Criteria();
 
+        String principal = query.getOrDefault(IdAuditEvent.PRINCIPAL_FIELD_NAME, StringUtils.EMPTY).toString();
         if (StringUtils.isNotBlank(principal)) {
             criteria = criteria.and(IdAuditEvent.PRINCIPAL_FIELD_NAME).is(principal);
         }
 
+        String type = query.getOrDefault(IdAuditEvent.TYPE_FIELD_NAME, StringUtils.EMPTY).toString();
         if (StringUtils.isNotBlank(type)) {
             criteria = criteria.and(IdAuditEvent.TYPE_FIELD_NAME).is(type);
         }

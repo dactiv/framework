@@ -63,7 +63,7 @@ public class ControllerAuditProperties {
     private String bodyKey = DEFAULT_BODY_KEY;
 
     /**
-     * 审计时间存储在 request 属性中的名称
+     * 审计事件存储在 request 属性中的名称
      */
     private String auditEventAttrName = DEFAULT_AUDIT_EVENT_ATTR_NAME;
 

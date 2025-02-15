@@ -107,36 +107,25 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
 
     @Override
     public List<AuditEvent> find(String principal, Instant after, String type) {
+        Map<String, Object> query = new LinkedHashMap<>();
 
-        Assert.notNull(after, "查询 elasticsearch 审计数据时 after 参数不能为空");
+        query.put(IdAuditEvent.PRINCIPAL_FIELD_NAME, principal);
+        query.put(IdAuditEvent.TYPE_FIELD_NAME, type);
 
-        String index = getIndexName(after).toLowerCase();
-
-        Query query = createQuery(after, type, principal);
-
-        NativeQueryBuilder builder = new NativeQueryBuilder()
-                .withQuery(query)
-                .withSort(SortOptions.of(s -> s.field(f -> f.field(RestResult.DEFAULT_TIMESTAMP_NAME).order(SortOrder.Desc))));
-
-        try {
-            return findData(builder.build(), index);
-        } catch (Exception e) {
-            LOGGER.warn("查询 elasticsearch 审计事件出现异常", e);
-            return new LinkedList<>();
-        }
+        return find(after, query);
     }
 
     @Override
-    public Page<AuditEvent> findPage(PageRequest pageRequest, String principal, Instant after, String type) {
+    public Page<AuditEvent> findPage(PageRequest pageRequest, Instant after, Map<String, Object> query) {
 
         Assert.notNull(after, "查询 elasticsearch 审计数据分页时 after 参数不能为空");
 
         String index = getIndexName(after).toLowerCase();
 
-        Query query = createQuery(after, type, principal);
+        Query nativeQuery = createQuery(after, query);
 
         NativeQueryBuilder builder = new NativeQueryBuilder()
-                .withQuery(query)
+                .withQuery(nativeQuery)
                 .withSort(SortOptions.of(s -> s.field(f -> f.field(RestResult.DEFAULT_TIMESTAMP_NAME).order(SortOrder.Desc))))
                 .withPageable(org.springframework.data.domain.PageRequest.of(pageRequest.getNumber() - 1, pageRequest.getSize()));
         try {
@@ -145,6 +134,25 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
         } catch (Exception e) {
             LOGGER.warn("查询 elasticsearch 审计事件出现异常", e);
             return new Page<>(pageRequest, new ArrayList<>());
+        }
+    }
+
+    @Override
+    public List<AuditEvent> find(Instant after, Map<String, Object> query) {
+        Assert.notNull(after, "查询 elasticsearch 审计数据时 after 参数不能为空");
+
+        String index = getIndexName(after).toLowerCase();
+        Query navtiveQuery = createQuery(after, query);
+
+        NativeQueryBuilder builder = new NativeQueryBuilder()
+                .withQuery(navtiveQuery)
+                .withSort(SortOptions.of(s -> s.field(f -> f.field(RestResult.DEFAULT_TIMESTAMP_NAME).order(SortOrder.Desc))));
+
+        try {
+            return findData(builder.build(), index);
+        } catch (Exception e) {
+            LOGGER.warn("查询 elasticsearch 审计事件出现异常", e);
+            return new LinkedList<>();
         }
     }
 
@@ -185,15 +193,15 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
      * 创建查询条件
      *
      * @param after     在什么时间之后的
-     * @param type      类型
-     * @param principal 操作人
+     * @param query     查询条件
      *
      * @return 查询条件
      */
-    private Query createQuery(Instant after, String type, String principal) {
+    private Query createQuery(Instant after, Map<String, Object> query) {
 
         BoolQuery.Builder queryBuilder = QueryBuilders.bool();
 
+        String type = query.getOrDefault(IdAuditEvent.TYPE_FIELD_NAME, StringUtils.EMPTY).toString();
         if (StringUtils.isNotBlank(type)) {
             queryBuilder = queryBuilder.must(m -> m.term(t -> t.field(IdAuditEvent.TYPE_FIELD_NAME).value(type)));
         }
@@ -202,6 +210,7 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
             queryBuilder = queryBuilder.must(m -> m.range(r -> r.field(RestResult.DEFAULT_TIMESTAMP_NAME).gte(JsonData.of(after.getEpochSecond()))));
         }
 
+        String principal = query.getOrDefault(IdAuditEvent.PRINCIPAL_FIELD_NAME, StringUtils.EMPTY).toString();
         if (StringUtils.isNotBlank(principal)) {
             queryBuilder = queryBuilder.must(m -> m.term(t -> t.field(IdAuditEvent.PRINCIPAL_FIELD_NAME).value(principal)));
         }
