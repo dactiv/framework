@@ -27,6 +27,8 @@ public class ControllerAuditProperties {
 
     public static final String DEFAULT_BODY_KEY = "body";
 
+    public static final String DEFAULT_EXECUTION_END_TIME = "executionEndTime";
+
     /**
      * 成功执行的后缀名称，用与说明执行某个动作时区分成功或失败或异常
      */
@@ -66,6 +68,11 @@ public class ControllerAuditProperties {
      * 审计事件存储在 request 属性中的名称
      */
     private String auditEventAttrName = DEFAULT_AUDIT_EVENT_ATTR_NAME;
+
+    /**
+     * 执行时间
+     */
+    private String executionEndTimeKey = DEFAULT_EXECUTION_END_TIME;
 
     public ControllerAuditProperties() {
     }
@@ -132,5 +139,13 @@ public class ControllerAuditProperties {
 
     public void setAuditEventAttrName(String auditEventAttrName) {
         this.auditEventAttrName = auditEventAttrName;
+    }
+
+    public String getExecutionEndTimeKey() {
+        return executionEndTimeKey;
+    }
+
+    public void setExecutionEndTimeKey(String executionEndTimeKey) {
+        this.executionEndTimeKey = executionEndTimeKey;
     }
 }

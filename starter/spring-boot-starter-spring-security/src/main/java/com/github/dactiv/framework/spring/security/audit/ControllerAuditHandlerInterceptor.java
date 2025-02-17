@@ -59,14 +59,18 @@ public class ControllerAuditHandlerInterceptor implements ApplicationEventPublis
         // 判断是否存在操作数据最终
         String type = StringUtils.EMPTY;
         Object principal = null;
-        if (Objects.nonNull(auditable) && auditable.operationDataTrace()) {
+        boolean operateDataTrace = false;
+        if (Objects.nonNull(auditable)) {
             type = auditable.type();
+            operateDataTrace = auditable.operationDataTrace();
             principal = getPrincipal(auditable.principal(), request);
         } else if (Objects.nonNull(operationDataTrace)) {
             type = operationDataTrace.name();
+            operateDataTrace = true;
             principal = getPrincipal(operationDataTrace.principal(), request);
-        } else if (Objects.nonNull(plugin) && plugin.operationDataTrace()) {
+        } else if (Objects.nonNull(plugin) && (plugin.operationDataTrace() || plugin.audit())) {
             type = plugin.name();
+            operateDataTrace = plugin.operationDataTrace();
             Plugin root = AnnotationUtils.findAnnotation(handlerMethod.getBeanType(), Plugin.class);
             if (Objects.nonNull(root)) {
                 type = root.name() + Casts.UNDERSCORE + type;
@@ -80,7 +84,9 @@ public class ControllerAuditHandlerInterceptor implements ApplicationEventPublis
         if (StringUtils.isNotEmpty(type)) {
             Map<String, Object> data = getData(request, response, handler);
             type = controllerAuditProperties.getAuditPrefixName() + Casts.UNDERSCORE + type;
-            request.setAttribute(SecurityPrincipalOperationDataTraceResolver.OPERATION_DATA_TRACE_ATT_NAME, true);
+            if (operateDataTrace) {
+                request.setAttribute(SecurityPrincipalOperationDataTraceResolver.OPERATION_DATA_TRACE_ATT_NAME, true);
+            }
             AuditEvent auditEvent;
             if (AuditAuthenticationToken.class.isAssignableFrom(principal.getClass())) {
                 AuditAuthenticationToken authenticationToken = Casts.cast(principal);
@@ -157,12 +163,19 @@ public class ControllerAuditHandlerInterceptor implements ApplicationEventPublis
             type = controllerAuditProperties.getAuditPrefixName() + Casts.UNDERSCORE + type;
         }
 
+        Instant now = Instant.now();
+        AuditEvent event = Casts.cast(request.getAttribute(controllerAuditProperties.getAuditEventAttrName()));
+        if (Objects.nonNull(event)) {
+            now = event.getTimestamp();
+        }
+
         if (AuditAuthenticationToken.class.isAssignableFrom(principal.getClass())) {
             AuditAuthenticationToken authenticationToken = Casts.cast(principal);
             data.put(AuditAuthenticationToken.DETAILS_KEY, authenticationToken.getDetails());
-            return new AuditEvent(Instant.now(), authenticationToken.getName(), type, data);
+            return new AuditEvent(now, authenticationToken.getName(), type, data
+            );
         } else {
-            return new AuditEvent(Instant.now(), principal.toString(), type, data);
+            return new AuditEvent(now, principal.toString(), type, data);
         }
     }
 
@@ -179,6 +192,7 @@ public class ControllerAuditHandlerInterceptor implements ApplicationEventPublis
         }
 
         data.put(controllerAuditProperties.getHeaderKey(), header);
+        data.put(controllerAuditProperties.getExecutionEndTimeKey(), Instant.now());
 
         Map<String, String[]> parameterMap = request.getParameterMap();
 
