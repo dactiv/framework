@@ -9,12 +9,12 @@ import co.elastic.clients.json.JsonData;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.commons.id.StringIdEntity;
-import com.github.dactiv.framework.commons.page.Page;
 import com.github.dactiv.framework.commons.page.PageRequest;
 import com.github.dactiv.framework.security.StoragePositionProperties;
 import com.github.dactiv.framework.security.audit.*;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.audit.AuditEvent;
@@ -27,12 +27,14 @@ import org.springframework.data.elasticsearch.core.mapping.IndexCoordinates;
 import org.springframework.data.elasticsearch.core.query.BaseQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQuery;
 import org.springframework.data.elasticsearch.core.query.IndexQueryBuilder;
-import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -40,7 +42,7 @@ import java.util.stream.Collectors;
  *
  * @author maurice.chen
  */
-public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventRepository {
+public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventRepository<BoolQuery.Builder> {
 
     public static final String MAPPING_FILE_PATH = "elasticsearch/plugin-audit-mapping.json";
 
@@ -50,7 +52,7 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
 
     private final StoragePositioningGenerator storagePositioningGenerator;
 
-    public ElasticsearchAuditEventRepository(List<AuditEventRepositoryInterceptor> interceptors,
+    public ElasticsearchAuditEventRepository(List<AuditEventRepositoryInterceptor<BoolQuery.Builder>> interceptors,
                                              ElasticsearchOperations elasticsearchOperations,
                                              StoragePositionProperties storagePositionProperties) {
         super(interceptors);
@@ -86,7 +88,7 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
             elasticsearchOperations.index(indexQuery, indexCoordinates);
 
         } catch (Exception e) {
-            LOGGER.warn("新增 elasticsearch{} 审计事件出现异常", event.getPrincipal(), e);
+            LOGGER.warn("新增 elasticsearch {} 审计事件出现异常", event.getPrincipal(), e);
         }
 
     }
@@ -104,51 +106,23 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
     }
 
     @Override
-    public List<AuditEvent> find(String principal, Instant after, String type) {
-        Map<String, Object> query = new LinkedHashMap<>();
-
-        if (StringUtils.isNotBlank(principal)) {
-            query.put(IdAuditEvent.PRINCIPAL_FIELD_NAME, principal);
-        }
-        if (StringUtils.isNotBlank(type)) {
-            query.put(IdAuditEvent.TYPE_FIELD_NAME, type);
-        }
-
-        return find(after, query);
-    }
-
-    @Override
-    public Page<AuditEvent> findPage(PageRequest pageRequest, Instant after, Map<String, Object> query) {
-
-        Assert.notNull(after, "查询 elasticsearch 审计数据分页时 after 参数不能为空");
-
-        String index = getIndexName(after).toLowerCase();
-
-        Query nativeQuery = createQuery(after, query);
-
+    protected List<AuditEvent> doFind(BoolQuery.Builder targetQuery, Instant after, Map<String, Object> query) {
         NativeQueryBuilder builder = new NativeQueryBuilder()
-                .withQuery(nativeQuery)
-                .withSort(SortOptions.of(s -> s.field(f -> f.field(RestResult.DEFAULT_TIMESTAMP_NAME).order(SortOrder.Desc))))
-                .withPageable(org.springframework.data.domain.PageRequest.of(pageRequest.getNumber() - 1, pageRequest.getSize()));
-        try {
-            List<AuditEvent> content = findData(builder.build(), index);
-            return new Page<>(pageRequest, content);
-        } catch (Exception e) {
-            LOGGER.warn("查询 elasticsearch 审计事件出现异常", e);
-            return new Page<>(pageRequest, new ArrayList<>());
-        }
-    }
-
-    @Override
-    public List<AuditEvent> find(Instant after, Map<String, Object> query) {
-        Assert.notNull(after, "查询 elasticsearch 审计数据时 after 参数不能为空");
-
-        String index = getIndexName(after).toLowerCase();
-        Query navtiveQuery = createQuery(after, query);
-
-        NativeQueryBuilder builder = new NativeQueryBuilder()
-                .withQuery(navtiveQuery)
+                .withQuery(new Query(targetQuery.build()))
                 .withSort(SortOptions.of(s -> s.field(f -> f.field(RestResult.DEFAULT_TIMESTAMP_NAME).order(SortOrder.Desc))));
+
+        String index = getIndexName(after).toLowerCase();
+
+        Object number = query.get(PageRequest.NUMBER_FIELD_NAME);
+        Object size = query.get(PageRequest.SIZE_FIELD_NAME);
+        if (Objects.nonNull(number) && Objects.nonNull(size)) {
+            builder.withPageable(
+                    org.springframework.data.domain.PageRequest.of(
+                            NumberUtils.toInt(number.toString()),
+                            NumberUtils.toInt(size.toString())
+                    )
+            );
+        }
 
         try {
             return findData(builder.build(), index);
@@ -199,7 +173,7 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
      *
      * @return 查询条件
      */
-    private Query createQuery(Instant after, Map<String, Object> query) {
+    protected BoolQuery.Builder createQuery(Instant after, Map<String, Object> query) {
 
         BoolQuery.Builder queryBuilder = QueryBuilders.bool();
 
@@ -217,7 +191,7 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
             queryBuilder = queryBuilder.must(m -> m.term(t -> t.field(IdAuditEvent.PRINCIPAL_FIELD_NAME).value(principal)));
         }
 
-        return new Query(queryBuilder.build());
+        return queryBuilder;
     }
 
     public ElasticsearchOperations getElasticsearchOperations() {

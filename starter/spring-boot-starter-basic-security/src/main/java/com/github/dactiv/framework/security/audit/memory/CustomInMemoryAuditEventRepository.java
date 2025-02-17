@@ -8,16 +8,16 @@ import java.util.List;
 
 public class CustomInMemoryAuditEventRepository extends InMemoryAuditEventRepository {
 
-    private final List<AuditEventRepositoryInterceptor> interceptors;
+    private final List<AuditEventRepositoryInterceptor<Object>> interceptors;
 
-    public CustomInMemoryAuditEventRepository(int capacity, List<AuditEventRepositoryInterceptor> interceptors) {
+    public CustomInMemoryAuditEventRepository(int capacity, List<AuditEventRepositoryInterceptor<Object>> interceptors) {
         super(capacity);
         this.interceptors = interceptors;
     }
 
     @Override
     public void add(AuditEvent event) {
-        for (AuditEventRepositoryInterceptor interceptor : interceptors) {
+        for (AuditEventRepositoryInterceptor<Object> interceptor : interceptors) {
             if (!interceptor.preAddHandle(event)) {
                 return ;
             }

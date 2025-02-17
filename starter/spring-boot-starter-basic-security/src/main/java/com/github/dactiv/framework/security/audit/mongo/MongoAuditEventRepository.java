@@ -3,12 +3,12 @@ package com.github.dactiv.framework.security.audit.mongo;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.commons.id.StringIdEntity;
-import com.github.dactiv.framework.commons.page.Page;
 import com.github.dactiv.framework.commons.page.PageRequest;
 import com.github.dactiv.framework.security.StoragePositionProperties;
 import com.github.dactiv.framework.security.audit.*;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.audit.AuditEvent;
@@ -16,7 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.util.Assert;
 
 import java.sql.Date;
 import java.time.Instant;
@@ -27,7 +26,7 @@ import java.util.*;
  *
  * @author maurice.chen
  */
-public class MongoAuditEventRepository extends AbstractExtendAuditEventRepository {
+public class MongoAuditEventRepository extends AbstractExtendAuditEventRepository<Criteria> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(MongoAuditEventRepository.class);
 
@@ -35,7 +34,7 @@ public class MongoAuditEventRepository extends AbstractExtendAuditEventRepositor
 
     private final StoragePositioningGenerator storagePositioningGenerator;
 
-    public MongoAuditEventRepository(List<AuditEventRepositoryInterceptor> interceptors,
+    public MongoAuditEventRepository(List<AuditEventRepositoryInterceptor<Criteria>> interceptors,
                                      MongoTemplate mongoTemplate,
                                      StoragePositionProperties storagePositionProperties) {
         super(interceptors);
@@ -74,29 +73,51 @@ public class MongoAuditEventRepository extends AbstractExtendAuditEventRepositor
     }
 
     @Override
-    public Page<AuditEvent> findPage(PageRequest pageRequest, Instant after, Map<String, Object> query) {
+    protected Criteria createQuery(Instant after, Map<String, Object> query) {
+        Criteria criteria = new Criteria();
 
-        Assert.notNull(after, "查询 mongo 审计f分页数据时 after 参数不能为空");
+        String principal = query.getOrDefault(IdAuditEvent.PRINCIPAL_FIELD_NAME, StringUtils.EMPTY).toString();
+        if (StringUtils.isNotBlank(principal)) {
+            criteria = criteria.and(IdAuditEvent.PRINCIPAL_FIELD_NAME).is(principal);
+        }
 
-        Criteria criteria = createCriteria(after, query);
+        String type = query.getOrDefault(IdAuditEvent.TYPE_FIELD_NAME, StringUtils.EMPTY).toString();
+        if (StringUtils.isNotBlank(type)) {
+            criteria = criteria.and(IdAuditEvent.TYPE_FIELD_NAME).is(type);
+        }
 
-        Query mongodbQuery = new Query(criteria)
-                .with(org.springframework.data.domain.PageRequest.of(pageRequest.getNumber() - 1, pageRequest.getSize()))
-                .with(Sort.by(Sort.Order.desc(RestResult.DEFAULT_TIMESTAMP_NAME)));
+        if (Objects.nonNull(after)) {
+            criteria = criteria.and(RestResult.DEFAULT_TIMESTAMP_NAME).gte(Date.from(after));
+        }
 
-        List<AuditEvent> data = findData(getCollectionName(after), mongodbQuery);
-
-        return new Page<>(pageRequest, data);
+        return criteria;
     }
 
     @Override
-    public List<AuditEvent> find(Instant after, Map<String, Object> query) {
-        Assert.notNull(after, "查询 mongo 审计数据时 after 参数不能为空");
-        Criteria criteria = createCriteria(after, query);
+    protected List<AuditEvent> doFind(Criteria targetQuery, Instant after, Map<String, Object> query) {
 
-        Query mongodbQuery = new Query(criteria).with(Sort.by(Sort.Order.desc(RestResult.DEFAULT_TIMESTAMP_NAME)));
+        Query mongodbQuery = new Query(targetQuery)
+                .with(Sort.by(Sort.Order.desc(RestResult.DEFAULT_TIMESTAMP_NAME)));
 
-        return findData(getCollectionName(after), mongodbQuery);
+        String index = getCollectionName(after).toLowerCase();
+
+        Object number = query.get(PageRequest.NUMBER_FIELD_NAME);
+        Object size = query.get(PageRequest.SIZE_FIELD_NAME);
+        if (Objects.nonNull(number) && Objects.nonNull(size)) {
+            mongodbQuery.with(
+                    org.springframework.data.domain.PageRequest.of(
+                            NumberUtils.toInt(number.toString()),
+                            NumberUtils.toInt(size.toString())
+                    )
+            );
+        }
+
+        try {
+            return findData(index, mongodbQuery);
+        } catch (Exception e) {
+            LOGGER.warn("查询 elasticsearch 审计事件出现异常", e);
+            return new LinkedList<>();
+        }
     }
 
     private List<AuditEvent> findData(String index, Query query) {
@@ -135,35 +156,6 @@ public class MongoAuditEventRepository extends AbstractExtendAuditEventRepositor
         StringIdEntity id = new StringIdEntity();
         id.setCreationTime(Date.from(instant));
         return storagePositioningGenerator.generatePositioning(id).toLowerCase();
-    }
-
-    /**
-     * 创建查询条件
-     *
-     * @param after     在什么时间之后的
-     * @param query     查询条件
-     *
-     * @return 查询条件
-     */
-    private Criteria createCriteria(Instant after, Map<String, Object> query) {
-
-        Criteria criteria = new Criteria();
-
-        String principal = query.getOrDefault(IdAuditEvent.PRINCIPAL_FIELD_NAME, StringUtils.EMPTY).toString();
-        if (StringUtils.isNotBlank(principal)) {
-            criteria = criteria.and(IdAuditEvent.PRINCIPAL_FIELD_NAME).is(principal);
-        }
-
-        String type = query.getOrDefault(IdAuditEvent.TYPE_FIELD_NAME, StringUtils.EMPTY).toString();
-        if (StringUtils.isNotBlank(type)) {
-            criteria = criteria.and(IdAuditEvent.TYPE_FIELD_NAME).is(type);
-        }
-
-        if (Objects.nonNull(after)) {
-            criteria = criteria.and(RestResult.DEFAULT_TIMESTAMP_NAME).gte(Date.from(after));
-        }
-
-        return criteria;
     }
 
     public MongoTemplate getMongoTemplate() {

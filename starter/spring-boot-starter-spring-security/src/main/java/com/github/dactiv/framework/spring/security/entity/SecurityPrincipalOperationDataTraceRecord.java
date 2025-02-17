@@ -45,4 +45,5 @@ public class SecurityPrincipalOperationDataTraceRecord extends EntityIdOperation
     public void setControllerAuditType(String controllerAuditType) {
         this.controllerAuditType = controllerAuditType;
     }
+
 }

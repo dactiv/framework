@@ -91,7 +91,7 @@ public class SecurityPrincipalOperationDataTraceResolver extends MybatisPlusOper
             }
 
             traceRecord.setPrincipal(authenticationToken);
-            traceRecord.setRemark(authenticationToken.getName() + StringUtils.SPACE + getDateFormat().format(record.getCreationTime()) + StringUtils.SPACE + record.getType().getName());
+            traceRecord.setRemark(authenticationToken.getPrincipal() + StringUtils.SPACE + getDateFormat().format(record.getCreationTime()) + StringUtils.SPACE + record.getType().getName());
 
             result.add(traceRecord);
         }
@@ -118,8 +118,9 @@ public class SecurityPrincipalOperationDataTraceResolver extends MybatisPlusOper
         data.put(OPERATION_DATA_TRACE_ATT_NAME, dataTraceRecordMap);
 
         syncControllerAuditEvent(data);
-
-        return createAuditEvent(record, data);
+        SecurityPrincipalOperationDataTraceRecord newValue = Casts.of(dataTraceRecord,SecurityPrincipalOperationDataTraceRecord.class);
+        newValue.setPrincipal(authenticationToken.getName());
+        return createAuditEvent(newValue, data);
     }
 
     private void syncControllerAuditEvent(Map<String, Object> data) {

@@ -4,29 +4,28 @@ import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.commons.id.IdEntity;
+import com.github.dactiv.framework.commons.page.Page;
+import com.github.dactiv.framework.commons.page.PageRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.actuate.audit.AuditEvent;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public abstract class AbstractExtendAuditEventRepository implements ExtendAuditEventRepository {
+public abstract class AbstractExtendAuditEventRepository<T> implements ExtendAuditEventRepository {
 
-    private final List<AuditEventRepositoryInterceptor> interceptors;
+    private final List<AuditEventRepositoryInterceptor<T>> interceptors;
 
-    public AbstractExtendAuditEventRepository(List<AuditEventRepositoryInterceptor> interceptors) {
+    public AbstractExtendAuditEventRepository(List<AuditEventRepositoryInterceptor<T>> interceptors) {
         this.interceptors = interceptors;
     }
 
     @Override
     public void add(AuditEvent event) {
 
-        for (AuditEventRepositoryInterceptor interceptor : interceptors) {
+        for (AuditEventRepositoryInterceptor<T> interceptor : interceptors) {
             if (!interceptor.preAddHandle(event)) {
                 return ;
             }
@@ -57,6 +56,45 @@ public abstract class AbstractExtendAuditEventRepository implements ExtendAuditE
     }
 
     protected abstract void doAdd(AuditEvent event);
+
+    @Override
+    public List<AuditEvent> find(String principal, Instant after, String type) {
+        Map<String, Object> query = new LinkedHashMap<>();
+        if (StringUtils.isNotBlank(principal)) {
+            query.put(IdAuditEvent.PRINCIPAL_FIELD_NAME, principal);
+        }
+        if (StringUtils.isNotBlank(type)) {
+            query.put(IdAuditEvent.TYPE_FIELD_NAME, type);
+        }
+
+        return find(after, query);
+    }
+
+    @Override
+    public Page<AuditEvent> findPage(PageRequest pageRequest, Instant after, Map<String, Object> query) {
+        query.put(PageRequest.NUMBER_FIELD_NAME, pageRequest.getNumber() - 1);
+        query.put(PageRequest.SIZE_FIELD_NAME, pageRequest.getSize());
+        List<AuditEvent> content = find(after, query);
+        return new Page<>(pageRequest, content);
+    }
+
+    protected abstract T createQuery(Instant after, Map<String, Object> query);
+
+    @Override
+    public List<AuditEvent> find(Instant after, Map<String, Object> query) {
+        for (AuditEventRepositoryInterceptor<T> interceptor : interceptors) {
+            if (!interceptor.preFind(after, query)) {
+                return new LinkedList<>();
+            }
+        }
+
+        T targetQuery = createQuery(after, query);
+        interceptors.forEach(interceptor -> interceptor.postCreateQuery(targetQuery, after, query));
+
+        return doFind(targetQuery, after, query);
+    }
+
+    protected abstract List<AuditEvent> doFind(T targetQuery, Instant after, Map<String, Object> query);
 
     /**
      * 创建审计事件

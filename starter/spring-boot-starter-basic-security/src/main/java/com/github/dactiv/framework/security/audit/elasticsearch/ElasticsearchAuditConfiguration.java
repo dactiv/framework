@@ -1,5 +1,6 @@
 package com.github.dactiv.framework.security.audit.elasticsearch;
 
+import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import com.github.dactiv.framework.security.AuditConfiguration;
 import com.github.dactiv.framework.security.StoragePositionProperties;
 import com.github.dactiv.framework.security.audit.AuditEventRepositoryInterceptor;
@@ -31,7 +32,7 @@ public class ElasticsearchAuditConfiguration {
     @Bean
     public ExtendAuditEventRepository auditEventRepository(ElasticsearchOperations elasticsearchOperations,
                                                            StoragePositionProperties storagePositionProperties,
-                                                           ObjectProvider<AuditEventRepositoryInterceptor> interceptors) {
+                                                           ObjectProvider<AuditEventRepositoryInterceptor<BoolQuery.Builder>> interceptors) {
 
         return new ElasticsearchAuditEventRepository(
                 interceptors.stream().collect(Collectors.toList()),

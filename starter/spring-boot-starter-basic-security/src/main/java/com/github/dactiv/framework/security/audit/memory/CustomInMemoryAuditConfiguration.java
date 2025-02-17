@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class CustomInMemoryAuditConfiguration {
 
     @Bean
-    public AuditEventRepository auditEventRepository(ObjectProvider<AuditEventRepositoryInterceptor> interceptors) {
+    public AuditEventRepository auditEventRepository(ObjectProvider<AuditEventRepositoryInterceptor<Object>> interceptors) {
         return new CustomInMemoryAuditEventRepository(
                 1000,
                 interceptors.stream().collect(Collectors.toList())

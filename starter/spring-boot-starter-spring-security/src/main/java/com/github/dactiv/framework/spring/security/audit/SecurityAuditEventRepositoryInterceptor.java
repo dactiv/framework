@@ -18,7 +18,7 @@ import org.springframework.util.AntPathMatcher;
  *
  * @author maurice.chen
  */
-public class SecurityAuditEventRepositoryInterceptor implements AuditEventRepositoryInterceptor {
+public class SecurityAuditEventRepositoryInterceptor implements AuditEventRepositoryInterceptor<Object> {
 
     private final AuthenticationProperties authenticationProperties;
 

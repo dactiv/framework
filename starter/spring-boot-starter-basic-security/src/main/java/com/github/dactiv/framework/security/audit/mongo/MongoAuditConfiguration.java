@@ -14,6 +14,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.util.stream.Collectors;
 
@@ -32,7 +33,7 @@ public class MongoAuditConfiguration {
     @Bean
     public ExtendAuditEventRepository auditEventRepository(MongoTemplate mongoTemplate,
                                                            StoragePositionProperties storagePositionProperties,
-                                                           ObjectProvider<AuditEventRepositoryInterceptor> interceptors) {
+                                                           ObjectProvider<AuditEventRepositoryInterceptor<Criteria>> interceptors) {
 
         return new MongoAuditEventRepository(
                 interceptors.stream().collect(Collectors.toList()),
