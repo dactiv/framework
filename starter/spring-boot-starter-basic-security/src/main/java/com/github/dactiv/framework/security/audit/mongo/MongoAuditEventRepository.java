@@ -48,13 +48,15 @@ public class MongoAuditEventRepository extends AbstractExtendAuditEventRepositor
     public void doAdd(AuditEvent event) {
 
         IdAuditEvent idAuditEvent = new IdAuditEvent(event);
-
         if (IdAuditEvent.class.isAssignableFrom(event.getClass())) {
             idAuditEvent = Casts.cast(event);
         }
 
         try {
             String index = storagePositioningGenerator.generatePositioning(idAuditEvent).toLowerCase();
+            if (event instanceof StoragePositioningAuditEvent storagePositioningAuditEvent) {
+                index = storagePositioningAuditEvent.getStoragePositioning();
+            }
             mongoTemplate.save(idAuditEvent, index);
         } catch (Exception e) {
             LOGGER.error("新增 mongo {} 审计事件出现异常", event.getPrincipal(), e);

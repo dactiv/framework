@@ -57,11 +57,15 @@ public abstract class AbstractOperationDataTraceResolver implements OperationDat
         if (Objects.nonNull(storagePositioningGenerator)) {
             List<OperationDataTraceRecord> storagePositioningRecords = new LinkedList<>();
             for (OperationDataTraceRecord record : createRecords) {
+                String positioning = storagePositioningGenerator.generatePositioning(record);
+                if (StringUtils.isEmpty(positioning)) {
+                    continue;
+                }
                 OperationDataTraceRecord storagePositioning = Casts.of(record, OperationDataTraceRecord.class);
-                storagePositioning.setStoragePositioning(storagePositioningGenerator.generatePositioning(record));
+                storagePositioning.setStoragePositioning(positioning);
                 storagePositioningRecords.add(storagePositioning);
+                result.addAll(storagePositioningRecords);
             }
-            result.addAll(storagePositioningRecords);
         }
 
 

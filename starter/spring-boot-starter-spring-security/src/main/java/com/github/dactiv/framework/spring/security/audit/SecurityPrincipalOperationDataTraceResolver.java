@@ -119,12 +119,7 @@ public class SecurityPrincipalOperationDataTraceResolver extends MybatisPlusOper
 
         syncControllerAuditEvent(data);
 
-        return new AuditEvent(
-                event.getTimestamp(),
-                authenticationToken.getName(),
-                event.getType(),
-                data
-        );
+        return createAuditEvent(record, data);
     }
 
     private void syncControllerAuditEvent(Map<String, Object> data) {

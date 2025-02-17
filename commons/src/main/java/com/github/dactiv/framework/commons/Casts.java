@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
@@ -841,9 +842,12 @@ public abstract class Casts {
             return localDateTime.format(DateTimeFormatter.ofPattern(pattern));
         } else if (Long.class.isAssignableFrom(date.getClass())) {
             Long time = Casts.cast(date);
-            return new SimpleDateFormat(pattern).format(new Date(time));
+            return dateFormat(new Date(time), pattern);
+        } else if (BigDecimal.class.isAssignableFrom(date.getClass())) {
+            BigDecimal time = Casts.cast(date);
+            return dateFormat(Casts.convertValue(time, Instant.class), pattern);
         } else {
-            throw new SystemException("不支持 对象 [" + date.getClass().getName() + "] 的日期类型转换");
+            throw new SystemException("不支持对象 [" + date.getClass().getName() + "] 的日期类型转换");
         }
     }
 

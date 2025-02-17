@@ -54,14 +54,18 @@ public class MybatisPlusOperationDataTraceResolver extends AbstractOperationData
         Map<String, Object> data = new LinkedHashMap<>();
         data.put(OperationDataTraceRecord.SUBMIT_DATA_FIELD, record.getSubmitData());
         data.put(OperationDataTraceRecord.REMARK_FIELD, record.getRemark());
+        return createAuditEvent(record, data);
+    }
+
+    public AuditEvent createAuditEvent(OperationDataTraceRecord record, Map<String, Object> data) {
         if (StringUtils.isNotEmpty(record.getStoragePositioning())) {
-          return new StoragePositioningAuditEvent(
-                  record.getStoragePositioning(),
-                  record.getCreationTime().toInstant(),
-                  record.getPrincipal().toString(),
-                  getOperationDataTraceProperties().getAuditPrefixName() + Casts.UNDERSCORE + record.getTarget() + Casts.UNDERSCORE + record.getType(),
-                  data
-          );
+            return new StoragePositioningAuditEvent(
+                    record.getStoragePositioning(),
+                    record.getCreationTime().toInstant(),
+                    record.getPrincipal().toString(),
+                    getOperationDataTraceProperties().getAuditPrefixName() + Casts.UNDERSCORE + record.getTarget() + Casts.UNDERSCORE + record.getType(),
+                    data
+            );
         }
         return new AuditEvent(
                 record.getCreationTime().toInstant(),

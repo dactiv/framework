@@ -62,12 +62,7 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
     @Override
     public void doAdd(AuditEvent event) {
 
-        IdAuditEvent idAuditEvent = new IdAuditEvent(
-                event.getPrincipal(),
-                event.getType(),
-                event.getData()
-        );
-
+        IdAuditEvent idAuditEvent = new IdAuditEvent(event);
         if (IdAuditEvent.class.isAssignableFrom(event.getClass())) {
             idAuditEvent = Casts.cast(event);
         }
