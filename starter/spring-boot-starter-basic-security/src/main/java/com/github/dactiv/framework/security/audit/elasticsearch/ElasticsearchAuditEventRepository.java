@@ -11,7 +11,7 @@ import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.commons.id.StringIdEntity;
 import com.github.dactiv.framework.commons.page.Page;
 import com.github.dactiv.framework.commons.page.PageRequest;
-import com.github.dactiv.framework.security.AuditIndexProperties;
+import com.github.dactiv.framework.security.StoragePositionProperties;
 import com.github.dactiv.framework.security.audit.*;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -48,15 +48,15 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
 
     private final ElasticsearchOperations elasticsearchOperations;
 
-    private final IndexGenerator indexGenerator;
+    private final StoragePositioningGenerator storagePositioningGenerator;
 
     public ElasticsearchAuditEventRepository(List<AuditEventRepositoryInterceptor> interceptors,
                                              ElasticsearchOperations elasticsearchOperations,
-                                             AuditIndexProperties auditIndexProperties) {
+                                             StoragePositionProperties storagePositionProperties) {
         super(interceptors);
         this.elasticsearchOperations = elasticsearchOperations;
 
-        this.indexGenerator = new DateIndexGenerator(auditIndexProperties);
+        this.storagePositioningGenerator = new SpringElStoragePositioningGenerator(storagePositionProperties);
     }
 
     @Override
@@ -74,7 +74,10 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
 
         try {
 
-            String index = indexGenerator.generateIndex(idAuditEvent).toLowerCase();
+            String index = storagePositioningGenerator.generatePositioning(idAuditEvent).toLowerCase();
+            if (event instanceof StoragePositioningAuditEvent storagePositioningAuditEvent) {
+                index = storagePositioningAuditEvent.getStoragePositioning();
+            }
 
             IndexCoordinates indexCoordinates = IndexCoordinates.of(index);
             IndexOperations indexOperations = elasticsearchOperations.indexOps(indexCoordinates);
@@ -109,8 +112,12 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
     public List<AuditEvent> find(String principal, Instant after, String type) {
         Map<String, Object> query = new LinkedHashMap<>();
 
-        query.put(IdAuditEvent.PRINCIPAL_FIELD_NAME, principal);
-        query.put(IdAuditEvent.TYPE_FIELD_NAME, type);
+        if (StringUtils.isNotBlank(principal)) {
+            query.put(IdAuditEvent.PRINCIPAL_FIELD_NAME, principal);
+        }
+        if (StringUtils.isNotBlank(type)) {
+            query.put(IdAuditEvent.TYPE_FIELD_NAME, type);
+        }
 
         return find(after, query);
     }
@@ -168,7 +175,7 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
     @Override
     public AuditEvent get(StringIdEntity idEntity) {
 
-        String index = indexGenerator.generateIndex(idEntity).toLowerCase();
+        String index = storagePositioningGenerator.generatePositioning(idEntity).toLowerCase();
         try {
             //noinspection unchecked
             Map<String, Object> map = elasticsearchOperations.get(idEntity.getId(), Map.class, IndexCoordinates.of(index));
@@ -186,7 +193,7 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
     public String getIndexName(Instant instant) {
         StringIdEntity id = new StringIdEntity();
         id.setCreationTime(java.sql.Date.from(instant));
-        return indexGenerator.generateIndex(id).toLowerCase();
+        return storagePositioningGenerator.generatePositioning(id).toLowerCase();
     }
 
     /**

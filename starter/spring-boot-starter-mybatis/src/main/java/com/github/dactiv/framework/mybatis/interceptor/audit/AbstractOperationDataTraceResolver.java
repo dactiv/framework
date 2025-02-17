@@ -1,7 +1,10 @@
 package com.github.dactiv.framework.mybatis.interceptor.audit;
 
 import com.github.dactiv.framework.commons.Casts;
+import com.github.dactiv.framework.mybatis.config.OperationDataTraceProperties;
 import com.github.dactiv.framework.mybatis.enumerate.OperationDataType;
+import com.github.dactiv.framework.security.audit.SpringElStoragePositioningGenerator;
+import com.github.dactiv.framework.security.audit.StoragePositioningGenerator;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
@@ -13,10 +16,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 内存形式的操作数据留痕仓库实现
@@ -27,29 +27,45 @@ public abstract class AbstractOperationDataTraceResolver implements OperationDat
 
     private final DateFormat dateFormat;
 
-    public AbstractOperationDataTraceResolver() {
-        dateFormat = new SimpleDateFormat(Casts.DEFAULT_DATE_TIME_FORMATTER_PATTERN);
-    }
+    private final OperationDataTraceProperties operationDataTraceProperties;
 
-    public AbstractOperationDataTraceResolver(String dateFormatPattern) {
-        this.dateFormat = new SimpleDateFormat(dateFormatPattern);
+    private StoragePositioningGenerator storagePositioningGenerator;
+
+    public AbstractOperationDataTraceResolver(OperationDataTraceProperties operationDataTraceProperties) {
+        this.operationDataTraceProperties = operationDataTraceProperties;
+        if (Objects.nonNull(operationDataTraceProperties.getStoragePosition())) {
+            storagePositioningGenerator = new SpringElStoragePositioningGenerator(operationDataTraceProperties.getStoragePosition());
+        }
+        this.dateFormat = new SimpleDateFormat(operationDataTraceProperties.getDateFormat());
     }
 
     @Override
     public List<OperationDataTraceRecord> createOperationDataTraceRecord(MappedStatement mappedStatement, Statement statement, Object parameter) throws Exception{
-
+        List<OperationDataTraceRecord> createRecords = new LinkedList<>();
         if (statement instanceof Insert) {
             Insert insert = Casts.cast(statement);
-            return createInsertRecord(insert, mappedStatement, statement, parameter);
+            createRecords.addAll(createInsertRecord(insert, mappedStatement, statement, parameter));
         } else if (statement instanceof Update) {
             Update update = Casts.cast(statement);
-            return createUpdateRecord(update, mappedStatement, statement, parameter);
+            createRecords.addAll(createUpdateRecord(update, mappedStatement, statement, parameter));
         } else if (statement instanceof Delete) {
             Delete delete = Casts.cast(statement);
-            return createDeleteRecord(delete, mappedStatement, statement, parameter);
+            createRecords.addAll(createDeleteRecord(delete, mappedStatement, statement, parameter));
         }
 
-        return new LinkedList<>();
+        List<OperationDataTraceRecord> result = new LinkedList<>(createRecords);
+        if (Objects.nonNull(storagePositioningGenerator)) {
+            List<OperationDataTraceRecord> storagePositioningRecords = new LinkedList<>();
+            for (OperationDataTraceRecord record : createRecords) {
+                OperationDataTraceRecord storagePositioning = Casts.of(record, OperationDataTraceRecord.class);
+                storagePositioning.setStoragePositioning(storagePositioningGenerator.generatePositioning(record));
+                storagePositioningRecords.add(storagePositioning);
+            }
+            result.addAll(storagePositioningRecords);
+        }
+
+
+        return result;
     }
 
     protected List<OperationDataTraceRecord> createDeleteRecord(Delete delete, MappedStatement mappedStatement, Statement statement, Object parameter) throws Exception {
@@ -95,6 +111,18 @@ public abstract class AbstractOperationDataTraceResolver implements OperationDat
         record.setRemark(record.getPrincipal() + StringUtils.SPACE + dateFormat.format(record.getCreationTime()) +  StringUtils.SPACE + record.getType().getName());
 
         return record;
+    }
+
+    public OperationDataTraceProperties getOperationDataTraceProperties() {
+        return operationDataTraceProperties;
+    }
+
+    public StoragePositioningGenerator getStoragePositioningGenerator() {
+        return storagePositioningGenerator;
+    }
+
+    public void setStoragePositioningGenerator(StoragePositioningGenerator storagePositioningGenerator) {
+        this.storagePositioningGenerator = storagePositioningGenerator;
     }
 
     public DateFormat getDateFormat() {

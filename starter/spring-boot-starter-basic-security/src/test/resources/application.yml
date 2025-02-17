@@ -28,8 +28,11 @@ dactiv:
   security:
     audit:
       type: elasticsearch
-      index:
+      storage-position:
         prefix: ix_test_audit_event
+        spring-expression:
+          - "T(com.github.dactiv.framework.commons.Casts).dateFormat(#timestamp,'yyyy_MM_dd')"
+          - "T(com.github.dactiv.framework.commons.Casts).dateFormat(#creationTime,'yyyy_MM_dd')"
 
 ---
 spring:
@@ -41,5 +44,5 @@ dactiv:
   security:
     audit:
       type: mongo
-      index:
+      storage-position:
         prefix: col_test_audit_event

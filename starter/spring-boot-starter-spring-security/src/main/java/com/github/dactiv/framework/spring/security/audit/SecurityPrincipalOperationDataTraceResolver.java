@@ -2,9 +2,9 @@ package com.github.dactiv.framework.spring.security.audit;
 
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.id.number.NumberIdEntity;
+import com.github.dactiv.framework.mybatis.config.OperationDataTraceProperties;
 import com.github.dactiv.framework.mybatis.interceptor.audit.OperationDataTraceRecord;
 import com.github.dactiv.framework.mybatis.plus.audit.MybatisPlusOperationDataTraceResolver;
-import com.github.dactiv.framework.mybatis.plus.config.OperationDataTraceProperties;
 import com.github.dactiv.framework.security.audit.IdAuditEvent;
 import com.github.dactiv.framework.spring.security.audit.config.ControllerAuditProperties;
 import com.github.dactiv.framework.spring.security.authentication.token.AuditAuthenticationToken;

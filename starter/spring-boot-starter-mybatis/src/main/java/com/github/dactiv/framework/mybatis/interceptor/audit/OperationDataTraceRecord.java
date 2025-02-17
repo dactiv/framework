@@ -48,6 +48,11 @@ public class OperationDataTraceRecord implements Serializable {
     private OperationDataType type;
 
     /**
+     * 存储定位
+     */
+    private String storagePositioning;
+
+    /**
      * 标注
      */
     private String remark;
@@ -155,5 +160,23 @@ public class OperationDataTraceRecord implements Serializable {
      */
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    /**
+     * 获取存储定位
+     *
+     * @return 存储定位
+     */
+    public String getStoragePositioning() {
+        return storagePositioning;
+    }
+
+    /**
+     * 设置存储定位
+     *
+     * @param storagePositioning 存储定位
+     */
+    public void setStoragePositioning(String storagePositioning) {
+        this.storagePositioning = storagePositioning;
     }
 }

@@ -1,8 +1,8 @@
 package com.github.dactiv.framework.security.audit.mongo;
 
 import com.github.dactiv.framework.security.AuditConfiguration;
-import com.github.dactiv.framework.security.AuditIndexProperties;
 import com.github.dactiv.framework.security.AuditProperties;
+import com.github.dactiv.framework.security.StoragePositionProperties;
 import com.github.dactiv.framework.security.audit.AuditEventRepositoryInterceptor;
 import com.github.dactiv.framework.security.audit.ExtendAuditEventRepository;
 import org.springframework.beans.factory.ObjectProvider;
@@ -31,13 +31,13 @@ public class MongoAuditConfiguration {
 
     @Bean
     public ExtendAuditEventRepository auditEventRepository(MongoTemplate mongoTemplate,
-                                                           AuditIndexProperties auditIndexProperties,
+                                                           StoragePositionProperties storagePositionProperties,
                                                            ObjectProvider<AuditEventRepositoryInterceptor> interceptors) {
 
         return new MongoAuditEventRepository(
                 interceptors.stream().collect(Collectors.toList()),
                 mongoTemplate,
-                auditIndexProperties
+                storagePositionProperties
         );
 
     }

@@ -5,7 +5,7 @@ import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.commons.id.StringIdEntity;
 import com.github.dactiv.framework.commons.page.Page;
 import com.github.dactiv.framework.commons.page.PageRequest;
-import com.github.dactiv.framework.security.AuditIndexProperties;
+import com.github.dactiv.framework.security.StoragePositionProperties;
 import com.github.dactiv.framework.security.audit.*;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -33,15 +33,15 @@ public class MongoAuditEventRepository extends AbstractExtendAuditEventRepositor
 
     private final MongoTemplate mongoTemplate;
 
-    private final IndexGenerator indexGenerator;
+    private final StoragePositioningGenerator storagePositioningGenerator;
 
     public MongoAuditEventRepository(List<AuditEventRepositoryInterceptor> interceptors,
                                      MongoTemplate mongoTemplate,
-                                     AuditIndexProperties auditIndexProperties) {
+                                     StoragePositionProperties storagePositionProperties) {
         super(interceptors);
         this.mongoTemplate = mongoTemplate;
 
-        this.indexGenerator = new DateIndexGenerator(auditIndexProperties);
+        this.storagePositioningGenerator = new SpringElStoragePositioningGenerator(storagePositionProperties);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class MongoAuditEventRepository extends AbstractExtendAuditEventRepositor
         }
 
         try {
-            String index = indexGenerator.generateIndex(idAuditEvent).toLowerCase();
+            String index = storagePositioningGenerator.generatePositioning(idAuditEvent).toLowerCase();
             mongoTemplate.save(idAuditEvent, index);
         } catch (Exception e) {
             LOGGER.error("新增 mongo {} 审计事件出现异常", event.getPrincipal(), e);
@@ -114,7 +114,7 @@ public class MongoAuditEventRepository extends AbstractExtendAuditEventRepositor
 
     @Override
     public AuditEvent get(StringIdEntity idEntity) {
-        String index = indexGenerator.generateIndex(idEntity).toLowerCase();
+        String index = storagePositioningGenerator.generatePositioning(idEntity).toLowerCase();
 
         try {
             Map<String, Object> map = Casts.cast(mongoTemplate.findById(idEntity.getId(), Map.class, index));
@@ -132,7 +132,7 @@ public class MongoAuditEventRepository extends AbstractExtendAuditEventRepositor
     public String getCollectionName(Instant instant) {
         StringIdEntity id = new StringIdEntity();
         id.setCreationTime(Date.from(instant));
-        return indexGenerator.generateIndex(id).toLowerCase();
+        return storagePositioningGenerator.generatePositioning(id).toLowerCase();
     }
 
     /**

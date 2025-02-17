@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.objenesis.instantiator.util.ClassUtils;
+import org.springframework.util.Assert;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -27,6 +28,12 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -102,9 +109,9 @@ public abstract class Casts {
 
     public static final String DEFAULT_DATE_FORMATTER_PATTERN = "yyyy-MM-dd";
 
-    public static final String DEFAULT_time_FORMATTER_PATTERN = "HH:mm:ss";
+    public static final String DEFAULT_TIME_FORMATTER_PATTERN = "HH:mm:ss";
 
-    public static final String DEFAULT_DATE_TIME_FORMATTER_PATTERN = DEFAULT_DATE_FORMATTER_PATTERN + StringUtils.SPACE + DEFAULT_time_FORMATTER_PATTERN;
+    public static final String DEFAULT_DATE_TIME_FORMATTER_PATTERN = DEFAULT_DATE_FORMATTER_PATTERN + StringUtils.SPACE + DEFAULT_TIME_FORMATTER_PATTERN;
 
     /**
      *  map 类型范型引用
@@ -808,6 +815,36 @@ public abstract class Casts {
         }
 
         return snakeCase.toString();
+    }
+
+
+    public static String dateTimeFormat(Object date) {
+        return dateFormat(date, DEFAULT_DATE_FORMATTER_PATTERN + StringUtils.SPACE + DEFAULT_TIME_FORMATTER_PATTERN);
+    }
+
+    public static String dateFormat(Object date) {
+        return dateFormat(date, DEFAULT_DATE_FORMATTER_PATTERN);
+    }
+
+    public static String dateFormat(Object date, String pattern) {
+        Assert.notNull(date, "date must not be null");
+
+        if (ChronoLocalDateTime.class.isAssignableFrom(date.getClass())) {
+            ChronoLocalDateTime<?> time = Casts.cast(date);
+            return time.format(DateTimeFormatter.ofPattern(pattern));
+        } else if (Date.class.isAssignableFrom(date.getClass())) {
+            Date d = Casts.cast(date);
+            return new SimpleDateFormat(pattern).format(d);
+        } else if (Instant.class.isAssignableFrom(date.getClass())) {
+            Instant i = Casts.cast(date);
+            LocalDateTime localDateTime = LocalDateTime.ofInstant(i, ZoneId.systemDefault());
+            return localDateTime.format(DateTimeFormatter.ofPattern(pattern));
+        } else if (Long.class.isAssignableFrom(date.getClass())) {
+            Long time = Casts.cast(date);
+            return new SimpleDateFormat(pattern).format(new Date(time));
+        } else {
+            throw new SystemException("不支持 对象 [" + date.getClass().getName() + "] 的日期类型转换");
+        }
     }
 
 }

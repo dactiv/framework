@@ -6,10 +6,10 @@ import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInt
 import com.github.dactiv.framework.crypto.algorithm.cipher.AesCipherService;
 import com.github.dactiv.framework.crypto.algorithm.cipher.RsaCipherService;
 import com.github.dactiv.framework.mybatis.MybatisAutoConfiguration;
+import com.github.dactiv.framework.mybatis.config.OperationDataTraceProperties;
 import com.github.dactiv.framework.mybatis.interceptor.audit.OperationDataTraceResolver;
 import com.github.dactiv.framework.mybatis.plus.audit.MybatisPlusOperationDataTraceResolver;
 import com.github.dactiv.framework.mybatis.plus.config.CryptoProperties;
-import com.github.dactiv.framework.mybatis.plus.config.OperationDataTraceProperties;
 import com.github.dactiv.framework.mybatis.plus.crypto.DataAesCryptoService;
 import com.github.dactiv.framework.mybatis.plus.crypto.DataRsaCryptoService;
 import com.github.dactiv.framework.mybatis.plus.interceptor.DecryptInterceptor;
@@ -58,6 +58,7 @@ public class MybatisPlusAutoConfiguration {
         interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
         interceptor.addInnerInterceptor(new LastModifiedDateInnerInterceptor(true));
         interceptor.addInnerInterceptor(new EncryptInnerInterceptor(true, applicationContext));
+
         return interceptor;
     }
 

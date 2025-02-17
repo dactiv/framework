@@ -6,11 +6,12 @@ import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.id.BasicIdentification;
 import com.github.dactiv.framework.commons.id.IdEntity;
+import com.github.dactiv.framework.mybatis.config.OperationDataTraceProperties;
 import com.github.dactiv.framework.mybatis.enumerate.OperationDataType;
 import com.github.dactiv.framework.mybatis.interceptor.audit.AbstractOperationDataTraceResolver;
 import com.github.dactiv.framework.mybatis.interceptor.audit.OperationDataTraceRecord;
 import com.github.dactiv.framework.mybatis.interceptor.audit.OperationDataTraceResolver;
-import com.github.dactiv.framework.mybatis.plus.config.OperationDataTraceProperties;
+import com.github.dactiv.framework.security.audit.StoragePositioningAuditEvent;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.insert.Insert;
@@ -39,17 +40,13 @@ public class MybatisPlusOperationDataTraceResolver extends AbstractOperationData
 
     private ApplicationEventPublisher applicationEventPublisher;
 
-    private OperationDataTraceProperties operationDataTraceProperties;
-
     public MybatisPlusOperationDataTraceResolver(OperationDataTraceProperties operationDataTraceProperties) {
-        super(operationDataTraceProperties.getDateFormat());
-        this.operationDataTraceProperties = operationDataTraceProperties;
+        super(operationDataTraceProperties);
     }
 
     public MybatisPlusOperationDataTraceResolver(OperationDataTraceProperties operationDataTraceProperties,
                                                  ApplicationEventPublisher applicationEventPublisher) {
-        super(operationDataTraceProperties.getDateFormat());
-        this.operationDataTraceProperties = operationDataTraceProperties;
+        super(operationDataTraceProperties);
         this.applicationEventPublisher = applicationEventPublisher;
     }
 
@@ -57,12 +54,20 @@ public class MybatisPlusOperationDataTraceResolver extends AbstractOperationData
         Map<String, Object> data = new LinkedHashMap<>();
         data.put(OperationDataTraceRecord.SUBMIT_DATA_FIELD, record.getSubmitData());
         data.put(OperationDataTraceRecord.REMARK_FIELD, record.getRemark());
+        if (StringUtils.isNotEmpty(record.getStoragePositioning())) {
+          return new StoragePositioningAuditEvent(
+                  record.getStoragePositioning(),
+                  record.getCreationTime().toInstant(),
+                  record.getPrincipal().toString(),
+                  getOperationDataTraceProperties().getAuditPrefixName() + Casts.UNDERSCORE + record.getTarget() + Casts.UNDERSCORE + record.getType(),
+                  data
+          );
+        }
         return new AuditEvent(
                 record.getCreationTime().toInstant(),
                 record.getPrincipal().toString(),
-                operationDataTraceProperties.getAuditPrefixName() + Casts.UNDERSCORE + record.getTarget() + Casts.UNDERSCORE + record.getType(),
+                getOperationDataTraceProperties().getAuditPrefixName() + Casts.UNDERSCORE + record.getTarget() + Casts.UNDERSCORE + record.getType(),
                 data
-
         );
     }
 
@@ -265,13 +270,5 @@ public class MybatisPlusOperationDataTraceResolver extends AbstractOperationData
 
     public ApplicationEventPublisher getApplicationEventPublisher() {
         return applicationEventPublisher;
-    }
-
-    public OperationDataTraceProperties getOperationDataTraceProperties() {
-        return operationDataTraceProperties;
-    }
-
-    public void setOperationDataTraceProperties(OperationDataTraceProperties operationDataTraceProperties) {
-        this.operationDataTraceProperties = operationDataTraceProperties;
     }
 }

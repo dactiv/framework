@@ -1,6 +1,6 @@
 package com.github.dactiv.framework.security.test;
 
-import com.github.dactiv.framework.security.AuditIndexProperties;
+import com.github.dactiv.framework.security.StoragePositionProperties;
 import com.github.dactiv.framework.security.audit.AuditEventRepositoryInterceptor;
 import com.github.dactiv.framework.security.audit.ExtendAuditEventRepository;
 import com.github.dactiv.framework.security.audit.elasticsearch.ElasticsearchAuditEventRepository;
@@ -16,7 +16,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.util.stream.Collectors;
 
-@EnableConfigurationProperties(AuditIndexProperties.class)
+@EnableConfigurationProperties(StoragePositionProperties.class)
 @SpringBootApplication(exclude = DataSourceAutoConfiguration.class)
 public class ConfigureApplication {
 
@@ -26,25 +26,25 @@ public class ConfigureApplication {
 
     @Bean
     public ElasticsearchAuditEventRepository elasticsearchAuditEventRepository(ElasticsearchOperations elasticsearchOperations,
-                                                                               AuditIndexProperties auditIndexProperties,
+                                                                               StoragePositionProperties storagePositionProperties,
                                                                                ObjectProvider<AuditEventRepositoryInterceptor> interceptors) {
 
         return new ElasticsearchAuditEventRepository(
                 interceptors.stream().collect(Collectors.toList()),
                 elasticsearchOperations,
-                auditIndexProperties
+                storagePositionProperties
         );
     }
 
     @Bean
     public ExtendAuditEventRepository auditEventRepository(MongoTemplate mongoTemplate,
-                                                           AuditIndexProperties auditIndexProperties,
+                                                           StoragePositionProperties storagePositionProperties,
                                                            ObjectProvider<AuditEventRepositoryInterceptor> interceptors) {
 
         return new MongoAuditEventRepository(
                 interceptors.stream().collect(Collectors.toList()),
                 mongoTemplate,
-                auditIndexProperties
+                storagePositionProperties
         );
 
     }

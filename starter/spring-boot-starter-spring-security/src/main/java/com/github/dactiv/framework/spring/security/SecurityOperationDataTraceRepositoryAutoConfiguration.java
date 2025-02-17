@@ -1,8 +1,8 @@
 package com.github.dactiv.framework.spring.security;
 
+import com.github.dactiv.framework.mybatis.config.OperationDataTraceProperties;
 import com.github.dactiv.framework.mybatis.plus.MybatisPlusAutoConfiguration;
 import com.github.dactiv.framework.mybatis.plus.audit.MybatisPlusOperationDataTraceResolver;
-import com.github.dactiv.framework.mybatis.plus.config.OperationDataTraceProperties;
 import com.github.dactiv.framework.spring.security.audit.SecurityPrincipalOperationDataTraceResolver;
 import com.github.dactiv.framework.spring.security.audit.config.ControllerAuditProperties;
 import com.github.dactiv.framework.spring.security.authentication.config.SecurityPrincipalDataOwnerProperties;

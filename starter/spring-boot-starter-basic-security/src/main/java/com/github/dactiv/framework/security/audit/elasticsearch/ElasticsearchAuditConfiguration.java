@@ -1,7 +1,7 @@
 package com.github.dactiv.framework.security.audit.elasticsearch;
 
 import com.github.dactiv.framework.security.AuditConfiguration;
-import com.github.dactiv.framework.security.AuditIndexProperties;
+import com.github.dactiv.framework.security.StoragePositionProperties;
 import com.github.dactiv.framework.security.audit.AuditEventRepositoryInterceptor;
 import com.github.dactiv.framework.security.audit.ExtendAuditEventRepository;
 import org.springframework.beans.factory.ObjectProvider;
@@ -23,20 +23,20 @@ import java.util.stream.Collectors;
  */
 @ConditionalOnClass(ElasticsearchOperations.class)
 @ConditionalOnMissingBean(AuditEventRepository.class)
-@EnableConfigurationProperties(AuditIndexProperties.class)
+@EnableConfigurationProperties(StoragePositionProperties.class)
 @Conditional(AuditConfiguration.AuditImportSelectorCondition.class)
 @ConditionalOnProperty(prefix = "dactiv.security.audit", value = "enabled", matchIfMissing = true)
 public class ElasticsearchAuditConfiguration {
 
     @Bean
     public ExtendAuditEventRepository auditEventRepository(ElasticsearchOperations elasticsearchOperations,
-                                                           AuditIndexProperties auditIndexProperties,
+                                                           StoragePositionProperties storagePositionProperties,
                                                            ObjectProvider<AuditEventRepositoryInterceptor> interceptors) {
 
         return new ElasticsearchAuditEventRepository(
                 interceptors.stream().collect(Collectors.toList()),
                 elasticsearchOperations,
-                auditIndexProperties
+                storagePositionProperties
         );
 
     }
