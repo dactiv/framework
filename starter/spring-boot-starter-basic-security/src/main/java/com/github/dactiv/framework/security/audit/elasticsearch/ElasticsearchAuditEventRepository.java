@@ -197,7 +197,7 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
     protected FindMetadata<BoolQuery.Builder> createFindEntity(BoolQuery.Builder targetQuery,
                                                                Instant after,
                                                                Map<String, Object> query) {
-        return new FindMetadata<>(targetQuery,getIndexName(after),query);
+        return new FindMetadata<>(targetQuery,getIndexName(after), query, after);
     }
 
     public ElasticsearchOperations getElasticsearchOperations() {

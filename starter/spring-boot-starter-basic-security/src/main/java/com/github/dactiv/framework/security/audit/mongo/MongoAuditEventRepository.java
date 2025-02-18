@@ -95,7 +95,7 @@ public class MongoAuditEventRepository extends AbstractExtendAuditEventRepositor
 
     @Override
     protected FindMetadata<Criteria> createFindEntity(Criteria targetQuery, Instant after, Map<String, Object> query) {
-        return new FindMetadata<>(targetQuery, getCollectionName(after), query);
+        return new FindMetadata<>(targetQuery, getCollectionName(after), query, after);
     }
 
     @Override

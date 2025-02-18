@@ -61,13 +61,12 @@ public abstract class AbstractOperationDataTraceResolver implements OperationDat
                 if (StringUtils.isEmpty(positioning)) {
                     continue;
                 }
-                OperationDataTraceRecord storagePositioning = Casts.of(record, OperationDataTraceRecord.class);
+                OperationDataTraceRecord storagePositioning = Casts.of(record, record.getClass());
                 storagePositioning.setStoragePositioning(positioning);
                 storagePositioningRecords.add(storagePositioning);
                 result.addAll(storagePositioningRecords);
             }
         }
-
 
         return result;
     }

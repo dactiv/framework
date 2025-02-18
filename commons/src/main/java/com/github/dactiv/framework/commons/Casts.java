@@ -851,4 +851,16 @@ public abstract class Casts {
         }
     }
 
+    /**
+     * 获取维度值
+     *
+     * @param count 维度数量
+     * @param args 取模 hash 参数
+     *
+     * @return 维度值
+     */
+    public static String getDimension(Integer count, Object... args) {
+        return String.format("%0" + String.valueOf(count).length() + "d", Math.abs(Objects.hash(args) % count + 1));
+    }
+
 }

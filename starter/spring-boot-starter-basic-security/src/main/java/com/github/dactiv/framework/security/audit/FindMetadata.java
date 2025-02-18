@@ -1,5 +1,6 @@
 package com.github.dactiv.framework.security.audit;
 
+import java.time.Instant;
 import java.util.Map;
 
 public class FindMetadata<T> {
@@ -10,13 +11,16 @@ public class FindMetadata<T> {
 
     private Map<String, Object> query;
 
+    private Instant after;
+
     public FindMetadata() {
     }
 
-    public FindMetadata(T targetQuery, String storagePositioning, Map<String, Object> query) {
+    public FindMetadata(T targetQuery, String storagePositioning, Map<String, Object> query, Instant after) {
         this.targetQuery = targetQuery;
         this.storagePositioning = storagePositioning;
         this.query = query;
+        this.after = after;
     }
 
     public T getTargetQuery() {
@@ -41,5 +45,13 @@ public class FindMetadata<T> {
 
     public void setQuery(Map<String, Object> query) {
         this.query = query;
+    }
+
+    public Instant getAfter() {
+        return after;
+    }
+
+    public void setAfter(Instant after) {
+        this.after = after;
     }
 }
