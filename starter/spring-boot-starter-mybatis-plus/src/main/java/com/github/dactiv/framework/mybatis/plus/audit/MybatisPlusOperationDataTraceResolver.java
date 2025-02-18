@@ -11,6 +11,8 @@ import com.github.dactiv.framework.mybatis.enumerate.OperationDataType;
 import com.github.dactiv.framework.mybatis.interceptor.audit.AbstractOperationDataTraceResolver;
 import com.github.dactiv.framework.mybatis.interceptor.audit.OperationDataTraceRecord;
 import com.github.dactiv.framework.mybatis.interceptor.audit.OperationDataTraceResolver;
+import com.github.dactiv.framework.security.audit.IdAuditEvent;
+import com.github.dactiv.framework.security.audit.IdStoragePositioningAuditEvent;
 import com.github.dactiv.framework.security.audit.StoragePositioningAuditEvent;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.delete.Delete;
@@ -55,24 +57,6 @@ public class MybatisPlusOperationDataTraceResolver extends AbstractOperationData
         data.put(OperationDataTraceRecord.SUBMIT_DATA_FIELD, record.getSubmitData());
         data.put(OperationDataTraceRecord.REMARK_FIELD, record.getRemark());
         return createAuditEvent(record, data);
-    }
-
-    public AuditEvent createAuditEvent(OperationDataTraceRecord record, Map<String, Object> data) {
-        if (StringUtils.isNotEmpty(record.getStoragePositioning())) {
-            return new StoragePositioningAuditEvent(
-                    record.getStoragePositioning(),
-                    record.getCreationTime().toInstant(),
-                    record.getPrincipal().toString(),
-                    getOperationDataTraceProperties().getAuditPrefixName() + Casts.UNDERSCORE + record.getTarget() + Casts.UNDERSCORE + record.getType(),
-                    data
-            );
-        }
-        return new AuditEvent(
-                record.getCreationTime().toInstant(),
-                record.getPrincipal().toString(),
-                getOperationDataTraceProperties().getAuditPrefixName() + Casts.UNDERSCORE + record.getTarget() + Casts.UNDERSCORE + record.getType(),
-                data
-        );
     }
 
     @Override
@@ -141,13 +125,40 @@ public class MybatisPlusOperationDataTraceResolver extends AbstractOperationData
 
     @Override
     public void saveOperationDataTraceRecord(List<OperationDataTraceRecord> records) throws Exception {
+        String uuid = UUID.randomUUID().toString();
         for (OperationDataTraceRecord record : records) {
             AuditEvent auditEvent = createAuditEvent(record);
             if (Objects.isNull(auditEvent)) {
                 continue;
             }
-            applicationEventPublisher.publishEvent(new AuditApplicationEvent(auditEvent));
+
+            AuditEvent publishEvent;
+            if (auditEvent instanceof StoragePositioningAuditEvent storagePositioningAuditEvent) {
+                publishEvent = new IdStoragePositioningAuditEvent(uuid, storagePositioningAuditEvent);
+            } else {
+                publishEvent = new IdAuditEvent(uuid, auditEvent);
+            }
+
+            applicationEventPublisher.publishEvent(new AuditApplicationEvent(publishEvent));
         }
+    }
+
+    public AuditEvent createAuditEvent(OperationDataTraceRecord record, Map<String, Object> data) {
+        if (StringUtils.isNotEmpty(record.getStoragePositioning())) {
+            return new StoragePositioningAuditEvent(
+                    record.getStoragePositioning(),
+                    record.getCreationTime().toInstant(),
+                    record.getPrincipal().toString(),
+                    getOperationDataTraceProperties().getAuditPrefixName() + Casts.UNDERSCORE + record.getTarget() + Casts.UNDERSCORE + record.getType(),
+                    data
+            );
+        }
+        return new AuditEvent(
+                record.getCreationTime().toInstant(),
+                record.getPrincipal().toString(),
+                getOperationDataTraceProperties().getAuditPrefixName() + Casts.UNDERSCORE + record.getTarget() + Casts.UNDERSCORE + record.getType(),
+                data
+        );
     }
 
     private Object getIdValueExp(String sqlSegment, Object parameterObject) throws OgnlException {

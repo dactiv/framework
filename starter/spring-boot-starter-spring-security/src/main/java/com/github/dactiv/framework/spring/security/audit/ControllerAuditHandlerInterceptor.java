@@ -85,7 +85,7 @@ public class ControllerAuditHandlerInterceptor implements ApplicationEventPublis
             Map<String, Object> data = getData(request, response, handler);
             type = controllerAuditProperties.getAuditPrefixName() + Casts.UNDERSCORE + type;
             if (operateDataTrace) {
-                request.setAttribute(SecurityPrincipalOperationDataTraceResolver.OPERATION_DATA_TRACE_ATT_NAME, true);
+                request.setAttribute(SecurityPrincipalOperationDataTraceResolver.OPERATION_DATA_TRACE_ATTR_NAME, true);
             }
             AuditEvent auditEvent;
             if (AuditAuthenticationToken.class.isAssignableFrom(principal.getClass())) {

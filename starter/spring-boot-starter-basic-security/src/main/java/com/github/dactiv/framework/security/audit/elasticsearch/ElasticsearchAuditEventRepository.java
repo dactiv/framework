@@ -65,9 +65,6 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
     public void doAdd(AuditEvent event) {
 
         IdAuditEvent idAuditEvent = new IdAuditEvent(event);
-        if (IdAuditEvent.class.isAssignableFrom(event.getClass())) {
-            idAuditEvent = Casts.cast(event);
-        }
 
         try {
 
@@ -82,7 +79,7 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
 
             IndexQuery indexQuery = new IndexQueryBuilder()
                     .withId(idAuditEvent.getId())
-                    .withObject(idAuditEvent)
+                    .withObject(event)
                     .build();
 
             elasticsearchOperations.index(indexQuery, indexCoordinates);

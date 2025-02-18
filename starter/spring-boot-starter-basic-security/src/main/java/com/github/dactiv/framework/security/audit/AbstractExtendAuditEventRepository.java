@@ -1,6 +1,7 @@
 package com.github.dactiv.framework.security.audit;
 
 import com.github.dactiv.framework.commons.Casts;
+import com.github.dactiv.framework.commons.ReflectionUtils;
 import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.commons.id.IdEntity;
@@ -32,25 +33,9 @@ public abstract class AbstractExtendAuditEventRepository<T> implements ExtendAud
         }
 
         // 统一将 data 转换为 map，让一下没有构造函数的对象可以反序列化
-        if (event instanceof StoragePositioningAuditEvent storagePositioningAuditEvent) {
-            StoragePositioningAuditEvent convert = new StoragePositioningAuditEvent(
-                    storagePositioningAuditEvent.getStoragePositioning(),
-                    storagePositioningAuditEvent.getTimestamp(),
-                    storagePositioningAuditEvent.getPrincipal(),
-                    storagePositioningAuditEvent.getType(),
-                    Casts.convertValue(storagePositioningAuditEvent.getData(), Casts.MAP_TYPE_REFERENCE)
-            );
-            doAdd(convert);
-        } else {
-            AuditEvent convert = new AuditEvent(
-                    event.getTimestamp(),
-                    event.getPrincipal(),
-                    event.getType(),
-                    Casts.convertValue(event.getData(), Casts.MAP_TYPE_REFERENCE)
-            );
-
-            doAdd(convert);
-        }
+        Map<String, Object> data = Casts.convertValue(event.getData(), Casts.MAP_TYPE_REFERENCE);
+        ReflectionUtils.setFieldValue(event, RestResult.DEFAULT_DATA_NAME, data);
+        doAdd(event);
 
         interceptors.forEach(i -> i.postAddHandle(event));
     }

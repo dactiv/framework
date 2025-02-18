@@ -30,7 +30,7 @@ public class SecurityPrincipalOperationDataTraceResolver extends MybatisPlusOper
 
     private final ControllerAuditProperties controllerAuditProperties;
 
-    public static final String OPERATION_DATA_TRACE_ATT_NAME = "operationDataTrace";
+    public static final String OPERATION_DATA_TRACE_ATTR_NAME = "operationDataTrace";
 
     public SecurityPrincipalOperationDataTraceResolver(OperationDataTraceProperties operationDataTraceProperties,
                                                        ControllerAuditProperties controllerAuditProperties) {
@@ -48,7 +48,7 @@ public class SecurityPrincipalOperationDataTraceResolver extends MybatisPlusOper
         }
 
         HttpServletRequest httpServletRequest = optional.get();
-        Object trace = httpServletRequest.getAttribute(OPERATION_DATA_TRACE_ATT_NAME);
+        Object trace = httpServletRequest.getAttribute(OPERATION_DATA_TRACE_ATTR_NAME);
         if (Objects.isNull(trace) || Boolean.FALSE.equals(trace)) {
             return null;
         }
@@ -85,7 +85,6 @@ public class SecurityPrincipalOperationDataTraceResolver extends MybatisPlusOper
                 continue;
             }
 
-
             if (Objects.nonNull(controllerAuditEvent)) {
                 traceRecord.setControllerAuditType(controllerAuditEvent.getType());
             }
@@ -115,9 +114,10 @@ public class SecurityPrincipalOperationDataTraceResolver extends MybatisPlusOper
 
         Map<String, Object> data = new LinkedHashMap<>();
         data.put(AuditAuthenticationToken.DETAILS_KEY, authenticationToken.getDetails());
-        data.put(OPERATION_DATA_TRACE_ATT_NAME, dataTraceRecordMap);
+        data.put(OPERATION_DATA_TRACE_ATTR_NAME, dataTraceRecordMap);
 
         syncControllerAuditEvent(data);
+
         SecurityPrincipalOperationDataTraceRecord newValue = Casts.of(dataTraceRecord,SecurityPrincipalOperationDataTraceRecord.class);
         newValue.setPrincipal(authenticationToken.getName());
         return createAuditEvent(newValue, data);

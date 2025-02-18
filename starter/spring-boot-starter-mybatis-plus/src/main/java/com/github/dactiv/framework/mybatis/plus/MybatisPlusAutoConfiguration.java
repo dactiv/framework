@@ -1,8 +1,10 @@
 package com.github.dactiv.framework.mybatis.plus;
 
+import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.github.dactiv.framework.crypto.algorithm.cipher.AesCipherService;
 import com.github.dactiv.framework.crypto.algorithm.cipher.RsaCipherService;
 import com.github.dactiv.framework.mybatis.MybatisAutoConfiguration;
@@ -55,6 +57,7 @@ public class MybatisPlusAutoConfiguration {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
 
         interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor(true));
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
         interceptor.addInnerInterceptor(new LastModifiedDateInnerInterceptor(true));
         interceptor.addInnerInterceptor(new EncryptInnerInterceptor(true, applicationContext));

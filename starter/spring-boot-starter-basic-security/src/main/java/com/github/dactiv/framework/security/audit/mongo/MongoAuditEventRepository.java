@@ -47,9 +47,6 @@ public class MongoAuditEventRepository extends AbstractExtendAuditEventRepositor
     public void doAdd(AuditEvent event) {
 
         IdAuditEvent idAuditEvent = new IdAuditEvent(event);
-        if (IdAuditEvent.class.isAssignableFrom(event.getClass())) {
-            idAuditEvent = Casts.cast(event);
-        }
 
         try {
             String index = storagePositioningGenerator.generatePositioning(idAuditEvent).toLowerCase();
