@@ -37,7 +37,7 @@ public interface AuditEventRepositoryInterceptor<T> {
         return true;
     }
 
-    default void postCreateQuery(T targetQuery, Instant after, Map<String, Object> query) {
+    default void postCreateQuery(FindMetadata<T> findMetadata) {
 
     }
 }

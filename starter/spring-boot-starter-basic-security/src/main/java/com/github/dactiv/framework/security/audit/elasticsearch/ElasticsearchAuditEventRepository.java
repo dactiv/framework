@@ -105,16 +105,15 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
         }
     }
 
+
     @Override
-    protected List<AuditEvent> doFind(BoolQuery.Builder targetQuery, Instant after, Map<String, Object> query) {
+    protected List<AuditEvent> doFind(FindMetadata<BoolQuery.Builder> metadata) {
         NativeQueryBuilder builder = new NativeQueryBuilder()
-                .withQuery(new Query(targetQuery.build()))
+                .withQuery(new Query(metadata.getTargetQuery().build()))
                 .withSort(SortOptions.of(s -> s.field(f -> f.field(RestResult.DEFAULT_TIMESTAMP_NAME).order(SortOrder.Desc))));
 
-        String index = getIndexName(after).toLowerCase();
-
-        Object number = query.get(PageRequest.NUMBER_FIELD_NAME);
-        Object size = query.get(PageRequest.SIZE_FIELD_NAME);
+        Object number = metadata.getQuery().get(PageRequest.NUMBER_FIELD_NAME);
+        Object size = metadata.getQuery().get(PageRequest.SIZE_FIELD_NAME);
         if (Objects.nonNull(number) && Objects.nonNull(size)) {
             builder.withPageable(
                     org.springframework.data.domain.PageRequest.of(
@@ -125,7 +124,7 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
         }
 
         try {
-            return findData(builder.build(), index);
+            return findData(builder.build(), metadata.getStoragePositioning());
         } catch (Exception e) {
             LOGGER.warn("查询 elasticsearch 审计事件出现异常", e);
             return new LinkedList<>();
@@ -192,6 +191,13 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
         }
 
         return queryBuilder;
+    }
+
+    @Override
+    protected FindMetadata<BoolQuery.Builder> createFindEntity(BoolQuery.Builder targetQuery,
+                                                               Instant after,
+                                                               Map<String, Object> query) {
+        return new FindMetadata<>(targetQuery,getIndexName(after),query);
     }
 
     public ElasticsearchOperations getElasticsearchOperations() {

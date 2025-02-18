@@ -89,12 +89,16 @@ public abstract class AbstractExtendAuditEventRepository<T> implements ExtendAud
         }
 
         T targetQuery = createQuery(after, query);
-        interceptors.forEach(interceptor -> interceptor.postCreateQuery(targetQuery, after, query));
+        FindMetadata<T> findMetadata = createFindEntity(targetQuery, after, query);
 
-        return doFind(targetQuery, after, query);
+        interceptors.forEach(interceptor -> interceptor.postCreateQuery(findMetadata));
+
+        return doFind(findMetadata);
     }
 
-    protected abstract List<AuditEvent> doFind(T targetQuery, Instant after, Map<String, Object> query);
+    protected abstract FindMetadata<T> createFindEntity(T targetQuery, Instant after, Map<String, Object> query);
+
+    protected abstract List<AuditEvent> doFind(FindMetadata<T> entity);
 
     /**
      * 创建审计事件

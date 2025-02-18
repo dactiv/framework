@@ -94,15 +94,17 @@ public class MongoAuditEventRepository extends AbstractExtendAuditEventRepositor
     }
 
     @Override
-    protected List<AuditEvent> doFind(Criteria targetQuery, Instant after, Map<String, Object> query) {
+    protected FindMetadata<Criteria> createFindEntity(Criteria targetQuery, Instant after, Map<String, Object> query) {
+        return new FindMetadata<>(targetQuery, getCollectionName(after), query);
+    }
 
-        Query mongodbQuery = new Query(targetQuery)
+    @Override
+    protected List<AuditEvent> doFind(FindMetadata<Criteria> entity) {
+        Query mongodbQuery = new Query(entity.getTargetQuery())
                 .with(Sort.by(Sort.Order.desc(RestResult.DEFAULT_TIMESTAMP_NAME)));
 
-        String index = getCollectionName(after).toLowerCase();
-
-        Object number = query.get(PageRequest.NUMBER_FIELD_NAME);
-        Object size = query.get(PageRequest.SIZE_FIELD_NAME);
+        Object number = entity.getQuery().get(PageRequest.NUMBER_FIELD_NAME);
+        Object size = entity.getQuery().get(PageRequest.SIZE_FIELD_NAME);
         if (Objects.nonNull(number) && Objects.nonNull(size)) {
             mongodbQuery.with(
                     org.springframework.data.domain.PageRequest.of(
@@ -113,7 +115,7 @@ public class MongoAuditEventRepository extends AbstractExtendAuditEventRepositor
         }
 
         try {
-            return findData(index, mongodbQuery);
+            return findData(entity.getStoragePositioning(), mongodbQuery);
         } catch (Exception e) {
             LOGGER.warn("查询 elasticsearch 审计事件出现异常", e);
             return new LinkedList<>();

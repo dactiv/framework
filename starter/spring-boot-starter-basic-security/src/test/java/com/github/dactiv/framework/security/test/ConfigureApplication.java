@@ -31,7 +31,8 @@ public class ConfigureApplication {
     }
 
     @Bean
-    @ConditionalOnProperty(name = "spring.profiles.active",havingValue = "elasticsearch")
+
+
     public ElasticsearchAuditEventRepository elasticsearchAuditEventRepository(ElasticsearchOperations elasticsearchOperations,
                                                                                StoragePositionProperties storagePositionProperties,
                                                                                ObjectProvider<AuditEventRepositoryInterceptor<BoolQuery.Builder>> interceptors) {
