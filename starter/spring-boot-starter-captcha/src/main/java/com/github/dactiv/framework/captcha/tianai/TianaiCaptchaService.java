@@ -145,7 +145,8 @@ public class TianaiCaptchaService extends AbstractCaptchaService<TianaiRequestBo
             return false;
         }
 
-        ImageCaptchaTrack track = Casts.readValue(captcha.getValue(), ImageCaptchaTrack.class);
+        ImageCaptchaTrack track = Casts.readValue(captcha.getValue(), ImageCaptchaTrack.class, false);
+        Assert.notNull(track, "[tianal 验证码] 读取 ImageCaptchaTrack 数据为 null");
         Duration duration = Duration.between(
                 LocalDateTime.ofInstant(track.getStartSlidingTime().toInstant(), ZoneId.systemDefault()),
                 LocalDateTime.ofInstant(track.getEndSlidingTime().toInstant(), ZoneId.systemDefault())
@@ -168,7 +169,7 @@ public class TianaiCaptchaService extends AbstractCaptchaService<TianaiRequestBo
         try {
             Assert.notNull(captcha, "验证内容已过期");
 
-            Map<String, Object> map = Casts.readValue(captcha.getValue(), Casts.MAP_TYPE_REFERENCE);
+            Map<String, Object> map = Casts.readValue(captcha.getValue(), Casts.MAP_TYPE_REFERENCE, false);
             ApiResponse<?> response = imageCaptchaValidator.valid(imageCaptchaTrack, map);
             if (response.isSuccess()) {
 

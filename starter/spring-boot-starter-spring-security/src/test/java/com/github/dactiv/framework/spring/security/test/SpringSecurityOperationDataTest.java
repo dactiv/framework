@@ -69,7 +69,8 @@ public class SpringSecurityOperationDataTest {
                         .getResponse()
                         .getContentAsString(),
                 new TypeReference<>() {
-                }
+                },
+                false
         );
         content.setId(restResult.getData());
 

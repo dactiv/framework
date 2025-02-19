@@ -80,7 +80,7 @@ public class JacksonJsonTypeHandler<T> extends BaseTypeHandler<T> {
         } else if (Object.class.equals(type)) {
             return Casts.cast(json);
         } else {
-            return Casts.readValue(json, type);
+            return Casts.readValue(json, type, false);
         }
     }
 }

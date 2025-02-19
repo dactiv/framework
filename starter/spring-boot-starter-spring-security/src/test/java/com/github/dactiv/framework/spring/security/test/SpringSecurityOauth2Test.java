@@ -89,7 +89,7 @@ public class SpringSecurityOauth2Test {
                 .getResponse()
                 .getContentAsString();
 
-        RestResult<Map<String, Object>> codeResultJson = Casts.readValue(codeJson, new TypeReference<>() {});
+        RestResult<Map<String, Object>> codeResultJson = Casts.readValue(codeJson, new TypeReference<>() {}, false);
         Map<String, Object> authorizationCodeMap = Casts.cast(codeResultJson.getData().get("authorizationCode"));
         String tokenValue = authorizationCodeMap.get("tokenValue").toString();
 
@@ -111,7 +111,7 @@ public class SpringSecurityOauth2Test {
                 .getResponse()
                 .getContentAsString();
 
-        RestResult<Map<String, Object>> accessTokenResultJson = Casts.readValue(accessTokenJson, new TypeReference<>() {});
+        RestResult<Map<String, Object>> accessTokenResultJson = Casts.readValue(accessTokenJson, new TypeReference<>() {}, false);
         Map<String, Object> accessTokenMap = Casts.cast(accessTokenResultJson.getData().get("accessToken"));
         String accessTokenValue = accessTokenMap.get("tokenValue").toString();
 

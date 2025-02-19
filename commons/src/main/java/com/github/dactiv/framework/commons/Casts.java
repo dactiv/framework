@@ -227,10 +227,13 @@ public abstract class Casts {
      * @param <T>  对象范型实体值
      * @return 指定类型的对象实例
      */
-    public static <T> T readValue(String json, Class<T> type) {
+    public static <T> T readValue(String json, Class<T> type, boolean exceptionReturnNull) {
         try {
             return objectMapper.readValue(json, type);
         } catch (IOException e) {
+            if (exceptionReturnNull) {
+                return null;
+            }
             throw new SystemException(e);
         }
     }
@@ -243,10 +246,13 @@ public abstract class Casts {
      * @param <T>  对象范型实体值
      * @return 指定类型的对象实例
      */
-    public static <T> T readValue(String json, TypeReference<T> type) {
+    public static <T> T readValue(String json, TypeReference<T> type, boolean exceptionReturnNull) {
         try {
             return objectMapper.readValue(json, type);
         } catch (IOException e) {
+            if (exceptionReturnNull) {
+                return null;
+            }
             throw new SystemException(e);
         }
     }
@@ -259,10 +265,13 @@ public abstract class Casts {
      * @param <T>    对象范型实体值
      * @return 指定类型的对象实例
      */
-    public static <T> T readValue(InputStream stream, JavaType type) {
+    public static <T> T readValue(InputStream stream, JavaType type, boolean exceptionReturnNull) {
         try {
             return objectMapper.readValue(stream, type);
         } catch (IOException e) {
+            if (exceptionReturnNull) {
+                return null;
+            }
             throw new SystemException(e);
         }
     }
@@ -275,10 +284,13 @@ public abstract class Casts {
      * @param <T>    对象范型实体值
      * @return 指定类型的对象实例
      */
-    public static <T> T readValue(InputStream stream, Class<T> type) {
+    public static <T> T readValue(InputStream stream, Class<T> type, boolean exceptionReturnNull) {
         try {
             return objectMapper.readValue(stream, type);
         } catch (IOException e) {
+            if (exceptionReturnNull) {
+                return null;
+            }
             throw new SystemException(e);
         }
     }
@@ -291,10 +303,13 @@ public abstract class Casts {
      * @param <T>    对象范型实体值
      * @return 指定类型的对象实例
      */
-    public static <T> T readValue(InputStream stream, TypeReference<T> type) {
+    public static <T> T readValue(InputStream stream, TypeReference<T> type, boolean exceptionReturnNull) {
         try {
             return objectMapper.readValue(stream, type);
         } catch (Exception e) {
+            if (exceptionReturnNull) {
+                return null;
+            }
             throw new SystemException(e);
         }
     }
@@ -307,10 +322,13 @@ public abstract class Casts {
      * @param <T>  对象范型实体值
      * @return 指定类型的对象实例
      */
-    public static <T> T readValue(String json, JavaType type) {
+    public static <T> T readValue(String json, JavaType type, boolean exceptionReturnNull) {
         try {
             return objectMapper.readValue(json, type);
         } catch (IOException e) {
+            if (exceptionReturnNull) {
+                return null;
+            }
             throw new SystemException(e);
         }
     }
@@ -323,10 +341,13 @@ public abstract class Casts {
      * @param <T>   对象范型实体值
      * @return 指定类型的对象实例
      */
-    public static <T> T readValue(byte[] bytes, Class<T> type) {
+    public static <T> T readValue(byte[] bytes, Class<T> type, boolean exceptionReturnNull) {
         try {
             return objectMapper.readValue(bytes, type);
         } catch (IOException e) {
+            if (exceptionReturnNull) {
+                return null;
+            }
             throw new SystemException(e);
         }
     }
@@ -339,10 +360,13 @@ public abstract class Casts {
      * @param <T>   对象范型实体值
      * @return 指定类型的对象实例
      */
-    public static <T> T readValue(byte[] bytes, JavaType type) {
+    public static <T> T readValue(byte[] bytes, JavaType type, boolean exceptionReturnNull) {
         try {
             return objectMapper.readValue(bytes, type);
         } catch (IOException e) {
+            if (exceptionReturnNull) {
+                return null;
+            }
             throw new SystemException(e);
         }
     }
@@ -355,10 +379,13 @@ public abstract class Casts {
      * @param <T>   对象范型实体值
      * @return 指定类型的对象实例
      */
-    public static <T> T readValue(byte[] bytes, TypeReference<T> type) {
+    public static <T> T readValue(byte[] bytes, TypeReference<T> type, boolean exceptionReturnNull) {
         try {
             return objectMapper.readValue(bytes, type);
         } catch (IOException e) {
+            if (exceptionReturnNull) {
+                return null;
+            }
             throw new SystemException(e);
         }
     }

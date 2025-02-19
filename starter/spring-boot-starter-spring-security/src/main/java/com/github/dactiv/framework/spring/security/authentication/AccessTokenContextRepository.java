@@ -107,7 +107,7 @@ public class AccessTokenContextRepository extends HttpSessionSecurityContextRepo
             ByteSource byteSource = cipherService.decrypt(Base64.decode(token), key);
             String plaintext = new String(byteSource.obtainBytes(), Charset.defaultCharset());
 
-            Map<String, Object> plaintextUserDetail = Casts.readValue(plaintext, Casts.MAP_TYPE_REFERENCE);
+            Map<String, Object> plaintextUserDetail = Casts.readValue(plaintext, Casts.MAP_TYPE_REFERENCE, true);
             if (MapUtils.isEmpty(plaintextUserDetail)) {
                 return null;
             }
