@@ -50,6 +50,11 @@ public class RestResponseBodyAdvice implements ResponseBodyAdvice<Object> {
     public static final String DEFAULT_NOT_FORMAT_ATTR_NAME = "X-REST-RESULT-NOT-FORMAT";
 
     /**
+     * gateway 过来的 微服务前缀
+     */
+    public static final String DEFAULT_FORWARDED_PREFIX_HEADER_NAME = "X-FORWARDED-PREFIX";
+
+    /**
      * 默认过滤属性的 id 头名称
      */
     public static final String DEFAULT_FILTER_RESULT_ID_HEADER_NAME = "X-FILTER-RESULT-ID";
@@ -148,6 +153,12 @@ public class RestResponseBodyAdvice implements ResponseBodyAdvice<Object> {
                 }
             }
             response.setStatusCode(HttpStatus.valueOf(result.getStatus()));
+            String url = httpRequest.getServletRequest().getRequestURI();
+            String prefix = httpRequest.getHeaders().getFirst(DEFAULT_FORWARDED_PREFIX_HEADER_NAME);
+            if (StringUtils.isNotEmpty(prefix)) {
+                url = prefix + url;
+            }
+            result.getMetadata().put(RestResult.DEFAULT_URL_NAME, url);
             return result;
         } else {
             return body;

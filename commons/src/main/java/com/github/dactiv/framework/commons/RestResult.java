@@ -41,7 +41,9 @@ public class RestResult<T> implements Serializable {
 
     public static final String DEFAULT_TIMESTAMP_NAME = "timestamp";
 
-    public static final String DEFAULT_META_NAME = "meta";
+    public static final String DEFAULT_METADATA_NAME = "metadata";
+
+    public static final String DEFAULT_URL_NAME = "url";
 
     /**
      * 信息
@@ -71,7 +73,7 @@ public class RestResult<T> implements Serializable {
     /**
      * 元数据信息
      */
-    private Map<String, Object> meta = new LinkedHashMap<>();
+    private Map<String, Object> metadata = new LinkedHashMap<>();
 
     /**
      * 创建一个抽象的 rest 结果集实体类
@@ -336,17 +338,17 @@ public class RestResult<T> implements Serializable {
      *
      * @return 元数据信息
      */
-    public Map<String, Object> getMeta() {
-        return meta;
+    public Map<String, Object> getMetadata() {
+        return metadata;
     }
 
     /**
      * 设置元数据信息
      *
-     * @param meta 元数据信息
+     * @param metadata 元数据信息
      */
-    public void setMeta(Map<String, Object> meta) {
-        this.meta = meta;
+    public void setMetadata(Map<String, Object> metadata) {
+        this.metadata = metadata;
     }
 
     @Override
