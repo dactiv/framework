@@ -9,3 +9,4 @@ dactiv:
     endpoint: http://127.0.0.1:9490
     access-key: minio
     secret-key: 20160826
+    console-endpoint: http://127.0.0.1:9000

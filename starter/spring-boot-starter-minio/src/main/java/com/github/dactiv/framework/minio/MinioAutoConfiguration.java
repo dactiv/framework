@@ -30,10 +30,14 @@ public class MinioAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(EnhanceMinioClient.class)
     public EnhanceMinioClient minioClient(MinioProperties minioProperties) {
-        return new EnhanceMinioClient(MinioAsyncClient.builder()
+        MinioAsyncClient minioAsyncClient = MinioAsyncClient.builder()
                 .endpoint(minioProperties.getEndpoint())
                 .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
-                .build());
+                .build();
+        return new EnhanceMinioClient(
+                minioAsyncClient,
+                minioProperties
+        );
     }
 
     /**
@@ -45,8 +49,12 @@ public class MinioAutoConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(MinioTemplate.class)
-    public MinioTemplate minioTemplate(EnhanceMinioClient minioClient, ObjectProvider<ObjectMapper> objectMapper) {
-        return new MinioTemplate(minioClient, objectMapper.getIfUnique(ObjectMapper::new));
+    public MinioTemplate minioTemplate(EnhanceMinioClient minioClient,
+                                       ObjectProvider<ObjectMapper> objectMapper) {
+        return new MinioTemplate(
+                minioClient,
+                objectMapper.getIfUnique(ObjectMapper::new)
+        );
     }
 
 }

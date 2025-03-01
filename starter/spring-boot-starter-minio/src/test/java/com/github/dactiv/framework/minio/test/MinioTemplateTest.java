@@ -1,6 +1,7 @@
 package com.github.dactiv.framework.minio.test;
 
 import com.github.dactiv.framework.commons.CacheProperties;
+import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.TimeProperties;
 import com.github.dactiv.framework.commons.minio.Bucket;
 import com.github.dactiv.framework.commons.minio.FileObject;
@@ -23,6 +24,8 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -75,6 +78,13 @@ public class MinioTemplateTest {
         minioTemplate.deleteBucket(upperCaseBucket);
 
         Assertions.assertTrue(minioTemplate.makeBucketIfNotExists(Bucket.of(DEFAULT_TEST_BUCKET, randomRegion)));
+        Map<String, Object> bucketInfo = minioTemplate.buckets(StringUtils.EMPTY);
+
+        List<Map<String, Object>> buckets = Casts.cast(bucketInfo.get("buckets"));
+        Assertions.assertTrue(buckets.stream().anyMatch(m -> m.get("name").equals(DEFAULT_TEST_BUCKET)));
+
+        Map<String, Object> newBucket = minioTemplate.buckets(DEFAULT_TEST_BUCKET);
+        Assertions.assertEquals(DEFAULT_TEST_BUCKET, newBucket.get("name"));
 
         try {
             minioTemplate.makeBucketIfNotExists(Bucket.of("Minio$$$Error.Test"));
@@ -123,7 +133,7 @@ public class MinioTemplateTest {
                 .build();
 
         Iterable<Result<Item>> iterable = minioTemplate.getMinioClient().listObjects(listObjectsArgs);
-        Assertions.assertEquals(iterable.iterator().next().get().objectName(), "delete");
+        Assertions.assertEquals("delete", iterable.iterator().next().get().objectName());
 
         minioTemplate.deleteObject(deleteFile);
         iterable = minioTemplate.getMinioClient().listObjects(listObjectsArgs);
@@ -173,7 +183,7 @@ public class MinioTemplateTest {
                 .build();
 
         iterable = minioTemplate.getMinioClient().listObjects(listObjectsArgs);
-        Assertions.assertEquals(iterable.iterator().next().get().objectName(), "delete");
+        Assertions.assertEquals("delete", iterable.iterator().next().get().objectName());
 
         minioTemplate.deleteObject(deleteFile, true);
         Assertions.assertFalse(minioTemplate.isBucketExist(bucket));
@@ -201,7 +211,7 @@ public class MinioTemplateTest {
                 .build();
 
         Iterable<Result<Item>> iterable = minioTemplate.getMinioClient().listObjects(copy);
-        Assertions.assertEquals(iterable.iterator().next().get().objectName(), "copy");
+        Assertions.assertEquals("copy", iterable.iterator().next().get().objectName());
         MoveFileObject moveFileObject = new MoveFileObject(copyFile, FileObject.of(bucket, "newCopy"));
         ObjectWriteResponse response = minioTemplate.moveObject(moveFileObject);
 

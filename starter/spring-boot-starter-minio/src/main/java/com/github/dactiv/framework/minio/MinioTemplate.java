@@ -113,6 +113,17 @@ public class MinioTemplate {
     }
 
     /**
+     * 获取桶信息
+     *
+     * @param name 桶名称，如果不未 “” 或者 null，讲返回 api buckets 的所有内容，否则返回 api buckets 接口的 buckets 单个对象信息
+     *
+     * @return 桶信息
+     */
+    public Map<String,Object> buckets(String name){
+        return minioClient.buckets(name);
+    }
+
+    /**
      * 判断文件是否存在
      *
      * @param fileObject 文件对象
