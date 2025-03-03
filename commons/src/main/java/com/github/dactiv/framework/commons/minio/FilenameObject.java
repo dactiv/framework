@@ -22,7 +22,7 @@ public class FilenameObject extends FileObject {
     /**
      * minio 原始文件名称
      */
-    public final static String MINIO_ORIGINAL_FILE_NAME = "originalFileName";
+    public final static String MINIO_ORIGINAL_FILE_NAME = "original-filename";
     /**
      * 文件名称
      */

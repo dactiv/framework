@@ -17,7 +17,7 @@ public class ScrollPageRequest implements Serializable {
     /**
      * 默认每页大小
      */
-    public static final int DEFAULT_SIZE = 10;
+    public static final Integer DEFAULT_SIZE = 10;
     /**
      * 每页大小
      */

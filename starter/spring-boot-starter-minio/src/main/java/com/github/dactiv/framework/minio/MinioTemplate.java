@@ -5,17 +5,14 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dactiv.framework.commons.Casts;
-import com.github.dactiv.framework.commons.TimeProperties;
 import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.commons.minio.*;
 import com.google.common.collect.Multimap;
 import io.minio.*;
-import io.minio.http.Method;
 import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
 import io.minio.messages.Item;
 import io.minio.messages.Part;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,21 +48,31 @@ public class MinioTemplate {
      */
     public static final String UPLOAD_ID_PARAM_NAME = "uploadId";
 
+
+    /**
+     * AMZ 元数据前缀
+     */
+    public static final String AMZ_META_PREFIX = "x-amz-meta-";
+
     /**
      * 上传者 id
      */
-    public static final String UPLOADER_ID = "uploaderId";
+    public static final String UPLOADER_ID = "uploader-id";
 
     /**
-     * 上传者类型
+     * AMZ 元数据上传者 id
      */
-    public static final String UPLOADER_TYPE = "uploaderType";
+    public static final String AMZ_META_UPLOADER_ID = AMZ_META_PREFIX + UPLOADER_ID;
+
+    /**
+     * AMZ 元数据原始文件类型
+     */
+    public static final String AMZ_META_ORIGINAL_FILE_NAME = AMZ_META_PREFIX + FilenameObject.MINIO_ORIGINAL_FILE_NAME;
 
     /**
      * 用户元数据信息
      */
     public static final String USER_METADATA = "userMetadata";
-
     /**
      * minio 客户端
      */
@@ -228,83 +235,6 @@ public class MinioTemplate {
     }
 
     /**
-     * 获取文件列表
-     *
-     * @param bucket 桶信息
-     *
-     * @return 文件项
-     *
-     * @throws Exception 获取错误时抛出
-     */
-    public List<ObjectItem> getFileObjects(Bucket bucket) throws Exception {
-
-        ListObjectsArgs args = ListObjectsArgs
-                .builder()
-                .bucket(bucket.getBucketName())
-                .includeUserMetadata(true)
-                .useApiVersion1(false)
-                .build();
-
-        Iterable<Result<Item>> results = minioClient.listObjects(args);
-
-        return covertObjectItem(results);
-    }
-
-    /**
-     * 推送对象
-     *
-     * @param fileObject 文件对象
-     * @param inputStream 输入流
-     *
-     * @return 对象写入响应信息
-     *
-     * @throws Exception 推送错误时跑出
-     */
-    public ObjectWriteResponse putObject(FileObject fileObject, InputStream inputStream, Map<String, String> userMetadata) throws Exception {
-
-        if (fileObject instanceof FilenameObject) {
-            FilenameObject filenameObject = Casts.cast(fileObject);
-            if (MapUtils.isEmpty(userMetadata)) {
-                userMetadata = new LinkedHashMap<>();
-            }
-            userMetadata.put(FilenameObject.MINIO_ORIGINAL_FILE_NAME, filenameObject.getFilename());
-        }
-
-        return minioClient.putObject(
-                PutObjectArgs.builder()
-                        .bucket(fileObject.getBucketName())
-                        .region(fileObject.getRegion())
-                        .object(fileObject.getObjectName())
-                        .userMetadata(userMetadata)
-                        .stream(inputStream, inputStream.available(), -1)
-                        .build()
-        ).get();
-    }
-
-    /**
-     * 推送对象
-     *
-     * @param fileObject 文件对象
-     * @param inputStream 输入流
-     * @param objectSize 文件大小
-     * @param partSize 段大小
-     *
-     * @return 对象写入响应信息
-     *
-     * @throws Exception 推送错误时跑出
-     */
-    public ObjectWriteResponse putObject(FileObject fileObject, InputStream inputStream, int objectSize, int partSize) throws Exception {
-        return minioClient.putObject(
-                PutObjectArgs.builder()
-                        .bucket(fileObject.getBucketName())
-                        .region(fileObject.getRegion())
-                        .object(fileObject.getObjectName())
-                        .stream(inputStream,  objectSize, partSize)
-                        .build()
-        ).get();
-    }
-
-    /**
      * 删除文件
      *
      * @param fileObject          文件对象描述
@@ -396,60 +326,6 @@ public class MinioTemplate {
         }
 
         return minioClient.getObject(getObjectArgs.build()).get();
-    }
-
-    /**
-     * 获取预览 url
-     *
-     * @param fileObject 文件对象
-     * @param method 签署方法
-     *
-     * @return url
-     */
-    public String getPresignedObjectUrl(FileObject fileObject, Method method) throws Exception {
-        return getPresignedObjectUrl(fileObject, method, null);
-    }
-
-    /**
-     * 获取预览 url
-     *
-     * @param fileObject 文件对象
-     * @param method 签署方法
-     * @param timeProperties 过期时间配置
-     *
-     * @return url
-     */
-    public String getPresignedObjectUrl(FileObject fileObject, Method method, TimeProperties timeProperties) throws Exception {
-        return getPresignedObjectUrl(fileObject, method, timeProperties, null);
-    }
-
-    /**
-     * 获取签署 url
-     *
-     * @param fileObject 文件对象
-     * @param method 签署方法
-     * @param timeProperties 过期时间配置
-     * @param queryParams 扩展的查询参数
-     *
-     * @return url
-     */
-    public String getPresignedObjectUrl(FileObject fileObject, Method method, TimeProperties timeProperties, Map<String, String> queryParams) throws Exception {
-        GetPresignedObjectUrlArgs.Builder builder = GetPresignedObjectUrlArgs
-                .builder()
-                .method(method)
-                .bucket(fileObject.getBucketName())
-                .region(fileObject.getRegion())
-                .object(fileObject.getObjectName());
-
-        if (Objects.nonNull(timeProperties)) {
-            builder.expiry((int)timeProperties.getValue(), timeProperties.getUnit());
-        }
-
-        if (MapUtils.isNotEmpty(queryParams)) {
-            builder.extraQueryParams(queryParams);
-        }
-
-        return minioClient.getPresignedObjectUrl(builder.build());
     }
 
     /**
@@ -773,90 +649,6 @@ public class MinioTemplate {
                                        Multimap<String, String> extraHeaders,
                                        Multimap<String, String> extraQueryParams) throws Exception {
         return minioClient.listParts(fileObject, maxParts, partNumberMarker, uploadId, extraHeaders, extraQueryParams);
-    }
-
-    /**
-     * 查询对象信息
-     *
-     * @param fileObject 文件对象
-     *
-     * @return 响应内容
-     *
-     * @throws Exception 查询对象信息错误时抛出
-     */
-    public StatObjectResponse statObject(FileObject fileObject) throws Exception {
-        return statObject(fileObject, null);
-
-    }
-
-    /**
-     * 查询对象信息
-     *
-     * @param fileObject 文件对象
-     * @param matchEtag etag 值
-     *
-     * @return 响应内容
-     *
-     * @throws Exception 查询对象信息错误时抛出
-     */
-    public StatObjectResponse statObject(FileObject fileObject, String matchEtag) throws Exception {
-        return statObject(fileObject, matchEtag, null);
-
-    }
-
-    /**
-     * 查询对象信息
-     *
-     * @param fileObject 文件对象
-     * @param matchEtag etag 值
-     * @param headers 头信息
-     *
-     * @return 响应内容
-     *
-     * @throws Exception 查询对象信息错误时抛出
-     */
-    public StatObjectResponse statObject(FileObject fileObject, String matchEtag, Map<String, String> headers) throws Exception {
-        return statObject(fileObject, matchEtag, headers, null);
-
-    }
-
-    /**
-     * 查询对象信息
-     *
-     * @param fileObject 文件对象
-     * @param matchEtag etag 值
-     * @param headers 头信息
-     * @param queryParams 查询参数信息
-     *
-     * @return 响应内容
-     *
-     * @throws Exception 查询对象信息错误时抛出
-     */
-    public StatObjectResponse statObject(FileObject fileObject, String matchEtag, Map<String, String> headers, Map<String, String> queryParams) throws Exception {
-        ObjectConditionalReadArgs.Builder<StatObjectArgs.Builder, StatObjectArgs> statObjectArgs = StatObjectArgs
-                .builder()
-                .region(fileObject.getRegion())
-                .bucket(fileObject.getBucketName())
-                .object(fileObject.getObjectName());
-
-        if (VersionFileObject.class.isAssignableFrom(fileObject.getClass())) {
-            VersionFileObject object = Casts.cast(fileObject);
-            statObjectArgs.versionId(object.getVersionId());
-        }
-
-        if (StringUtils.isNotEmpty(matchEtag)) {
-            statObjectArgs.matchETag(matchEtag);
-        }
-
-
-        if (MapUtils.isNotEmpty(headers)) {
-            statObjectArgs.extraHeaders(headers);
-        }
-        if (MapUtils.isNotEmpty(queryParams)) {
-            statObjectArgs.extraQueryParams(queryParams);
-        }
-
-        return minioClient.statObject(statObjectArgs.build()).get();
     }
 
     /**

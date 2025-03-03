@@ -1,11 +1,13 @@
 package com.github.dactiv.framework.minio;
 
 import io.minio.messages.Item;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 对象项类，用于在获取的内容 {@link Item} 时，能够序列化成 json 使用
@@ -28,7 +30,11 @@ public class ObjectItem implements Serializable {
     }
 
     public String getEtag() {
-        return item.etag();
+        String etag = item.etag();
+        if (StringUtils.startsWith(etag, "\"") && (StringUtils.endsWith(etag, "\""))) {
+            etag = StringUtils.unwrap(etag, "\"");
+        }
+        return etag;
     }
 
     public LocalDateTime getLastModified() {
@@ -41,5 +47,39 @@ public class ObjectItem implements Serializable {
 
     public Map<String, String> getUserMetadata() {
         return item.userMetadata();
+    }
+
+    public String getOwnerId() {
+        if(Objects.isNull(item.owner())) {
+            return null;
+        }
+        return item.owner().id();
+    }
+
+    public String getOwnerName() {
+        if(Objects.isNull(item.owner())) {
+            return null;
+        }
+        return item.owner().displayName();
+    }
+
+    public String getStorageClass() {
+        return item.storageClass();
+    }
+
+    public boolean isLatest() {
+        return item.isLatest();
+    }
+
+    public String getVersionId() {
+        return item.versionId();
+    }
+
+    public String getUserTags() {
+        return item.userTags();
+    }
+
+    public boolean isDir() {
+        return item.isDir();
     }
 }
