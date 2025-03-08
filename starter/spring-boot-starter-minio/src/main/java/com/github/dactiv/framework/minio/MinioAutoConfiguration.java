@@ -21,40 +21,25 @@ import org.springframework.context.annotation.Configuration;
 public class MinioAutoConfiguration {
 
     /**
-     * minio 客户端
-     *
-     * @param minioProperties mini 模版
-     *
-     * @return mini 客户端
-     */
-    @Bean
-    @ConditionalOnMissingBean(EnhanceMinioClient.class)
-    public EnhanceMinioClient minioClient(MinioProperties minioProperties) {
-        MinioAsyncClient minioAsyncClient = MinioAsyncClient.builder()
-                .endpoint(minioProperties.getEndpoint())
-                .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
-                .build();
-        return new EnhanceMinioClient(
-                minioAsyncClient,
-                minioProperties
-        );
-    }
-
-    /**
      * minio 模版配置
      *
-     * @param minioClient minio 客户端
+     * @param minioProperties minio 配置信息
+     * @param objectMapper jackson json 序列化对象映射类
      *
      * @return minio 模版
      */
     @Bean
-    @ConditionalOnMissingBean(MinioTemplate.class)
-    public MinioTemplate minioTemplate(EnhanceMinioClient minioClient,
-                                       ObjectProvider<ObjectMapper> objectMapper) {
-        return new MinioTemplate(
-                minioClient,
-                objectMapper.getIfUnique(ObjectMapper::new)
-        );
+    @ConditionalOnMissingBean(MinioAsyncTemplate.class)
+    public MinioAsyncTemplate minioAsyncTemplate(MinioProperties minioProperties,
+                                                 ObjectProvider<ObjectMapper> objectMapper) {
+
+        MinioAsyncClient minioAsyncClient = MinioAsyncClient.builder()
+                .endpoint(minioProperties.getEndpoint())
+                .credentials(minioProperties.getAccessKey(), minioProperties.getSecretKey())
+                .build();
+
+        return new MinioAsyncTemplate(minioAsyncClient, objectMapper.getIfUnique(ObjectMapper::new), minioProperties);
+
     }
 
 }

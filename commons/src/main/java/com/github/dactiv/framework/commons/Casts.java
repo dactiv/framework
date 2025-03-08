@@ -226,7 +226,10 @@ public abstract class Casts {
      * @param type 指定类型的对象 class
      * @param <T>  对象范型实体值
      * @return 指定类型的对象实例
+     *
+     * @deprecated 使用 {@link SystemException#convertSupplier(SystemException.SupplierWithException, String)} } 替代
      */
+    @Deprecated
     public static <T> T readValue(String json, Class<T> type, boolean exceptionReturnNull) {
         try {
             return objectMapper.readValue(json, type);
@@ -245,7 +248,10 @@ public abstract class Casts {
      * @param type 引用类型
      * @param <T>  对象范型实体值
      * @return 指定类型的对象实例
+     *
+     * @deprecated 使用 {@link SystemException#convertSupplier(SystemException.SupplierWithException, String)}} 替代
      */
+    @Deprecated
     public static <T> T readValue(String json, TypeReference<T> type, boolean exceptionReturnNull) {
         try {
             return objectMapper.readValue(json, type);
@@ -264,7 +270,10 @@ public abstract class Casts {
      * @param type   用于包含信息和作为反序列化器键的类型标记类的基类
      * @param <T>    对象范型实体值
      * @return 指定类型的对象实例
+     *
+     * @deprecated 使用 {@link SystemException#convertSupplier(SystemException.SupplierWithException, String)}} 替代
      */
+    @Deprecated
     public static <T> T readValue(InputStream stream, JavaType type, boolean exceptionReturnNull) {
         try {
             return objectMapper.readValue(stream, type);
@@ -283,7 +292,10 @@ public abstract class Casts {
      * @param type   指定类型的对象 class
      * @param <T>    对象范型实体值
      * @return 指定类型的对象实例
+     *
+     * @deprecated 使用 {@link SystemException#convertSupplier(SystemException.SupplierWithException, String)}} 替代
      */
+    @Deprecated
     public static <T> T readValue(InputStream stream, Class<T> type, boolean exceptionReturnNull) {
         try {
             return objectMapper.readValue(stream, type);
@@ -302,7 +314,10 @@ public abstract class Casts {
      * @param type   引用类型
      * @param <T>    对象范型实体值
      * @return 指定类型的对象实例
+     *
+     * @deprecated 使用 {@link SystemException#convertSupplier(SystemException.SupplierWithException, String)}} 替代
      */
+    @Deprecated
     public static <T> T readValue(InputStream stream, TypeReference<T> type, boolean exceptionReturnNull) {
         try {
             return objectMapper.readValue(stream, type);
@@ -321,7 +336,10 @@ public abstract class Casts {
      * @param type 用于包含信息和作为反序列化器键的类型标记类的基类
      * @param <T>  对象范型实体值
      * @return 指定类型的对象实例
+     *
+     * @deprecated 使用 {@link SystemException#convertSupplier(SystemException.SupplierWithException, String)}} 替代
      */
+    @Deprecated
     public static <T> T readValue(String json, JavaType type, boolean exceptionReturnNull) {
         try {
             return objectMapper.readValue(json, type);
@@ -340,7 +358,10 @@ public abstract class Casts {
      * @param type  指定类型的对象 class
      * @param <T>   对象范型实体值
      * @return 指定类型的对象实例
+     *
+     * @deprecated 使用 {@link SystemException#convertSupplier(SystemException.SupplierWithException, String)}} 替代
      */
+    @Deprecated
     public static <T> T readValue(byte[] bytes, Class<T> type, boolean exceptionReturnNull) {
         try {
             return objectMapper.readValue(bytes, type);
@@ -359,7 +380,10 @@ public abstract class Casts {
      * @param type  用于包含信息和作为反序列化器键的类型标记类的基类
      * @param <T>   对象范型实体值
      * @return 指定类型的对象实例
+     *
+     * @deprecated 使用 {@link SystemException#convertSupplier(SystemException.SupplierWithException, String)}} 替代
      */
+    @Deprecated
     public static <T> T readValue(byte[] bytes, JavaType type, boolean exceptionReturnNull) {
         try {
             return objectMapper.readValue(bytes, type);
@@ -378,7 +402,10 @@ public abstract class Casts {
      * @param type  用于包含信息和作为反序列化器键的类型标记类的基类
      * @param <T>   对象范型实体值
      * @return 指定类型的对象实例
+     *
+     * @deprecated 使用 {@link SystemException#convertSupplier(SystemException.SupplierWithException, String)}} 替代
      */
+    @Deprecated
     public static <T> T readValue(byte[] bytes, TypeReference<T> type, boolean exceptionReturnNull) {
         try {
             return objectMapper.readValue(bytes, type);

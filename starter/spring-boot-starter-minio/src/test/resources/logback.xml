@@ -7,6 +7,8 @@
         </encoder>
     </appender>
 
+    <logger name="io.minio" level="DEBUG"/>
+
     <root level="INFO">
         <appender-ref ref="CONSOLE-APPENDER"/>
     </root>

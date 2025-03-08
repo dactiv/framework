@@ -1,6 +1,8 @@
 package com.github.dactiv.framework.security.entity;
 
 
+import com.github.dactiv.framework.commons.enumerate.NameEnum;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
@@ -16,8 +18,6 @@ public class RoleAuthority implements Serializable {
     private static final long serialVersionUID = 405960799851529326L;
 
     public static final String DEFAULT_ROLE_PREFIX = "ROLE_";
-
-    public static final String DEFAULT_NAME_FIELD_NAME = "name";
 
     public static final String DEFAULT_AUTHORITY_FIELD_NAME = "authority";
 
@@ -52,7 +52,7 @@ public class RoleAuthority implements Serializable {
     }
 
     public RoleAuthority(Map<String, Object> map) {
-        this(map.get(DEFAULT_NAME_FIELD_NAME).toString(), map.get(DEFAULT_AUTHORITY_FIELD_NAME).toString());
+        this(map.get(NameEnum.FIELD_NAME).toString(), map.get(DEFAULT_AUTHORITY_FIELD_NAME).toString());
     }
 
     /**

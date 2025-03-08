@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.exception.NameEnumNotFoundException;
+import com.github.dactiv.framework.commons.exception.SystemException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -50,11 +51,9 @@ public class NameEnumUtils {
             }
         }
 
-        if (!ignoreNotFound) {
-            String msg = enumClass.getName() + " 中找不到值为: " + value + " 的对应名称，" +
-                    enumClass.getName() + "信息为:" + castMap(enumClass);
-            throw new NameEnumNotFoundException(msg);
-        }
+        String msg = enumClass.getName() + " 中找不到值为: " + value + " 的对应名称，" +
+                enumClass.getName() + "信息为:" + castMap(enumClass);
+        SystemException.isTrue(ignoreNotFound, () -> new NameEnumNotFoundException(msg));
 
         return null;
     }
@@ -156,11 +155,10 @@ public class NameEnumUtils {
             }
         }
 
-        if (!ignoreNotFound) {
-            String msg = enumClass.getName() + " 中找不到值为: " + value + " 的对应名称，" +
-                    enumClass.getName() + "信息为:" + castMap(enumClass);
-            throw new NameEnumNotFoundException(msg);
-        }
+        String msg = enumClass.getName() + " 中找不到值为: " + value + " 的对应名称，" +
+                enumClass.getName() + "信息为:" + castMap(enumClass);
+
+        SystemException.isTrue(ignoreNotFound, () -> new NameEnumNotFoundException(msg));
 
         return null;
     }

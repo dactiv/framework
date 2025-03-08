@@ -31,6 +31,26 @@ public class MinioProperties {
     private String consoleApiPrefix = "/api/v1";
 
     /**
+     * 管理端登录请求体 accessKey 名称
+     */
+    private String accessKeyBodyName = "accessKey";
+
+    /**
+     * 管理端登录请求体 secretKey 名称
+     */
+    private String secretKeyBodyName = "secretKey";
+
+    /**
+     * 大文件上传的临时文件存储位置
+     */
+    private String uploadPartTempFilePath = "./upload_part/temp_file";
+
+    /**
+     * 用于隔离大文件上传，批量删除等多现成操作的专有线程池储量，如果为 null 默认取值为: Runtime.getRuntime().availableProcessors() * 2
+     */
+    private Integer ioExecutorNumberOfThreads = null;
+
+    /**
      * 访问密钥
      */
     private String accessKey;
@@ -110,6 +130,22 @@ public class MinioProperties {
         this.secretKey = secretKey;
     }
 
+    public String getAccessKeyBodyName() {
+        return accessKeyBodyName;
+    }
+
+    public void setAccessKeyBodyName(String accessKeyBodyName) {
+        this.accessKeyBodyName = accessKeyBodyName;
+    }
+
+    public String getSecretKeyBodyName() {
+        return secretKeyBodyName;
+    }
+
+    public void setSecretKeyBodyName(String secretKeyBodyName) {
+        this.secretKeyBodyName = secretKeyBodyName;
+    }
+
     /**
      * 设置控制台终端地址
      *
@@ -165,5 +201,21 @@ public class MinioProperties {
 
     public void setRefreshCookieCron(String refreshCookieCron) {
         this.refreshCookieCron = refreshCookieCron;
+    }
+
+    public String getUploadPartTempFilePath() {
+        return uploadPartTempFilePath;
+    }
+
+    public void setUploadPartTempFilePath(String uploadPartTempFilePath) {
+        this.uploadPartTempFilePath = uploadPartTempFilePath;
+    }
+
+    public Integer getIoExecutorNumberOfThreads() {
+        return ioExecutorNumberOfThreads;
+    }
+
+    public void setIoExecutorNumberOfThreads(Integer ioExecutorNumberOfThreads) {
+        this.ioExecutorNumberOfThreads = ioExecutorNumberOfThreads;
     }
 }

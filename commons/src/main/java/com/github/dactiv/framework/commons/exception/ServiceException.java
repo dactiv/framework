@@ -8,7 +8,7 @@ import java.io.Serial;
  *
  * @author maurice.chen
  **/
-public class ServiceException extends RuntimeException {
+public class ServiceException extends SystemException {
 
     @Serial
     private static final long serialVersionUID = 5031974444998025805L;
@@ -45,17 +45,5 @@ public class ServiceException extends RuntimeException {
      */
     public ServiceException(Throwable cause) {
         super(cause);
-    }
-
-    /**
-     * 业务逻辑异常实现
-     *
-     * @param message            错误信息
-     * @param cause              异常类
-     * @param enableSuppression  是否启用或禁用抑制 true 是，否则 false
-     * @param writableStackTrace 是否生成栈追踪信息 true 是，否则 false
-     */
-    public ServiceException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
     }
 }

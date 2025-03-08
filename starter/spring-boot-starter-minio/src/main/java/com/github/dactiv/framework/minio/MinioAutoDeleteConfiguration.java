@@ -34,12 +34,12 @@ public class MinioAutoDeleteConfiguration implements SchedulingConfigurer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MinioAutoDeleteConfiguration.class);
 
-    private final MinioTemplate minioTemplate;
+    private final MinioAsyncTemplate minioAsyncTemplate;
 
     private final AutoDeleteProperties autoDeleteProperties;
 
-    MinioAutoDeleteConfiguration(MinioTemplate minioTemplate, AutoDeleteProperties autoDeleteProperties) {
-        this.minioTemplate = minioTemplate;
+    MinioAutoDeleteConfiguration(MinioAsyncTemplate minioAsyncTemplate, AutoDeleteProperties autoDeleteProperties) {
+        this.minioAsyncTemplate = minioAsyncTemplate;
         this.autoDeleteProperties = autoDeleteProperties;
     }
 
@@ -67,7 +67,7 @@ public class MinioAutoDeleteConfiguration implements SchedulingConfigurer {
                         .bucket(bucket.getBucketName())
                         .build();
 
-                Iterable<Result<Item>> iterable = minioTemplate.getMinioClient().listObjects(listObjectsArgs);
+                Iterable<Result<Item>> iterable = minioAsyncTemplate.listObjects(listObjectsArgs);
 
                 for (Result<Item> result : iterable) {
 
@@ -85,7 +85,7 @@ public class MinioAutoDeleteConfiguration implements SchedulingConfigurer {
                                 .plus(time.getValue(), time.getUnit().toChronoUnit());
 
                         if (LocalDateTime.now().isAfter(expirationTime)) {
-                            minioTemplate.deleteObject(FileObject.of(bucket, item.objectName()));
+                            minioAsyncTemplate.deleteObject(FileObject.of(bucket, item.objectName()), true);
                             LOGGER.info("删除桶 [{}] 的 [{}] 对象", bucket.getBucketName(), item.objectName());
                         }
 

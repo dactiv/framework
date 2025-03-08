@@ -39,6 +39,11 @@ public class ErrorCodeException extends SystemException {
     public static final String BED_REQUEST_CODE = "100400";
 
     /**
+     * 强制刷新页面后再调用接口代码
+     */
+    public static final String NO_CONTENT_CODE = "100204";
+
+    /**
      * 错误代码
      */
     private final String errorCode;

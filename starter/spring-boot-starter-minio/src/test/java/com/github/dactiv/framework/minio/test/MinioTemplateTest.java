@@ -3,17 +3,17 @@ package com.github.dactiv.framework.minio.test;
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.TimeProperties;
+import com.github.dactiv.framework.commons.enumerate.NameEnum;
 import com.github.dactiv.framework.commons.minio.Bucket;
 import com.github.dactiv.framework.commons.minio.FileObject;
 import com.github.dactiv.framework.commons.minio.MoveFileObject;
-import com.github.dactiv.framework.minio.MinioTemplate;
+import com.github.dactiv.framework.minio.ConsoleApiMinioAsyncClient;
+import com.github.dactiv.framework.minio.MinioAsyncTemplate;
+import io.minio.GetObjectResponse;
 import io.minio.ListObjectsArgs;
 import io.minio.ObjectWriteResponse;
 import io.minio.Result;
-import io.minio.http.Method;
 import io.minio.messages.Item;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -21,12 +21,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutionException;
 
 /**
  * minio 模版单元测试
@@ -37,12 +41,13 @@ import java.util.concurrent.TimeUnit;
 public class MinioTemplateTest {
 
     public static final String DEFAULT_TEST_BUCKET = "minio.test";
-    public static final String DEFAULT_UPPER_CASE_TEST_BUCKET = "minio.upper.case.test".toUpperCase();
 
     public static final String DEFAULT_TEST_FILE = "classpath:/787963DE-9662-4245-ABC7-8E6673F114F5.jpeg";
 
+    private static final String BIG_FILE_PATH = "E:/私密马赛/88200dfd2eb07db87048aef08786c95a.mp4";
+
     @Autowired
-    private MinioTemplate minioTemplate;
+    private MinioAsyncTemplate minioAsyncTemplate;
 
     private final ResourceLoader resourceLoader = new DefaultResourceLoader();
 
@@ -50,81 +55,55 @@ public class MinioTemplateTest {
     public void uninstall() throws Exception {
         Bucket bucket = Bucket.of(DEFAULT_TEST_BUCKET);
 
-        if (minioTemplate.isBucketExist(bucket)) {
+        if (minioAsyncTemplate.isBucketExist(bucket).get()) {
 
-            Iterable<Result<Item>> iterable = minioTemplate.getMinioClient().listObjects(ListObjectsArgs.builder().bucket(bucket.getBucketName()).build());
+            Iterable<Result<Item>> iterable = minioAsyncTemplate.listObjects(ListObjectsArgs.builder().bucket(bucket.getBucketName()).build());
 
             for (Result<Item> r : iterable) {
                 Item item = r.get();
-                minioTemplate.deleteObject(FileObject.of(bucket, item.objectName()));
+                minioAsyncTemplate.deleteObject(FileObject.of(bucket, item.objectName()), false).get();
             }
 
-            minioTemplate.deleteBucket(bucket);
+            minioAsyncTemplate.deleteBucket(bucket);
         }
     }
 
     @Test
-    void makeBucketIfNotExists() throws Exception {
-
-        String randomRegion = RandomStringUtils.secure().nextAlphabetic(6);
+    void testMakeBucketIfNotExists() throws Exception {
 
         Bucket bucket = Bucket.of(DEFAULT_TEST_BUCKET);
 
-        Assertions.assertFalse(minioTemplate.makeBucketIfNotExists(bucket));
-        Assertions.assertTrue(minioTemplate.makeBucketIfNotExists(bucket));
+        Assertions.assertTrue(minioAsyncTemplate.makeBucketIfNotExists(bucket).get());
+        Assertions.assertFalse(minioAsyncTemplate.makeBucketIfNotExists(bucket).get());
 
-        Bucket upperCaseBucket = Bucket.of(DEFAULT_UPPER_CASE_TEST_BUCKET);
-        Assertions.assertFalse(minioTemplate.makeBucketIfNotExists(upperCaseBucket));
-        minioTemplate.deleteBucket(upperCaseBucket);
+        Map<String, Object> bucketInfo = minioAsyncTemplate.buckets(StringUtils.EMPTY).get();
 
-        Assertions.assertTrue(minioTemplate.makeBucketIfNotExists(Bucket.of(DEFAULT_TEST_BUCKET, randomRegion)));
-        Map<String, Object> bucketInfo = minioTemplate.buckets(StringUtils.EMPTY);
+        List<Map<String, Object>> buckets = Casts.cast(bucketInfo.get(ConsoleApiMinioAsyncClient.BUCKETS_API_NAME));
+        Assertions.assertTrue(buckets.stream().anyMatch(m -> m.get(NameEnum.FIELD_NAME).equals(DEFAULT_TEST_BUCKET)));
 
-        List<Map<String, Object>> buckets = Casts.cast(bucketInfo.get("buckets"));
-        Assertions.assertTrue(buckets.stream().anyMatch(m -> m.get("name").equals(DEFAULT_TEST_BUCKET)));
-
-        Map<String, Object> newBucket = minioTemplate.buckets(DEFAULT_TEST_BUCKET);
-        Assertions.assertEquals(DEFAULT_TEST_BUCKET, newBucket.get("name"));
+        Map<String, Object> newBucket = minioAsyncTemplate.buckets(DEFAULT_TEST_BUCKET).get();
+        Assertions.assertEquals(DEFAULT_TEST_BUCKET, newBucket.get(NameEnum.FIELD_NAME));
 
         try {
-            minioTemplate.makeBucketIfNotExists(Bucket.of("Minio$$$Error.Test"));
+            minioAsyncTemplate.makeBucketIfNotExists(Bucket.of("Minio$$$Error.Test")).get();
         } catch (Exception e) {
             Assertions.assertTrue(IllegalArgumentException.class.isAssignableFrom(e.getClass()));
         }
     }
 
     @Test
-    void getPresignedObjectUrl() throws Exception {
-
+    public void testDelete() throws Exception {
         Bucket bucket = Bucket.of(DEFAULT_TEST_BUCKET);
-        minioTemplate.makeBucketIfNotExists(bucket);
-
-        FileObject file = FileObject.of(bucket, "presignedObject");
-        minioTemplate.upload(
-                file,
-                resourceLoader.getResource(DEFAULT_TEST_FILE).getInputStream(),
-                IOUtils.toByteArray(resourceLoader.getResource(DEFAULT_TEST_FILE).getInputStream()).length,
-                MediaType.IMAGE_JPEG_VALUE
-        );
-
-        String url = minioTemplate.getPresignedObjectUrl(file, Method.GET, TimeProperties.of(1, TimeUnit.SECONDS), null);
-
-        Assertions.assertTrue(StringUtils.isNotEmpty(url));
-    }
-
-    @Test
-    void delete() throws Exception {
-        Bucket bucket = Bucket.of(DEFAULT_TEST_BUCKET);
-        minioTemplate.makeBucketIfNotExists(bucket);
+        minioAsyncTemplate.makeBucketIfNotExists(bucket).get();
 
         FileObject deleteFile = FileObject.of(bucket, "delete");
-
-        minioTemplate.upload(
+        Resource resource = resourceLoader.getResource(DEFAULT_TEST_FILE);
+        minioAsyncTemplate.upload(
                 deleteFile,
-                resourceLoader.getResource(DEFAULT_TEST_FILE).getInputStream(),
-                IOUtils.toByteArray(resourceLoader.getResource(DEFAULT_TEST_FILE).getInputStream()).length,
+                resource.getInputStream(),
+                resource.contentLength(),
                 MediaType.IMAGE_JPEG_VALUE
-        );
+        ).get();
 
         ListObjectsArgs listObjectsArgs = ListObjectsArgs
                 .builder()
@@ -132,26 +111,28 @@ public class MinioTemplateTest {
                 .prefix("delete")
                 .build();
 
-        Iterable<Result<Item>> iterable = minioTemplate.getMinioClient().listObjects(listObjectsArgs);
+        Iterable<Result<Item>> iterable = minioAsyncTemplate.listObjects(listObjectsArgs);
         Assertions.assertEquals("delete", iterable.iterator().next().get().objectName());
 
-        minioTemplate.deleteObject(deleteFile);
-        iterable = minioTemplate.getMinioClient().listObjects(listObjectsArgs);
+        minioAsyncTemplate.deleteObject(deleteFile, false).get();
+        iterable = minioAsyncTemplate.listObjects(listObjectsArgs);
         Assertions.assertFalse(iterable.iterator().hasNext());
 
-        minioTemplate.upload(
+        resource = resourceLoader.getResource(DEFAULT_TEST_FILE);
+        minioAsyncTemplate.upload(
                 FileObject.of(bucket, "folder/1"),
-                resourceLoader.getResource(DEFAULT_TEST_FILE).getInputStream(),
-                IOUtils.toByteArray(resourceLoader.getResource(DEFAULT_TEST_FILE).getInputStream()).length,
+                resource.getInputStream(),
+                resource.contentLength(),
                 MediaType.IMAGE_JPEG_VALUE
-        );
+        ).get();
 
-        minioTemplate.upload(
+        resource = resourceLoader.getResource(DEFAULT_TEST_FILE);
+        minioAsyncTemplate.upload(
                 FileObject.of(bucket, "folder/2"),
-                resourceLoader.getResource(DEFAULT_TEST_FILE).getInputStream(),
-                IOUtils.toByteArray(resourceLoader.getResource(DEFAULT_TEST_FILE).getInputStream()).length,
+                resource.getInputStream(),
+                resource.contentLength(),
                 MediaType.IMAGE_JPEG_VALUE
-        );
+        ).get();
 
         listObjectsArgs = ListObjectsArgs
                 .builder()
@@ -159,22 +140,23 @@ public class MinioTemplateTest {
                 .prefix("folder/")
                 .build();
 
-        iterable = minioTemplate.getMinioClient().listObjects(listObjectsArgs);
+        iterable = minioAsyncTemplate.listObjects(listObjectsArgs);
         int i = 1;
         for (Result<Item> r : iterable) {
             Assertions.assertEquals(r.get().objectName(), "folder/" + (i++));
         }
-        minioTemplate.deleteObject(FileObject.of(bucket, "folder/"));
+        minioAsyncTemplate.deleteObject(FileObject.of(bucket, "folder/"), false).get();
 
-        iterable = minioTemplate.getMinioClient().listObjects(listObjectsArgs);
+        iterable = minioAsyncTemplate.listObjects(listObjectsArgs);
         Assertions.assertFalse(iterable.iterator().hasNext());
 
-        minioTemplate.upload(
+        resource = resourceLoader.getResource(DEFAULT_TEST_FILE);
+        minioAsyncTemplate.upload(
                 deleteFile,
-                resourceLoader.getResource(DEFAULT_TEST_FILE).getInputStream(),
-                IOUtils.toByteArray(resourceLoader.getResource(DEFAULT_TEST_FILE).getInputStream()).length,
+                resource.getInputStream(),
+                resource.contentLength(),
                 MediaType.IMAGE_JPEG_VALUE
-        );
+        ).get();
 
         listObjectsArgs = ListObjectsArgs
                 .builder()
@@ -182,54 +164,52 @@ public class MinioTemplateTest {
                 .prefix("delete")
                 .build();
 
-        iterable = minioTemplate.getMinioClient().listObjects(listObjectsArgs);
+        iterable = minioAsyncTemplate.listObjects(listObjectsArgs);
         Assertions.assertEquals("delete", iterable.iterator().next().get().objectName());
 
-        minioTemplate.deleteObject(deleteFile, true);
-        Assertions.assertFalse(minioTemplate.isBucketExist(bucket));
-
+        minioAsyncTemplate.deleteObject(deleteFile, true).get();
+        Assertions.assertFalse(minioAsyncTemplate.isBucketExist(bucket).get());
     }
 
     @Test
-    void copy() throws Exception {
+    public void testDeleteBucket() throws Exception {
         Bucket bucket = Bucket.of(DEFAULT_TEST_BUCKET);
-        minioTemplate.makeBucketIfNotExists(bucket);
+        minioAsyncTemplate.makeBucketIfNotExists(bucket).get();
+        Map<String, Object> bucketInfo = minioAsyncTemplate.buckets(StringUtils.EMPTY).get();
 
-        FileObject copyFile = FileObject.of(bucket, "copy");
+        List<Map<String, Object>> buckets = Casts.cast(bucketInfo.get(ConsoleApiMinioAsyncClient.BUCKETS_API_NAME));
+        Assertions.assertTrue(buckets.stream().anyMatch(m -> m.get(NameEnum.FIELD_NAME).equals(DEFAULT_TEST_BUCKET)));
 
-        minioTemplate.upload(
-                copyFile,
-                resourceLoader.getResource(DEFAULT_TEST_FILE).getInputStream(),
-                IOUtils.toByteArray(resourceLoader.getResource(DEFAULT_TEST_FILE).getInputStream()).length,
-                MediaType.IMAGE_JPEG_VALUE
-        );
+        Assertions.assertTrue(minioAsyncTemplate.deleteBucket(bucket).get());
 
-        ListObjectsArgs copy = ListObjectsArgs
-                .builder()
-                .bucket(bucket.getBucketName())
-                .prefix("copy")
-                .build();
+        Assertions.assertFalse(minioAsyncTemplate.deleteBucket(bucket).get());
+    }
 
-        Iterable<Result<Item>> iterable = minioTemplate.getMinioClient().listObjects(copy);
-        Assertions.assertEquals("copy", iterable.iterator().next().get().objectName());
-        MoveFileObject moveFileObject = new MoveFileObject(copyFile, FileObject.of(bucket, "newCopy"));
-        ObjectWriteResponse response = minioTemplate.moveObject(moveFileObject);
+    @Test
+    public void testMoveObject() throws Exception {
+        Bucket bucket = Bucket.of(DEFAULT_TEST_BUCKET);
+        FileObject moveFile = FileObject.of(bucket, "move");
+        Resource resource = resourceLoader.getResource(DEFAULT_TEST_FILE);
+        minioAsyncTemplate.upload(moveFile, resource.getInputStream(), resource.contentLength(), MediaType.IMAGE_JPEG_VALUE).get();
 
-        ListObjectsArgs newCopy = ListObjectsArgs
-                .builder()
-                .bucket(bucket.getBucketName())
-                .prefix("newCopy")
-                .build();
+        GetObjectResponse getObjectResponse = minioAsyncTemplate.getObject(moveFile).get();
 
-        iterable = minioTemplate.getMinioClient().listObjects(newCopy);
-        Assertions.assertEquals(iterable.iterator().next().get().objectName(), response.object());
+        Assertions.assertEquals("move", getObjectResponse.object());
+
+        MoveFileObject fileObject = new MoveFileObject(moveFile, FileObject.of(bucket, "move_test/move"));
+
+        minioAsyncTemplate.moveObject(fileObject).get();
+
+        getObjectResponse = minioAsyncTemplate.getObject(fileObject.getTarget()).get();
+
+        Assertions.assertEquals("move_test/move", getObjectResponse.object());
     }
 
     @Test
     void readAndWriteJsonValue() throws Exception {
         CacheProperties cacheProperties = new CacheProperties("minio:test:json", TimeProperties.ofDay(1));
         FileObject json = FileObject.of(DEFAULT_TEST_BUCKET, "json");
-        ObjectWriteResponse response = minioTemplate.writeJsonValue(json, cacheProperties);
+        ObjectWriteResponse response = minioAsyncTemplate.writeJsonValue(json, cacheProperties).get();
 
         ListObjectsArgs jsonArgs = ListObjectsArgs
                 .builder()
@@ -237,14 +217,32 @@ public class MinioTemplateTest {
                 .prefix("json")
                 .build();
 
-        Iterable<Result<Item>> iterable = minioTemplate.getMinioClient().listObjects(jsonArgs);
+        Iterable<Result<Item>> iterable = minioAsyncTemplate.listObjects(jsonArgs);
         Assertions.assertEquals(iterable.iterator().next().get().objectName(), response.object());
 
-        CacheProperties jsonValue = minioTemplate.readJsonValue(json, CacheProperties.class);
+        CacheProperties jsonValue = minioAsyncTemplate.readJsonValue(json, CacheProperties.class).get();
 
         Assertions.assertEquals(jsonValue.getName(), cacheProperties.getName());
         Assertions.assertEquals(jsonValue.getExpiresTime().getValue(), cacheProperties.getExpiresTime().getValue());
         Assertions.assertEquals(jsonValue.getExpiresTime().getUnit(), cacheProperties.getExpiresTime().getUnit());
+    }
+
+    @Test
+    public void testUpload() throws IOException, ExecutionException, InterruptedException {
+        Resource smallResource = resourceLoader.getResource(DEFAULT_TEST_FILE);
+        FileObject small = FileObject.of(DEFAULT_TEST_BUCKET, "small");
+        minioAsyncTemplate.upload(small,smallResource.getInputStream(), smallResource.contentLength(), MediaType.IMAGE_JPEG_VALUE).get();
+        GetObjectResponse smallObjectResponse = minioAsyncTemplate.getObject(small).get();
+        Assertions.assertEquals(small.getObjectName(), smallObjectResponse.object());
+
+        File file = new File(BIG_FILE_PATH);
+        try (FileInputStream fileInputStream = new FileInputStream(BIG_FILE_PATH)) {
+            FileObject big = FileObject.of(DEFAULT_TEST_BUCKET, "big.mp4");
+
+            minioAsyncTemplate.upload(big, fileInputStream, file.length(), "video/mp4").get();
+            GetObjectResponse bigObjectResponse = minioAsyncTemplate.getObject(big).get();
+            Assertions.assertEquals(big.getObjectName(), bigObjectResponse.object());
+        }
     }
 
 }

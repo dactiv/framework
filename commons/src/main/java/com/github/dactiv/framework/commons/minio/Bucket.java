@@ -3,6 +3,7 @@ package com.github.dactiv.framework.commons.minio;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * 桶描述
@@ -19,6 +20,16 @@ public class Bucket implements Serializable {
      * minio 桶名称
      */
     public final static String MINIO_BUCKET_NAME = "bucket";
+
+    /**
+     * 扩展的头信息
+     */
+    private Map<String, String> extraHeaders = null;
+
+    /**
+     * 扩展的查询查询信息
+     */
+    private Map<String, String> extraQueryParams = null;
 
     /**
      * 桶名称
@@ -113,5 +124,41 @@ public class Bucket implements Serializable {
      */
     public static Bucket of(String bucketName, String region) {
         return new Bucket(bucketName, region);
+    }
+
+    /**
+     * 获取扩展的查询查询信息
+     *
+     * @return 扩展的查询查询信息
+     */
+    public Map<String, String> getExtraQueryParams() {
+        return extraQueryParams;
+    }
+
+    /**
+     * 设置扩展的查询查询信息
+     *
+     * @param extraQueryParams 扩展的查询查询信息
+     */
+    public void setExtraQueryParams(Map<String, String> extraQueryParams) {
+        this.extraQueryParams = extraQueryParams;
+    }
+
+    /**
+     * 获取扩展的头信息
+     *
+     * @return 扩展的头信息
+     */
+    public Map<String, String> getExtraHeaders() {
+        return extraHeaders;
+    }
+
+    /**
+     * 设置扩展的头信息
+     *
+     * @param extraHeaders 扩展的头信息
+     */
+    public void setExtraHeaders(Map<String, String> extraHeaders) {
+        this.extraHeaders = extraHeaders;
     }
 }

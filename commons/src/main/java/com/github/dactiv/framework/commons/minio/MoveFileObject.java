@@ -40,14 +40,9 @@ public class MoveFileObject implements Serializable {
         this(source, target, false);
     }
 
-    public MoveFileObject(FileObject source, FileObject target, boolean deleteSourceIfSuccess) {
-        this(source, target, false, false);
-    }
-
-    public MoveFileObject(FileObject source, FileObject target, boolean deleteSourceIfSuccess, boolean deleteBucketIfEmpty) {
+    public MoveFileObject(FileObject source, FileObject target, boolean deleteBucketIfEmpty) {
         this.source = source;
         this.target = target;
-        this.deleteSourceIfSuccess = deleteSourceIfSuccess;
         this.deleteBucketIfEmpty = deleteBucketIfEmpty;
     }
 
@@ -66,15 +61,6 @@ public class MoveFileObject implements Serializable {
     public void setTarget(FileObject target) {
         this.target = target;
     }
-
-    public boolean isDeleteSourceIfSuccess() {
-        return deleteSourceIfSuccess;
-    }
-
-    public void setDeleteSourceIfSuccess(boolean deleteSourceIfSuccess) {
-        this.deleteSourceIfSuccess = deleteSourceIfSuccess;
-    }
-
     public boolean isDeleteBucketIfEmpty() {
         return deleteBucketIfEmpty;
     }
