@@ -43,7 +43,7 @@ public class MinioProperties {
     /**
      * 大文件上传的临时文件存储位置
      */
-    private String uploadPartTempFilePath = "./upload_part/temp_file";
+    private String uploadPartTempFilePath = "./upload_part";
 
     /**
      * 用于隔离大文件上传，批量删除等多现成操作的专有线程池储量，如果为 null 默认取值为: Runtime.getRuntime().availableProcessors() * 2

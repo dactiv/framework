@@ -230,7 +230,7 @@ public class MinioTemplateTest {
     @Test
     public void testUpload() throws IOException, ExecutionException, InterruptedException {
         Resource smallResource = resourceLoader.getResource(DEFAULT_TEST_FILE);
-        FileObject small = FileObject.of(DEFAULT_TEST_BUCKET, "small");
+        FileObject small = FileObject.of(DEFAULT_TEST_BUCKET, "small.jpeg");
         minioAsyncTemplate.upload(small,smallResource.getInputStream(), smallResource.contentLength(), MediaType.IMAGE_JPEG_VALUE).get();
         GetObjectResponse smallObjectResponse = minioAsyncTemplate.getObject(small).get();
         Assertions.assertEquals(small.getObjectName(), smallObjectResponse.object());
@@ -241,7 +241,7 @@ public class MinioTemplateTest {
 
             minioAsyncTemplate.upload(big, fileInputStream, file.length(), "video/mp4").get();
             GetObjectResponse bigObjectResponse = minioAsyncTemplate.getObject(big).get();
-            Assertions.assertEquals(big.getObjectName(), bigObjectResponse.object());
+            Assertions.assertTrue(StringUtils.equals(big.getObjectName(), bigObjectResponse.object()));
         }
     }
 

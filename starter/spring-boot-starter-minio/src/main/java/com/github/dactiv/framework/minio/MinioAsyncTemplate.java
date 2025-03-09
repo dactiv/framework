@@ -376,9 +376,7 @@ public class MinioAsyncTemplate extends ConsoleApiMinioAsyncClient {
 
     private CompletableFuture<List<Part>> combineUploadPartFutures(List<CompletableFuture<Part>> futures) {
         return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
-                .thenApply(v -> futures.stream()
-                        .map(CompletableFuture::join)
-                        .collect(Collectors.toList()));
+                .thenApply(v -> futures.stream().map(CompletableFuture::join).collect(Collectors.toList()));
     }
 
     private List<CompletableFuture<Part>> readUploadPartStreamToFutures(InputStream is,
@@ -390,6 +388,8 @@ public class MinioAsyncTemplate extends ConsoleApiMinioAsyncClient {
         int partNumber = 1;
         int bytesRead;
 
+        String filename = StringUtils.substringBefore(object.getObjectName(), Casts.DOT);
+
         try {
             while ((bytesRead = is.read(buffer)) != -1) {
                 final int currentPartNumber = partNumber;
@@ -397,7 +397,7 @@ public class MinioAsyncTemplate extends ConsoleApiMinioAsyncClient {
 
                 // 为每个分片创建异步任务链
                 CompletableFuture<Part> future = CompletableFuture
-                        .supplyAsync(() -> writeToUploadPartTempFile(tempDir, currentPartNumber, chunk), ioExecutor)
+                        .supplyAsync(() -> writeToUploadPartTempFile(tempDir, filename, currentPartNumber, chunk), ioExecutor)
                         .thenCompose(partFile ->
                                 uploadPartAsyncWrapper(object, uploadId, partFile, currentPartNumber)
                                         .whenComplete((res, ex) ->
@@ -440,8 +440,8 @@ public class MinioAsyncTemplate extends ConsoleApiMinioAsyncClient {
         }
     }
 
-    private File writeToUploadPartTempFile(File dir, int partNumber, byte[] chunk) {
-        File file = new File(dir, System.nanoTime() + Casts.UNDERSCORE + partNumber);
+    private File writeToUploadPartTempFile(File dir, String filename, int partNumber, byte[] chunk) {
+        File file = new File(dir, filename + Casts.UNDERSCORE + System.nanoTime() + Casts.UNDERSCORE + partNumber);
         SystemException.convertRunnable(() -> Files.write(file.toPath(), chunk), "[minio async template] Files.write error");
         return file;
     }
