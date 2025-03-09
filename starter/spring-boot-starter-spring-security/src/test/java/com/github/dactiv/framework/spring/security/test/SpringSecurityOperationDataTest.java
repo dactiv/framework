@@ -60,17 +60,16 @@ public class SpringSecurityOperationDataTest {
         OperationDataEntity content = new OperationDataEntity();
         content.setName("test-operate-data");
 
-        RestResult<Integer> restResult = Casts.readValue(
+        RestResult<Integer> restResult = Casts.getObjectMapper().readValue(
                 mockMvc
-                        .perform(post("/operateData/save").content(Casts.writeValueAsString(content)).contentType(MediaType.APPLICATION_JSON_VALUE).session(session))
+                        .perform(post("/operateData/save").content(Casts.getObjectMapper().writeValueAsString(content)).contentType(MediaType.APPLICATION_JSON_VALUE).session(session))
                         .andExpect(status().isOk())
                         .andExpect(content().json("{\"message\":\"ok\",\"status\":200}"))
                         .andReturn()
                         .getResponse()
                         .getContentAsString(),
                 new TypeReference<>() {
-                },
-                false
+                }
         );
         content.setId(restResult.getData());
 
@@ -82,7 +81,7 @@ public class SpringSecurityOperationDataTest {
         content.setName("test-operate-data-update");
 
         mockMvc
-                .perform(post("/operateData/save").content(Casts.writeValueAsString(content)).contentType(MediaType.APPLICATION_JSON_VALUE).session(session))
+                .perform(post("/operateData/save").content(Casts.getObjectMapper().writeValueAsString(content)).contentType(MediaType.APPLICATION_JSON_VALUE).session(session))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"message\":\"ok\",\"status\":200}"));
 

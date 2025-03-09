@@ -52,7 +52,7 @@ public interface CaptchaVerificationInterceptor {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         try {
-            response.getWriter().write(Casts.writeValueAsString(result));
+            response.getWriter().write(Casts.getObjectMapper().writeValueAsString(result));
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }

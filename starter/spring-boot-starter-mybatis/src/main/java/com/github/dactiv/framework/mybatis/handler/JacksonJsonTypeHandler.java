@@ -1,6 +1,7 @@
 package com.github.dactiv.framework.mybatis.handler;
 
 import com.github.dactiv.framework.commons.Casts;
+import com.github.dactiv.framework.commons.exception.SystemException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
@@ -40,16 +41,16 @@ public class JacksonJsonTypeHandler<T> extends BaseTypeHandler<T> {
                     .collect(Collectors.toList());
 
             if (!nameValueEnums.isEmpty()) {
-                ps.setString(i, Casts.writeValueAsString(nameValueEnums));
+                ps.setString(i, SystemException.convertSupplier(() -> Casts.getObjectMapper().writeValueAsString(nameValueEnums)));
             } else {
-                ps.setString(i, Casts.writeValueAsString(parameter));
+                ps.setString(i, SystemException.convertSupplier(() -> Casts.getObjectMapper().writeValueAsString(parameter)));
             }
         } else {
             Object nameValueEnum = NameValueEnumTypeHandler.getEnumValue(parameter);
             if (Objects.nonNull(nameValueEnum)) {
                 ps.setObject(i, nameValueEnum);
             } else {
-                ps.setString(i, Casts.writeValueAsString(parameter));
+                ps.setString(i, SystemException.convertSupplier(() -> Casts.getObjectMapper().writeValueAsString(parameter)));
             }
         }
     }
@@ -80,7 +81,7 @@ public class JacksonJsonTypeHandler<T> extends BaseTypeHandler<T> {
         } else if (Object.class.equals(type)) {
             return Casts.cast(json);
         } else {
-            return Casts.readValue(json, type, false);
+            return SystemException.convertSupplier(() -> Casts.getObjectMapper().readValue(json, type));
         }
     }
 }

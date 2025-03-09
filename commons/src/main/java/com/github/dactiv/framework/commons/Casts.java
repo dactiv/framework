@@ -1,11 +1,8 @@
 package com.github.dactiv.framework.commons;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.cfg.ConfigOverrides;
 import com.github.dactiv.framework.commons.annotation.IgnoreField;
 import com.github.dactiv.framework.commons.exception.SystemException;
 import org.apache.commons.beanutils.ConvertUtils;
@@ -22,8 +19,6 @@ import org.springframework.util.Assert;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -128,12 +123,6 @@ public abstract class Casts {
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
-    private static JsonInclude.Value jsonDefaultPropertyInclusion;
-
-    static {
-        setJsonDefaultPropertyInclusion(objectMapper);
-    }
-
     /**
      * 设置 jackson objectMapper
      *
@@ -141,13 +130,6 @@ public abstract class Casts {
      */
     public static void setObjectMapper(ObjectMapper objectMapper) {
         Casts.objectMapper = objectMapper;
-        setJsonDefaultPropertyInclusion(objectMapper);
-    }
-
-    private static void setJsonDefaultPropertyInclusion(ObjectMapper objectMapper) {
-        Field field = ReflectionUtils.findFiled(objectMapper, "_configOverrides");
-        ConfigOverrides configOverrides = cast(ReflectionUtils.getFieldValue(objectMapper, field));
-        jsonDefaultPropertyInclusion = configOverrides.getDefaultInclusion();
     }
 
     /**
@@ -193,228 +175,6 @@ public abstract class Casts {
      */
     public static ObjectMapper getObjectMapper() {
         return objectMapper;
-    }
-
-    /**
-     * 将值转换为 json 字符串
-     *
-     * @param value 值
-     * @return json 字符串
-     */
-    public static String writeValueAsString(Object value) {
-        try {
-            return objectMapper.writeValueAsString(value);
-        } catch (JsonProcessingException e) {
-            throw new SystemException(e);
-        }
-    }
-
-    public static String writeValueAsString(Object value, JsonInclude.Include include) {
-        try {
-            String result = objectMapper.setDefaultPropertyInclusion(include).writeValueAsString(value);
-            objectMapper.setDefaultPropertyInclusion(jsonDefaultPropertyInclusion);
-            return result;
-        } catch (Exception e) {
-            throw new SystemException(e);
-        }
-    }
-
-    /**
-     * 将 json 字符串转换为指定类型的对象
-     *
-     * @param json json 字符串
-     * @param type 指定类型的对象 class
-     * @param <T>  对象范型实体值
-     * @return 指定类型的对象实例
-     *
-     * @deprecated 使用 {@link SystemException#convertSupplier(SystemException.SupplierWithException, String)} } 替代
-     */
-    @Deprecated
-    public static <T> T readValue(String json, Class<T> type, boolean exceptionReturnNull) {
-        try {
-            return objectMapper.readValue(json, type);
-        } catch (IOException e) {
-            if (exceptionReturnNull) {
-                return null;
-            }
-            throw new SystemException(e);
-        }
-    }
-
-    /**
-     * 将 json 字符串转换为指定类型的对象
-     *
-     * @param json json 字符串
-     * @param type 引用类型
-     * @param <T>  对象范型实体值
-     * @return 指定类型的对象实例
-     *
-     * @deprecated 使用 {@link SystemException#convertSupplier(SystemException.SupplierWithException, String)}} 替代
-     */
-    @Deprecated
-    public static <T> T readValue(String json, TypeReference<T> type, boolean exceptionReturnNull) {
-        try {
-            return objectMapper.readValue(json, type);
-        } catch (IOException e) {
-            if (exceptionReturnNull) {
-                return null;
-            }
-            throw new SystemException(e);
-        }
-    }
-
-    /**
-     * 将 bytes 内容转换为指定类型的对象
-     *
-     * @param stream input 流
-     * @param type   用于包含信息和作为反序列化器键的类型标记类的基类
-     * @param <T>    对象范型实体值
-     * @return 指定类型的对象实例
-     *
-     * @deprecated 使用 {@link SystemException#convertSupplier(SystemException.SupplierWithException, String)}} 替代
-     */
-    @Deprecated
-    public static <T> T readValue(InputStream stream, JavaType type, boolean exceptionReturnNull) {
-        try {
-            return objectMapper.readValue(stream, type);
-        } catch (IOException e) {
-            if (exceptionReturnNull) {
-                return null;
-            }
-            throw new SystemException(e);
-        }
-    }
-
-    /**
-     * 将 bytes 内容转换为指定类型的对象
-     *
-     * @param stream input 流
-     * @param type   指定类型的对象 class
-     * @param <T>    对象范型实体值
-     * @return 指定类型的对象实例
-     *
-     * @deprecated 使用 {@link SystemException#convertSupplier(SystemException.SupplierWithException, String)}} 替代
-     */
-    @Deprecated
-    public static <T> T readValue(InputStream stream, Class<T> type, boolean exceptionReturnNull) {
-        try {
-            return objectMapper.readValue(stream, type);
-        } catch (IOException e) {
-            if (exceptionReturnNull) {
-                return null;
-            }
-            throw new SystemException(e);
-        }
-    }
-
-    /**
-     * 将 json 字符串转换为指定类型的对象
-     *
-     * @param stream input 流
-     * @param type   引用类型
-     * @param <T>    对象范型实体值
-     * @return 指定类型的对象实例
-     *
-     * @deprecated 使用 {@link SystemException#convertSupplier(SystemException.SupplierWithException, String)}} 替代
-     */
-    @Deprecated
-    public static <T> T readValue(InputStream stream, TypeReference<T> type, boolean exceptionReturnNull) {
-        try {
-            return objectMapper.readValue(stream, type);
-        } catch (Exception e) {
-            if (exceptionReturnNull) {
-                return null;
-            }
-            throw new SystemException(e);
-        }
-    }
-
-    /**
-     * 将 bytes 内容转换为指定类型的对象
-     *
-     * @param json json 字符串
-     * @param type 用于包含信息和作为反序列化器键的类型标记类的基类
-     * @param <T>  对象范型实体值
-     * @return 指定类型的对象实例
-     *
-     * @deprecated 使用 {@link SystemException#convertSupplier(SystemException.SupplierWithException, String)}} 替代
-     */
-    @Deprecated
-    public static <T> T readValue(String json, JavaType type, boolean exceptionReturnNull) {
-        try {
-            return objectMapper.readValue(json, type);
-        } catch (IOException e) {
-            if (exceptionReturnNull) {
-                return null;
-            }
-            throw new SystemException(e);
-        }
-    }
-
-    /**
-     * 将 bytes 内容转换为指定类型的对象
-     *
-     * @param bytes bytes 内容
-     * @param type  指定类型的对象 class
-     * @param <T>   对象范型实体值
-     * @return 指定类型的对象实例
-     *
-     * @deprecated 使用 {@link SystemException#convertSupplier(SystemException.SupplierWithException, String)}} 替代
-     */
-    @Deprecated
-    public static <T> T readValue(byte[] bytes, Class<T> type, boolean exceptionReturnNull) {
-        try {
-            return objectMapper.readValue(bytes, type);
-        } catch (IOException e) {
-            if (exceptionReturnNull) {
-                return null;
-            }
-            throw new SystemException(e);
-        }
-    }
-
-    /**
-     * 将 bytes 内容转换为指定类型的对象
-     *
-     * @param bytes bytes 内容
-     * @param type  用于包含信息和作为反序列化器键的类型标记类的基类
-     * @param <T>   对象范型实体值
-     * @return 指定类型的对象实例
-     *
-     * @deprecated 使用 {@link SystemException#convertSupplier(SystemException.SupplierWithException, String)}} 替代
-     */
-    @Deprecated
-    public static <T> T readValue(byte[] bytes, JavaType type, boolean exceptionReturnNull) {
-        try {
-            return objectMapper.readValue(bytes, type);
-        } catch (IOException e) {
-            if (exceptionReturnNull) {
-                return null;
-            }
-            throw new SystemException(e);
-        }
-    }
-
-    /**
-     * 将 bytes 内容转换为指定类型的对象
-     *
-     * @param bytes bytes 内容
-     * @param type  用于包含信息和作为反序列化器键的类型标记类的基类
-     * @param <T>   对象范型实体值
-     * @return 指定类型的对象实例
-     *
-     * @deprecated 使用 {@link SystemException#convertSupplier(SystemException.SupplierWithException, String)}} 替代
-     */
-    @Deprecated
-    public static <T> T readValue(byte[] bytes, TypeReference<T> type, boolean exceptionReturnNull) {
-        try {
-            return objectMapper.readValue(bytes, type);
-        } catch (IOException e) {
-            if (exceptionReturnNull) {
-                return null;
-            }
-            throw new SystemException(e);
-        }
     }
 
     /**

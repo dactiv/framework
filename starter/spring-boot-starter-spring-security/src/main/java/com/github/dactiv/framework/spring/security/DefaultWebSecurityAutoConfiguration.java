@@ -152,7 +152,7 @@ public class DefaultWebSecurityAutoConfiguration {
         return (request, response, accessDeniedException) -> {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             RestResult<?> result = RestResult.of(accessDeniedException.getMessage(), HttpStatus.FORBIDDEN.value(), String.valueOf(HttpStatus.FORBIDDEN.value()));
-            response.getWriter().write(Casts.writeValueAsString(result));
+            response.getWriter().write(Casts.getObjectMapper().writeValueAsString(result));
         };
     }
 

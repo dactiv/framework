@@ -2,6 +2,7 @@ package com.github.dactiv.framework.spring.security.authentication;
 
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.Casts;
+import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.commons.id.IdEntity;
 import com.github.dactiv.framework.commons.id.number.NumberIdEntity;
 import com.github.dactiv.framework.crypto.CipherAlgorithmService;
@@ -107,7 +108,7 @@ public class AccessTokenContextRepository extends HttpSessionSecurityContextRepo
             ByteSource byteSource = cipherService.decrypt(Base64.decode(token), key);
             String plaintext = new String(byteSource.obtainBytes(), Charset.defaultCharset());
 
-            Map<String, Object> plaintextUserDetail = Casts.readValue(plaintext, Casts.MAP_TYPE_REFERENCE, true);
+            Map<String, Object> plaintextUserDetail = SystemException.convertSupplier(() -> Casts.getObjectMapper().readValue(plaintext, Casts.MAP_TYPE_REFERENCE));
             if (MapUtils.isEmpty(plaintextUserDetail)) {
                 return null;
             }
@@ -191,7 +192,7 @@ public class AccessTokenContextRepository extends HttpSessionSecurityContextRepo
             json.put(DeviceUtils.REQUEST_DEVICE_IDENTIFIED_PARAM_NAME, mobileSecurityPrincipal.getDeviceIdentified());
         }
 
-        String plaintext = Casts.writeValueAsString(json);
+        String plaintext = SystemException.convertSupplier(() -> Casts.getObjectMapper().writeValueAsString(json));
 
         CipherService cipherService = cipherAlgorithmService.getCipherService(accessTokenProperties.getCipherAlgorithmName());
         byte[] key = Base64.decode(aesKey);

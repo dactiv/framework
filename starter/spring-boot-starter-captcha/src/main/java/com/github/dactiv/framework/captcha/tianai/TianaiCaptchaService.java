@@ -32,6 +32,7 @@ import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.commons.TimeProperties;
 import com.github.dactiv.framework.commons.exception.ErrorCodeException;
+import com.github.dactiv.framework.commons.exception.SystemException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -63,7 +64,6 @@ public class TianaiCaptchaService extends AbstractCaptchaService<TianaiRequestBo
     private static final String TYPE_TAG_SPLIT_FLAG = "|";
 
     private final ImageCaptchaGenerator imageCaptchaGenerator;
-
 
     private final TianaiCaptchaProperties tianaiCaptchaProperties;
 
@@ -145,7 +145,7 @@ public class TianaiCaptchaService extends AbstractCaptchaService<TianaiRequestBo
             return false;
         }
 
-        ImageCaptchaTrack track = Casts.readValue(captcha.getValue(), ImageCaptchaTrack.class, false);
+        ImageCaptchaTrack track = SystemException.convertSupplier(() -> Casts.getObjectMapper().readValue(captcha.getValue(), ImageCaptchaTrack.class));
         Assert.notNull(track, "[tianal 验证码] 读取 ImageCaptchaTrack 数据为 null");
         Duration duration = Duration.between(
                 LocalDateTime.ofInstant(track.getStartSlidingTime().toInstant(), ZoneId.systemDefault()),
@@ -169,11 +169,11 @@ public class TianaiCaptchaService extends AbstractCaptchaService<TianaiRequestBo
         try {
             Assert.notNull(captcha, "验证内容已过期");
 
-            Map<String, Object> map = Casts.readValue(captcha.getValue(), Casts.MAP_TYPE_REFERENCE, false);
+            Map<String, Object> map = SystemException.convertSupplier(() -> Casts.getObjectMapper().readValue(captcha.getValue(), Casts.MAP_TYPE_REFERENCE));
             ApiResponse<?> response = imageCaptchaValidator.valid(imageCaptchaTrack, map);
             if (response.isSuccess()) {
 
-                String value = Casts.writeValueAsString(imageCaptchaTrack);
+                String value = SystemException.convertSupplier(() -> Casts.getObjectMapper().writeValueAsString(imageCaptchaTrack));
                 captcha.setValue(value);
                 getCaptchaStorageManager().saveCaptcha(captcha, interceptToken);
 
@@ -209,10 +209,9 @@ public class TianaiCaptchaService extends AbstractCaptchaService<TianaiRequestBo
         // 这个map数据应该存到缓存中，校验的时候需要用到该数据
         Map<String, Object> map = imageCaptchaValidator.generateImageCaptchaValidData(imageCaptchaInfo);
 
-        //imageCaptchaInfo.setType(CaseUtils.toCamelCase(imageCaptchaInfo.getType(), false, Casts.UNDERSCORE.toCharArray()));
         Map<String, Object> body = Casts.convertValue(imageCaptchaInfo, Casts.MAP_TYPE_REFERENCE);
 
-        return GenerateCaptchaResult.of(body, Casts.writeValueAsString(map));
+        return GenerateCaptchaResult.of(body, SystemException.convertSupplier(() -> Casts.getObjectMapper().writeValueAsString(map)));
     }
 
     @Override

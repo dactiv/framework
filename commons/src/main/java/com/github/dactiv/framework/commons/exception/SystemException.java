@@ -77,6 +77,10 @@ public class SystemException extends RuntimeException {
         }
     }
 
+    public static <T> T convertSupplier(SupplierWithException<T> supplier) {
+        return convertSupplier(supplier, (String)null);
+    }
+
     public static void convertRunnable(RunnableWithException runnable,
                                        String message) {
 

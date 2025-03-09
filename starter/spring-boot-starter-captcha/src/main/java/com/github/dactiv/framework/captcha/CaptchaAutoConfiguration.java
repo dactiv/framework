@@ -54,7 +54,13 @@ public class CaptchaAutoConfiguration {
                                                      @Lazy Interceptor interceptor,
                                                      CaptchaStorageManager captchaStorageManager,
                                                      TianaiCaptchaProperties tianaiCaptchaProperties) {
-        return new TianaiCaptchaService(captchaProperties, validator, interceptor, captchaStorageManager, tianaiCaptchaProperties);
+        return new TianaiCaptchaService(
+                captchaProperties,
+                validator,
+                interceptor,
+                captchaStorageManager,
+                tianaiCaptchaProperties
+        );
     }
 
     @Bean

@@ -2,6 +2,7 @@ package com.github.dactiv.framework.spring.security.authentication.handler;
 
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
+import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -69,7 +70,7 @@ public class JsonAuthenticationFailureHandler implements AuthenticationFailureHa
 
         response.setStatus(result.getStatus());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getWriter().write(Casts.writeValueAsString(result));
+        response.getWriter().write(SystemException.convertSupplier(() -> Casts.getObjectMapper().writeValueAsString(result)));
     }
 
 }

@@ -75,7 +75,7 @@ public class JsonAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
 
         if (loginRequestMatchers.stream().anyMatch(matcher -> matcher.matches(request))) {
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            response.getWriter().write(Casts.writeValueAsString(result));
+            response.getWriter().write(Casts.getObjectMapper().writeValueAsString(result));
         }
     }
 }

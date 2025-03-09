@@ -1,6 +1,5 @@
 package com.github.dactiv.framework.spring.web.result;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.commons.exception.ErrorCodeException;
@@ -95,7 +94,7 @@ public class RestResultErrorAttributes extends DefaultErrorAttributes {
             }
             LOGGER.error("服务器异常", error);
         } else {
-            LOGGER.error(Casts.writeValueAsString(result, JsonInclude.Include.ALWAYS));
+            LOGGER.error("服务器异常:{}", result);
         }
 
         webRequest.setAttribute(DEFAULT_ERROR_EXECUTE_ATTR_NAME, true, RequestAttributes.SCOPE_REQUEST);

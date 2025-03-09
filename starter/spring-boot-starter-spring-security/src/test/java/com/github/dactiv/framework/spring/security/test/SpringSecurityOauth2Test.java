@@ -89,7 +89,7 @@ public class SpringSecurityOauth2Test {
                 .getResponse()
                 .getContentAsString();
 
-        RestResult<Map<String, Object>> codeResultJson = Casts.readValue(codeJson, new TypeReference<>() {}, false);
+        RestResult<Map<String, Object>> codeResultJson = Casts.getObjectMapper().readValue(codeJson, new TypeReference<>() {});
         Map<String, Object> authorizationCodeMap = Casts.cast(codeResultJson.getData().get("authorizationCode"));
         String tokenValue = authorizationCodeMap.get("tokenValue").toString();
 
@@ -111,7 +111,7 @@ public class SpringSecurityOauth2Test {
                 .getResponse()
                 .getContentAsString();
 
-        RestResult<Map<String, Object>> accessTokenResultJson = Casts.readValue(accessTokenJson, new TypeReference<>() {}, false);
+        RestResult<Map<String, Object>> accessTokenResultJson = Casts.getObjectMapper().readValue(accessTokenJson, new TypeReference<>() {});
         Map<String, Object> accessTokenMap = Casts.cast(accessTokenResultJson.getData().get("accessToken"));
         String accessTokenValue = accessTokenMap.get("tokenValue").toString();
 
@@ -129,6 +129,6 @@ public class SpringSecurityOauth2Test {
                 .perform(get("/actuator/auditevents"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{\"events\":[{\"principal\":\"test:1:test\",\"type\":\"AUTHENTICATION_SUCCESS\",\"data\":{\"details\":{\"remember\":false}}},{\"principal\": \"test:1:test\",\"type\": \"AUTHENTICATION_SUCCESS\",\"data\": {\"details\": {\"requestDetails\": {\"jwt\": {\"subject\": \"test:1:test\",\"audience\": [\"test\"]},\"authorities\": [{\"authority\": \"SCOPE_openid\"}, {\"authority\": \"SCOPE_profile\"}]},\"metadata\": {},\"remember\": false}}}]}"));
-        ;
+
     }
 }

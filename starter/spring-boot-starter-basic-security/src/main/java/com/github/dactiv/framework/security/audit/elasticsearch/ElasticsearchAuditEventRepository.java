@@ -97,7 +97,7 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
 
         indexOperations.create();
         try (InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream(mappingFilePath)) {
-            Map<String, Object> mapping = Casts.readValue(input, Casts.MAP_TYPE_REFERENCE, false);
+            Map<String, Object> mapping = Casts.getObjectMapper().readValue(input, Casts.MAP_TYPE_REFERENCE);
             indexOperations.putMapping(Document.from(mapping));
         }
     }

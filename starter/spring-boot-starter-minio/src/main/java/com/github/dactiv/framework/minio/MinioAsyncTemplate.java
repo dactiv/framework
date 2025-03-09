@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.exception.SystemException;
-import com.github.dactiv.framework.commons.minio.Bucket;
-import com.github.dactiv.framework.commons.minio.FileObject;
-import com.github.dactiv.framework.commons.minio.MoveFileObject;
-import com.github.dactiv.framework.commons.minio.VersionFileObject;
+import com.github.dactiv.framework.commons.minio.*;
 import com.github.dactiv.framework.minio.config.MinioProperties;
 import com.google.common.collect.Multimaps;
 import io.minio.*;
@@ -27,7 +24,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -41,6 +37,47 @@ public class MinioAsyncTemplate extends ConsoleApiMinioAsyncClient {
     public static final Logger LOGGER = LoggerFactory.getLogger(MinioAsyncTemplate.class);
 
     private static final int PART_SIZE = 5 * 1024 * 1024;
+
+    /**
+     * 分片参数参数
+     */
+    public static final String PART_NUMBER_PARAM_NAME = "partNumber";
+
+    /**
+     * 分片数量参数
+     */
+    public static final String CHUNK_PARAM_NAME = "chunk";
+
+    /**
+     * 上传 id
+     */
+    public static final String UPLOAD_ID_PARAM_NAME = "uploadId";
+
+
+    /**
+     * AMZ 元数据前缀
+     */
+    public static final String AMZ_META_PREFIX = "x-amz-meta-";
+
+    /**
+     * 上传者 id
+     */
+    public static final String UPLOADER_ID = "uploader-id";
+
+    /**
+     * AMZ 元数据上传者 id
+     */
+    public static final String AMZ_META_UPLOADER_ID = AMZ_META_PREFIX + UPLOADER_ID;
+
+    /**
+     * AMZ 元数据原始文件类型
+     */
+    public static final String AMZ_META_ORIGINAL_FILE_NAME = AMZ_META_PREFIX + FilenameObject.MINIO_ORIGINAL_FILE_NAME;
+
+    /**
+     * 用户元数据信息
+     */
+    public static final String USER_METADATA = "userMetadata";
 
     private final Executor ioExecutor;
 
@@ -307,44 +344,50 @@ public class MinioAsyncTemplate extends ConsoleApiMinioAsyncClient {
         }
     }
 
+    public CompletableFuture<CreateMultipartUploadResponse> createMultipartUploadAsync(FileObject object) {
+        return SystemException.convertSupplier(()->
+                createMultipartUploadAsync(
+                        object.getBucketName(),
+                        object.getRegion(),
+                        object.getObjectName(),
+                        Objects.nonNull(object.getExtraHeaders()) ? Multimaps.forMap(object.getExtraHeaders()) : null,
+                        Objects.nonNull(object.getExtraQueryParams()) ? Multimaps.forMap(object.getExtraQueryParams()) : null
+                ),
+                "[minio async template] createMultipartUpload error");
+    }
+
     public CompletableFuture<ObjectWriteResponse> putObjectMultipart(FileObject object, InputStream file) {
         if (object instanceof UserMetadataFileObject userMetadataFileObject
                 && MapUtils.isNotEmpty(userMetadataFileObject.getUserMetadata())) {
             userMetadataFileObject.getUserMetadata().forEach((k, v) -> object.getExtraHeaders().put(k, v));
         }
 
+        return createMultipartUploadAsync(object).thenCompose(uploadResult ->
+                uploadPart(
+                        object,
+                        file,
+                        uploadResult.result().uploadId()
+                )
+                .thenCompose(parts ->
+                        completeMultipartUploadAsync(object, parts.toArray(Part[]::new), uploadResult.result().uploadId())
+                )
+        );
+    }
+
+    public CompletableFuture<ObjectWriteResponse> completeMultipartUploadAsync(FileObject object, Part[] parts, String uploadIds) {
         return SystemException.convertSupplier(() ->
-                        createMultipartUploadAsync(
-                                object.getBucketName(),
-                                object.getRegion(),
-                                object.getObjectName(),
-                                Objects.nonNull(object.getExtraHeaders()) ? Multimaps.forMap(object.getExtraHeaders()) : null,
-                                Objects.nonNull(object.getExtraQueryParams()) ? Multimaps.forMap(object.getExtraQueryParams()) : null
-                        ).thenCompose(uploadResult ->
-                                SystemException.convertSupplier(() ->
-                                                uploadPart(
-                                                        object,
-                                                        file,
-                                                        uploadResult.result().uploadId()
-                                                )
-                                                .thenCompose(parts ->
-                                                        SystemException.convertSupplier(() ->
-                                                                        completeMultipartUploadAsync(
-                                                                                object.getBucketName(),
-                                                                                object.getRegion(),
-                                                                                object.getObjectName(),
-                                                                                uploadResult.result().uploadId(),
-                                                                                parts.toArray(Part[]::new),
-                                                                                Objects.nonNull(object.getExtraHeaders()) ? Multimaps.forMap(object.getExtraHeaders()) : null,
-                                                                                Objects.nonNull(object.getExtraQueryParams()) ? Multimaps.forMap(object.getExtraQueryParams()) : null
-                                                                        )
-                                                                ,
-                                                                "[minio async template] completeMultipartUpload error"))
-                                        ,
-                                        "[minio async template] uploadPart error"
-                                )
-                        ),
-                "[minio async template] putObjectMultipart error");
+                completeMultipartUploadAsync(
+                        object.getBucketName(),
+                        object.getRegion(),
+                        object.getObjectName(),
+                        uploadIds,
+                        parts,
+                        Objects.nonNull(object.getExtraHeaders()) ? Multimaps.forMap(object.getExtraHeaders()) : null,
+                        Objects.nonNull(object.getExtraQueryParams()) ? Multimaps.forMap(object.getExtraQueryParams()) : null
+                )
+                ,
+                "[minio async template] completeMultipartUpload error"
+        );
     }
 
     public CompletableFuture<List<Part>> uploadPart(
@@ -399,7 +442,7 @@ public class MinioAsyncTemplate extends ConsoleApiMinioAsyncClient {
                 CompletableFuture<Part> future = CompletableFuture
                         .supplyAsync(() -> writeToUploadPartTempFile(tempDir, filename, currentPartNumber, chunk), ioExecutor)
                         .thenCompose(partFile ->
-                                uploadPartAsyncWrapper(object, uploadId, partFile, currentPartNumber)
+                                uploadPartAsync(object, uploadId, partFile, currentPartNumber)
                                         .whenComplete((res, ex) ->
                                                 SystemException.convertRunnable(
                                                         () -> Files.deleteIfExists(partFile.toPath()),
@@ -416,28 +459,36 @@ public class MinioAsyncTemplate extends ConsoleApiMinioAsyncClient {
         }
     }
 
-    private CompletionStage<Part> uploadPartAsyncWrapper(FileObject object,
-                                                         String uploadId,
-                                                         File partFile,
-                                                         int partNumber) {
+    public CompletableFuture<Part> uploadPartAsync(FileObject object,
+                                                 String uploadId,
+                                                 File partFile,
+                                                 int partNumber) {
 
         try (FileInputStream fis = new FileInputStream(partFile)) {
             // 假设 minioClient.uploadPartAsync 返回 CompletableFuture<UploadPartResponse>
-            return uploadPartAsync(
-                            object.getBucketName(),
-                            object.getRegion(),
-                            object.getObjectName(),
-                            fis,
-                            partFile.length(),
-                            uploadId,
-                            partNumber,
-                            Objects.nonNull(object.getExtraHeaders()) ? Multimaps.forMap(object.getExtraHeaders()) : null,
-                            Objects.nonNull(object.getExtraQueryParams()) ? Multimaps.forMap(object.getExtraQueryParams()) : null
-                    )
-                    .thenApply(response -> new Part(partNumber, response.etag()));
+            return uploadPartAsync(object, uploadId, fis, partFile.length(), partNumber);
         } catch (Exception e) {
             return CompletableFuture.failedFuture(e);
         }
+    }
+
+    public CompletableFuture<Part> uploadPartAsync(FileObject object,
+                                                   String uploadId,
+                                                   InputStream inputStream,
+                                                   long size,
+                                                   int partNumber) throws Exception {
+        return uploadPartAsync(
+                    object.getBucketName(),
+                    object.getRegion(),
+                    object.getObjectName(),
+                    inputStream,
+                    size,
+                    uploadId,
+                    partNumber,
+                    Objects.nonNull(object.getExtraHeaders()) ? Multimaps.forMap(object.getExtraHeaders()) : null,
+                    Objects.nonNull(object.getExtraQueryParams()) ? Multimaps.forMap(object.getExtraQueryParams()) : null
+                )
+                .thenApply(response -> new Part(partNumber, response.etag()));
     }
 
     private File writeToUploadPartTempFile(File dir, String filename, int partNumber, byte[] chunk) {
