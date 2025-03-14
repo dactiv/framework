@@ -429,12 +429,16 @@ public class BasicService<M extends BaseMapper<T>, T extends Serializable> {
      * @return 分页内容
      */
     public Page<T> findPage(PageRequest pageRequest, Wrapper<T> wrapper) {
-        IPage<T> result = baseMapper.selectPage(
-                MybatisPlusQueryGenerator.createQueryPage(pageRequest),
-                wrapper
-        );
-
-        return MybatisPlusQueryGenerator.convertResultPage(result);
+        IPage<T> result;
+        if (pageRequest.getSize() <= 0) {
+            return new Page<>(pageRequest, find(wrapper));
+        } else {
+            result = baseMapper.selectPage(
+                    MybatisPlusQueryGenerator.createQueryPage(pageRequest),
+                    wrapper
+            );
+            return MybatisPlusQueryGenerator.convertResultPage(result);
+        }
     }
 
     /**

@@ -1,9 +1,14 @@
 package com.github.dactiv.framework.spring.security.authentication.token;
 
 import com.github.dactiv.framework.commons.CacheProperties;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.core.SpringSecurityMessageSource;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 
 /**
  * 带类型的认证 token，用于区分那种类型的用户使用
@@ -42,5 +47,30 @@ public class TypeAuthenticationToken extends AbstractAuthenticationToken {
     @Override
     public String getName() {
         return getType() + CacheProperties.DEFAULT_SEPARATOR + getPrincipal();
+    }
+
+    public static TypeAuthenticationToken ofString(String splitString, Object credentials, Object details) {
+        String[] split = StringUtils.splitByWholeSeparator(splitString, CacheProperties.DEFAULT_SEPARATOR);
+
+
+        if (ArrayUtils.isEmpty(split) || split.length < 2) {
+            String message = SpringSecurityMessageSource.getAccessor().getMessage(
+                    "TypeAuthenticationToken.formatError",
+                    "登录数据出错，格式应该为:<用户类型>:<用户id>:[用户登录信息]， 当前格式为:" + splitString
+            );
+            throw new InternalAuthenticationServiceException(message);
+        }
+
+        TypeAuthenticationToken token = new TypeAuthenticationToken(
+                split.length == 3 ? split[2] : split[1],
+                credentials,
+                split[0]
+        );
+
+        if (Objects.nonNull(details)) {
+            token.setDetails(details);
+        }
+
+        return token;
     }
 }

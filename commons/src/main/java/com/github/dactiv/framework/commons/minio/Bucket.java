@@ -17,6 +17,11 @@ public class Bucket implements Serializable {
     private static final long serialVersionUID = -8374508623316725573L;
 
     /**
+     * AMZ 元数据前缀
+     */
+    public static final String AMZ_META_PREFIX = "x-amz-meta-";
+
+    /**
      * minio 桶名称
      */
     public final static String MINIO_BUCKET_NAME = "bucket";

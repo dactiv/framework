@@ -7,8 +7,6 @@ import com.github.dactiv.framework.spring.security.authentication.cache.CacheMan
 import com.github.dactiv.framework.spring.security.authentication.token.RequestAuthenticationToken;
 import com.github.dactiv.framework.spring.security.authentication.token.TypeAuthenticationToken;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -180,27 +178,11 @@ public class TypeSecurityPrincipalManager implements InitializingBean {
     public TypeAuthenticationToken createTypeAuthenticationToken(String splitString,
                                                                  Object details,
                                                                  Object credentials) {
-        String[] split = StringUtils.splitByWholeSeparator(splitString, CacheProperties.DEFAULT_SEPARATOR);
-
-        if (ArrayUtils.isEmpty(split) || split.length < 2) {
-            String message = messages.getMessage(
-                    "TypeRememberMeAuthenticationProvider.formatError",
-                    "记住我登录数据出错，格式应该为:<用户类型>:[用户id]:<用户登录信息>， 当前格式为:" + splitString
-            );
-            throw new InvalidCookieException(message);
+        try {
+            return TypeAuthenticationToken.ofString(splitString, credentials, details);
+        } catch (Exception e) {
+            throw new InvalidCookieException(e.getMessage());
         }
-
-        TypeAuthenticationToken token = new TypeAuthenticationToken(
-                split.length == 3 ? split[2] : split[1],
-                credentials,
-                split[0]
-        );
-
-        if (Objects.nonNull(details)) {
-            token.setDetails(details);
-        }
-
-        return token;
     }
 
     @Override

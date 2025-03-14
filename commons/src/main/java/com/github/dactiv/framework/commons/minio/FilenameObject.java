@@ -8,6 +8,9 @@ import org.springframework.util.DigestUtils;
 
 import java.io.Serial;
 import java.nio.charset.Charset;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 带文件名称的文件对象描述
@@ -22,7 +25,7 @@ public class FilenameObject extends FileObject {
     /**
      * minio 原始文件名称
      */
-    public final static String MINIO_ORIGINAL_FILE_NAME = "original-filename";
+    public final static String MINIO_ORIGINAL_FILE_NAME = AMZ_META_PREFIX + "original-filename";
     /**
      * 文件名称
      */
@@ -158,12 +161,25 @@ public class FilenameObject extends FileObject {
         if (StringUtils.isNotEmpty(prefix)) {
             objectName = prefix + AntPathMatcher.DEFAULT_PATH_SEPARATOR + objectName;
         }
-        return of(
+
+        FilenameObject filenameObject = of(
                 fileObject.getBucketName(),
                 fileObject.getRegion(),
                 objectName,
                 originalFilename
         );
+
+        Map<String, String> extraHeaders = fileObject.getExtraHeaders();
+        if (Objects.isNull(extraHeaders)) {
+            extraHeaders = new LinkedHashMap<>();
+        }
+
+        extraHeaders.put(MINIO_ORIGINAL_FILE_NAME, originalFilename);
+
+        filenameObject.setExtraHeaders(fileObject.getExtraHeaders());
+        filenameObject.setExtraQueryParams(fileObject.getExtraQueryParams());
+
+        return filenameObject;
     }
 
 }

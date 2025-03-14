@@ -15,24 +15,9 @@ public class FileObject extends Bucket {
     private static final long serialVersionUID = 3325877878659487154L;
 
     /**
-     * minio e 标签
-     */
-    public static String MINIO_ETAG = "etag";
-
-    /**
-     * minio 文件名称
-     */
-    public static String MINIO_FILE_NAME = "name";
-
-    /**
      * minio 对象名称
      */
     public final static String MINIO_OBJECT_NAME = "object";
-
-    /**
-     * minio 内容类型
-     */
-    public static final String MINIO_CONTENT_TYPE = "contentType";
 
     /**
      * 对象文件名称

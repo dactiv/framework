@@ -53,12 +53,6 @@ public class MinioAsyncTemplate extends ConsoleApiMinioAsyncClient {
      */
     public static final String UPLOAD_ID_PARAM_NAME = "uploadId";
 
-
-    /**
-     * AMZ 元数据前缀
-     */
-    public static final String AMZ_META_PREFIX = "x-amz-meta-";
-
     /**
      * 上传者 id
      */
@@ -67,12 +61,7 @@ public class MinioAsyncTemplate extends ConsoleApiMinioAsyncClient {
     /**
      * AMZ 元数据上传者 id
      */
-    public static final String AMZ_META_UPLOADER_ID = AMZ_META_PREFIX + UPLOADER_ID;
-
-    /**
-     * AMZ 元数据原始文件类型
-     */
-    public static final String AMZ_META_ORIGINAL_FILE_NAME = AMZ_META_PREFIX + FilenameObject.MINIO_ORIGINAL_FILE_NAME;
+    public static final String AMZ_META_UPLOADER_ID = Bucket.AMZ_META_PREFIX + UPLOADER_ID;
 
     /**
      * 用户元数据信息
@@ -277,30 +266,8 @@ public class MinioAsyncTemplate extends ConsoleApiMinioAsyncClient {
      * @return minio API 调用响应的 ObjectWriteResponse 对象
      */
     public CompletableFuture<ObjectWriteResponse> moveObject(MoveFileObject object) {
-
-        CopySource copySource = CopySource
-                .builder()
-                .bucket(object.getSource().getBucketName().toLowerCase())
-                .region(object.getSource().getRegion())
-                .object(object.getSource().getObjectName())
-                .extraHeaders(object.getSource().getExtraHeaders())
-                .extraQueryParams(object.getSource().getExtraQueryParams())
-                .build();
-
-        CopyObjectArgs args = CopyObjectArgs
-                .builder()
-                .bucket(object.getTarget().getBucketName().toLowerCase())
-                .region(object.getTarget().getRegion())
-                .object(Objects.toString(object.getTarget().getObjectName(), object.getTarget().getObjectName()))
-                .source(copySource)
-                .extraHeaders(object.getTarget().getExtraHeaders())
-                .extraQueryParams(object.getTarget().getExtraQueryParams())
-                .build();
-
-        return SystemException.convertSupplier(
-                () -> copyObject(args).thenCompose(v -> deleteObject(object.getSource(), object.isDeleteBucketIfEmpty()).thenApply(vo -> v)),
-                "[minio async template] copyObject error"
-        );
+        return copyObject(object.getSource(), object.getTarget())
+                .thenCompose(v -> deleteObject(object.getSource(), object.isDeleteBucketIfEmpty()).thenApply(vo -> v));
     }
 
     /**
@@ -580,6 +547,29 @@ public class MinioAsyncTemplate extends ConsoleApiMinioAsyncClient {
                                 "[minio async template] objectMapper.readValue(FileObject fileObject, JavaType javaType) error"
                         )
                 );
+    }
+
+    public CompletableFuture<ObjectWriteResponse> copyObject(FileObject source, FileObject target)  {
+        CopySource copySource = CopySource
+                .builder()
+                .bucket(source.getBucketName().toLowerCase())
+                .region(source.getRegion())
+                .object(source.getObjectName())
+                .extraHeaders(Objects.isNull(source.getExtraHeaders()) ? null: source.getExtraHeaders())
+                .extraQueryParams(Objects.isNull(source.getExtraQueryParams()) ? null: source.getExtraQueryParams())
+                .build();
+
+        CopyObjectArgs args = CopyObjectArgs
+                .builder()
+                .bucket(target.getBucketName().toLowerCase())
+                .region(target.getRegion())
+                .object(Objects.toString(target.getObjectName(), target.getObjectName()))
+                .source(copySource)
+                .extraHeaders(Objects.isNull(target.getExtraHeaders()) ? null: target.getExtraHeaders())
+                .extraQueryParams(Objects.isNull(target.getExtraQueryParams()) ? null: target.getExtraQueryParams())
+                .build();
+
+        return SystemException.convertSupplier(() -> copyObject(args), "[minio async template] copyObject error");
     }
 
     /**

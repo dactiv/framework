@@ -3,8 +3,13 @@ package com.github.dactiv.framework.spring.security.authentication.token;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.security.entity.SecurityPrincipal;
+import com.github.dactiv.framework.security.entity.support.SimpleSecurityPrincipal;
+import com.github.dactiv.framework.security.enumerate.UserStatus;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.SpringSecurityMessageSource;
 
 import java.io.Serial;
 import java.util.Collection;
@@ -135,5 +140,21 @@ public class AuditAuthenticationToken extends AbstractAuthenticationToken {
      */
     public Collection<String> getGrantedAuthorities() {
         return getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
+    }
+
+    public static AuditAuthenticationToken ofString(String splitString, Collection<? extends GrantedAuthority> grantedAuthorities) {
+        String type = StringUtils.substringBefore(splitString, CacheProperties.DEFAULT_SEPARATOR);
+        if (StringUtils.isEmpty(type)) {
+            String message = SpringSecurityMessageSource.getAccessor().getMessage(
+                    "AuditAuthenticationToken.formatError",
+                    "登录数据出错，格式应该为:<用户类型>:<用户id>:<用户登录信息>， 当前格式为:" + splitString
+            );
+            throw new InternalAuthenticationServiceException(message);
+        }
+
+        String principalString = StringUtils.substringAfter(splitString, CacheProperties.DEFAULT_SEPARATOR);
+        SimpleSecurityPrincipal principal = new SimpleSecurityPrincipal(principalString, null, UserStatus.Disabled);
+
+        return new AuditAuthenticationToken(principal, type, grantedAuthorities, new Date());
     }
 }
