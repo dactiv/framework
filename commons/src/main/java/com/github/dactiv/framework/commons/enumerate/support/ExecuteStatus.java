@@ -129,6 +129,7 @@ public enum ExecuteStatus implements NameValueEnum<Integer> {
     public static void failure(Body body, String exception) {
         body.setExecuteStatus(ExecuteStatus.Failure);
         body.setException(exception);
+        body.setSuccessTime(new Date());
     }
 
     /**

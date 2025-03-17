@@ -19,6 +19,9 @@ public class ObjectWriteResult extends FileObject {
      */
     private String etag;
 
+    public ObjectWriteResult() {
+    }
+
     public ObjectWriteResult(String etag) {
         this.etag = etag;
     }

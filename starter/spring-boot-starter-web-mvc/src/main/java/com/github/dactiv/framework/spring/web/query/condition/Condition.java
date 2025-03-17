@@ -2,27 +2,36 @@ package com.github.dactiv.framework.spring.web.query.condition;
 
 import com.github.dactiv.framework.spring.web.query.Property;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 /**
  * 条件信息, 用于记录一个条件里包含的过滤查询内容
  *
  * @author maurice.chen
  */
-public class Condition {
+public class Condition implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -8626527871073433205L;
 
     /**
      * 名称
      */
-    private final String name;
+    private String name;
 
     /**
      * 类型
      */
-    private final ConditionType type;
+    private ConditionType type;
 
     /**
      * 属性
      */
-    private final Property property;
+    private Property property;
+
+    public Condition() {
+    }
 
     public Condition(String name, ConditionType type, Property property) {
         this.name = name;
@@ -57,4 +66,30 @@ public class Condition {
         return property;
     }
 
+    /**
+     * 设置条件名称
+     *
+     * @param name 条件名称
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * 设置条件类型
+     *
+     * @param type 条件类型
+     */
+    public void setType(ConditionType type) {
+        this.type = type;
+    }
+
+    /**
+     * 设置属性
+     *
+     * @param property 属性
+     */
+    public void setProperty(Property property) {
+        this.property = property;
+    }
 }

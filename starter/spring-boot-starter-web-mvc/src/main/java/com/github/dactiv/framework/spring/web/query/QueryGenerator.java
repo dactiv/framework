@@ -62,7 +62,7 @@ public interface QueryGenerator<T> {
     /**
      * 通过 MultiValueMap 创建指定的查询对象
      *
-     * @param columnMap MultiValueMap
+     * @param columnMap 列表表达式映射
      *
      * @return 指定的查询对象
      */

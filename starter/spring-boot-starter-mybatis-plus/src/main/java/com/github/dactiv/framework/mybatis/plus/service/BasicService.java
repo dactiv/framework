@@ -22,6 +22,7 @@ import com.github.dactiv.framework.mybatis.plus.MybatisPlusQueryGenerator;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -47,6 +48,11 @@ public class BasicService<M extends BaseMapper<T>, T extends Serializable> {
      * mapper 实例
      */
     protected M baseMapper;
+
+    /**
+     * 查询生成器
+     */
+    protected MybatisPlusQueryGenerator<T> queryGenerator;
 
     /**
      * 实体类型
@@ -311,7 +317,7 @@ public class BasicService<M extends BaseMapper<T>, T extends Serializable> {
      * @return 数据量
      */
     public long count() {
-        return count(null);
+        return baseMapper.selectCount(null);
     }
 
     /**
@@ -326,6 +332,17 @@ public class BasicService<M extends BaseMapper<T>, T extends Serializable> {
     }
 
     /**
+     * 统计数量
+     *
+     * @param filter 过滤条件
+     *
+     * @return 数据量
+     */
+    public long count(MultiValueMap<String, Object> filter) {
+        return count(queryGenerator.createQueryWrapperFromMap(filter));
+    }
+
+    /**
      * 是否存在数据
      *
      * @param wrapper where 条件
@@ -337,12 +354,23 @@ public class BasicService<M extends BaseMapper<T>, T extends Serializable> {
     }
 
     /**
+     * 是否存在数据
+     *
+     * @param filter 过滤条件
+     *
+     * @return true 是，否则 false
+     */
+    public boolean exist(MultiValueMap<String, Object> filter) {
+        return exist(queryGenerator.createQueryWrapperFromMap(filter));
+    }
+
+    /**
      * 查找全部数据
      *
      * @return 数据集合
      */
     public List<T> find() {
-        return find(null);
+        return baseMapper.selectList(null);
     }
 
     /**
@@ -354,6 +382,17 @@ public class BasicService<M extends BaseMapper<T>, T extends Serializable> {
      */
     public List<T> find(Wrapper<T> wrapper) {
         return baseMapper.selectList(wrapper);
+    }
+
+    /**
+     * 查找数据
+     *
+     * @param filter 过滤条件
+     *
+     * @return 数据集合
+     */
+    public List<T> find(MultiValueMap<String, Object> filter) {
+        return find(queryGenerator.createQueryWrapperFromMap(filter));
     }
 
     /**
@@ -377,6 +416,17 @@ public class BasicService<M extends BaseMapper<T>, T extends Serializable> {
     }
 
     /**
+     * 查找数据
+     *
+     * @param filter 查询条件
+     *
+     * @return 数据集合
+     */
+    public <R> List<R> findObjects(MultiValueMap<String, Object> filter, Class<R> returnType) {
+        return findObjects(queryGenerator.createQueryWrapperFromMap(filter), returnType);
+    }
+
+    /**
      * 查找单个数据
      *
      * @param wrapper where 条件
@@ -385,6 +435,17 @@ public class BasicService<M extends BaseMapper<T>, T extends Serializable> {
      */
     public T findOne(Wrapper<T> wrapper) {
         return baseMapper.selectOne(wrapper);
+    }
+
+    /**
+     * 查找单个数据
+     *
+     * @param filter 查询条件
+     *
+     * @return 数据内容
+     */
+    public T findOne(MultiValueMap<String, Object> filter) {
+        return findOne(queryGenerator.createQueryWrapperFromMap(filter));
     }
 
     /**
@@ -407,6 +468,19 @@ public class BasicService<M extends BaseMapper<T>, T extends Serializable> {
         }
 
         return null;
+    }
+
+    /**
+     * 查找单个数据
+     *
+     * @param filter 查询条件
+     * @param returnType 数据返回类型 class
+     * @param <R> 数据返回类型
+     *
+     * @return 数据内容
+     */
+    public <R> R findOneObject(MultiValueMap<String, Object> filter, Class<R> returnType) {
+        return findOneObject(queryGenerator.createQueryWrapperFromMap(filter), returnType);
     }
 
     /**
@@ -447,7 +521,7 @@ public class BasicService<M extends BaseMapper<T>, T extends Serializable> {
      * @param pageRequest 分页请求
      * @param wrapper where 条件
      *
-     * @return 带分页内容
+     * @return 带统计总数分页内容
      */
     public TotalPage<T> findTotalPage(PageRequest pageRequest, Wrapper<T> wrapper) {
         IPage<T> result = baseMapper.selectPage(
@@ -460,6 +534,30 @@ public class BasicService<M extends BaseMapper<T>, T extends Serializable> {
         long totalCount = count(wrapper);
 
         return new TotalPage<>(pageRequest, page.getElements(), totalCount);
+    }
+
+    /**
+     * 查找分页数据
+     *
+     * @param pageRequest 分页请求
+     * @param filter 查询条件
+     *
+     * @return 分页内容
+     */
+    public Page<T> findPage(PageRequest pageRequest, MultiValueMap<String, Object> filter) {
+        return findPage(pageRequest, queryGenerator.createQueryWrapperFromMap(filter));
+    }
+
+    /**
+     * 查找分页数据
+     *
+     * @param pageRequest 分页请求
+     * @param filter 查询条件
+     *
+     * @return 带统计总数分页内容
+     */
+    public TotalPage<T> findTotalPage(PageRequest pageRequest, MultiValueMap<String, Object> filter) {
+        return findTotalPage(pageRequest, queryGenerator.createQueryWrapperFromMap(filter));
     }
 
     /**
@@ -653,6 +751,26 @@ public class BasicService<M extends BaseMapper<T>, T extends Serializable> {
      */
     public M getBaseMapper() {
         return baseMapper;
+    }
+
+    /**
+     *
+     * 设置查询生成器
+     *
+     * @param queryGenerator 查询生成器
+     */
+    @Autowired(required = false)
+    public void setQueryGenerator(MybatisPlusQueryGenerator<T> queryGenerator) {
+        this.queryGenerator = queryGenerator;
+    }
+
+    /**
+     * 获取查询生成器
+     *
+     * @return 查询生成器
+     */
+    public MybatisPlusQueryGenerator<T> getQueryGenerator() {
+        return queryGenerator;
     }
 
     /**
