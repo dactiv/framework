@@ -491,7 +491,7 @@ public class BasicService<M extends BaseMapper<T>, T extends Serializable> {
      * @return 分页内容
      */
     public Page<T> findPage(PageRequest pageRequest) {
-        return findPage(pageRequest, null);
+        return findPage(pageRequest, (MultiValueMap<String, Object>) null);
     }
 
     /**
@@ -698,7 +698,7 @@ public class BasicService<M extends BaseMapper<T>, T extends Serializable> {
      * @return 实体集合
      */
     public List<T> get(Collection<? extends Serializable> ids) {
-        return baseMapper.selectBatchIds(ids);
+        return baseMapper.selectByIds(ids);
     }
 
     /**
