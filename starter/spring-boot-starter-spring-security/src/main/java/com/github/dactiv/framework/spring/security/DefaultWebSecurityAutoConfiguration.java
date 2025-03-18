@@ -2,7 +2,6 @@ package com.github.dactiv.framework.spring.security;
 
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
-import com.github.dactiv.framework.security.entity.RoleAuthority;
 import com.github.dactiv.framework.security.plugin.Plugin;
 import com.github.dactiv.framework.spring.security.authentication.*;
 import com.github.dactiv.framework.spring.security.authentication.adapter.WebSecurityConfigurerAfterAdapter;
@@ -10,12 +9,10 @@ import com.github.dactiv.framework.spring.security.authentication.config.Authent
 import com.github.dactiv.framework.spring.security.authentication.config.RememberMeProperties;
 import com.github.dactiv.framework.spring.security.authentication.provider.TypeRememberMeAuthenticationProvider;
 import com.github.dactiv.framework.spring.security.authentication.service.PersistentTokenRememberMeUserDetailsService;
-import com.github.dactiv.framework.spring.security.authentication.service.TypeSecurityPrincipalManager;
 import com.github.dactiv.framework.spring.security.authentication.service.TypeTokenBasedRememberMeServices;
 import com.github.dactiv.framework.spring.security.plugin.PluginSourceAuthorizationManager;
 import com.github.dactiv.framework.spring.web.result.error.ErrorResultResolver;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.support.annotation.AnnotationMatchingPointcut;
 import org.springframework.beans.factory.ObjectProvider;
@@ -23,7 +20,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -31,7 +27,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Role;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.authorization.AuthorizationEventPublisher;
 import org.springframework.security.authorization.method.AuthorizationInterceptorsOrder;
@@ -40,12 +35,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -56,7 +47,6 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 
 import java.math.BigDecimal;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -82,22 +72,24 @@ public class DefaultWebSecurityAutoConfiguration {
 
     private final List<ErrorResultResolver> resultResolvers;
 
-    private final TypeSecurityPrincipalManager typeSecurityPrincipalManager;
-    private final PasswordEncoder passwordEncoder;
+    private final TypeRememberMeAuthenticationProvider typeRememberMeAuthenticationProvider;
+
+    private final TypeTokenBasedRememberMeServices typeSecurityPrincipalManager;
 
     public DefaultWebSecurityAutoConfiguration(AccessTokenContextRepository accessTokenContextRepository,
                                                AuthenticationProperties authenticationProperties,
                                                RememberMeProperties rememberMeProperties,
-                                               TypeSecurityPrincipalManager typeSecurityPrincipalManager,
+                                               TypeRememberMeAuthenticationProvider typeRememberMeAuthenticationProvider,
+                                               TypeTokenBasedRememberMeServices typeSecurityPrincipalManager,
                                                ObjectProvider<ErrorResultResolver> errorResultResolvers,
-                                               ObjectProvider<WebSecurityConfigurerAfterAdapter> webSecurityConfigurerAfterAdapter, PasswordEncoder passwordEncoder) {
+                                               ObjectProvider<WebSecurityConfigurerAfterAdapter> webSecurityConfigurerAfterAdapter) {
         this.accessTokenContextRepository = accessTokenContextRepository;
         this.authenticationProperties = authenticationProperties;
         this.rememberMeProperties = rememberMeProperties;
+        this.typeRememberMeAuthenticationProvider = typeRememberMeAuthenticationProvider;
         this.typeSecurityPrincipalManager = typeSecurityPrincipalManager;
         this.webSecurityConfigurerAfterAdapters = webSecurityConfigurerAfterAdapter.stream().collect(Collectors.toList());
         this.resultResolvers = errorResultResolvers.stream().collect(Collectors.toList());
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Bean
@@ -175,16 +167,9 @@ public class DefaultWebSecurityAutoConfiguration {
                             .key(rememberMeProperties.getKey())
                     );
         } catch (Exception e){
-            httpSecurity
-                    .rememberMe(r -> r
-                            .rememberMeServices(new TypeTokenBasedRememberMeServices(rememberMeProperties, typeSecurityPrincipalManager, userDetailsService(authenticationProperties, passwordEncoder)))
-                    );
+            httpSecurity.rememberMe(r -> r.rememberMeServices(typeSecurityPrincipalManager));
         }
-        AuthenticationProvider authenticationProvider = new TypeRememberMeAuthenticationProvider(
-                rememberMeProperties.getKey(),
-                typeSecurityPrincipalManager
-        );
-        httpSecurity.authenticationProvider(authenticationProvider);
+        httpSecurity.authenticationProvider(typeRememberMeAuthenticationProvider);
     }
 
     @Bean
@@ -206,7 +191,7 @@ public class DefaultWebSecurityAutoConfiguration {
         return authenticationProvider;
     }
 
-    @Bean
+    /*@Bean
     public InMemoryUserDetailsManager userDetailsService(AuthenticationProperties authenticationProperties,
                                                          PasswordEncoder passwordEncoder) {
 
@@ -221,7 +206,7 @@ public class DefaultWebSecurityAutoConfiguration {
             userDetails.add(new User(user.getName(), passwordEncoder.encode(user.getPassword()), roleAuthorities));
         }
         return new InMemoryUserDetailsManager(userDetails);
-    }
+    }*/
 
     @Bean
     @ConditionalOnMissingBean(PluginSourceAuthorizationManager.class)

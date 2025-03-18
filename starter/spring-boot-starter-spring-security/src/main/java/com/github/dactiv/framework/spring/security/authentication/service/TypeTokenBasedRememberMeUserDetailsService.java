@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -24,13 +24,13 @@ public class TypeTokenBasedRememberMeUserDetailsService implements UserDetailsSe
 
     private final TypeSecurityPrincipalManager typeSecurityPrincipalManager;
 
-    private final InMemoryUserDetailsManager inMemoryUserDetailsManager;
+    private final UserDetailsManager userDetailsManager;
 
     private MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
-    public TypeTokenBasedRememberMeUserDetailsService(TypeSecurityPrincipalManager typeSecurityPrincipalManager, InMemoryUserDetailsManager inMemoryUserDetailsManager) {
+    public TypeTokenBasedRememberMeUserDetailsService(TypeSecurityPrincipalManager typeSecurityPrincipalManager, UserDetailsManager userDetailsManager) {
         this.typeSecurityPrincipalManager = typeSecurityPrincipalManager;
-        this.inMemoryUserDetailsManager = inMemoryUserDetailsManager;
+        this.userDetailsManager = userDetailsManager;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class TypeTokenBasedRememberMeUserDetailsService implements UserDetailsSe
 
     private UserDetails getInMemoryUserDetails(String username) {
         try {
-            return inMemoryUserDetailsManager.loadUserByUsername(username);
+            return userDetailsManager.loadUserByUsername(username);
         } catch (Exception e) {
             return null;
         }

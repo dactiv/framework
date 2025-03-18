@@ -1,5 +1,6 @@
 package com.github.dactiv.framework.spring.security;
 
+import com.github.dactiv.framework.security.entity.RoleAuthority;
 import com.github.dactiv.framework.spring.security.audit.ControllerAuditHandlerInterceptor;
 import com.github.dactiv.framework.spring.security.audit.RequestBodyAttributeAdviceAdapter;
 import com.github.dactiv.framework.spring.security.audit.SecurityAuditEventRepositoryInterceptor;
@@ -10,9 +11,12 @@ import com.github.dactiv.framework.spring.security.authentication.cache.CacheMan
 import com.github.dactiv.framework.spring.security.authentication.cache.support.InMemoryCacheManager;
 import com.github.dactiv.framework.spring.security.authentication.config.*;
 import com.github.dactiv.framework.spring.security.authentication.handler.*;
+import com.github.dactiv.framework.spring.security.authentication.provider.TypeRememberMeAuthenticationProvider;
 import com.github.dactiv.framework.spring.security.authentication.service.TypeSecurityPrincipalManager;
+import com.github.dactiv.framework.spring.security.authentication.service.TypeTokenBasedRememberMeServices;
 import com.github.dactiv.framework.spring.security.controller.TokenController;
 import com.github.dactiv.framework.spring.security.plugin.PluginEndpoint;
+import org.apache.commons.lang3.StringUtils;
 import org.redisson.spring.starter.RedissonAutoConfigurationV2;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.actuate.info.InfoContributor;
@@ -20,13 +24,19 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.autoconfigure.websocket.servlet.UndertowWebSocketServletWebServerCustomizer;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -166,6 +176,38 @@ public class SpringSecurityAutoConfiguration {
                 cacheManager
         );
 
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(TypeRememberMeAuthenticationProvider.class)
+    public TypeRememberMeAuthenticationProvider typeRememberMeAuthenticationProvider(RememberMeProperties rememberMe,
+                                                                                     TypeSecurityPrincipalManager typeSecurityPrincipalManager) {
+        return new TypeRememberMeAuthenticationProvider(rememberMe.getKey(), typeSecurityPrincipalManager);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(TypeTokenBasedRememberMeServices.class)
+    public TypeTokenBasedRememberMeServices typeTokenBasedRememberMeServices(TypeSecurityPrincipalManager typeSecurityPrincipalManager,
+                                                                             RememberMeProperties rememberMeProperties,
+                                                                             UserDetailsManager userDetailsManager) {
+        return new TypeTokenBasedRememberMeServices(rememberMeProperties, typeSecurityPrincipalManager, userDetailsManager);
+    }
+
+    @Bean
+    public InMemoryUserDetailsManager userDetailsService(AuthenticationProperties authenticationProperties,
+                                                         PasswordEncoder passwordEncoder) {
+
+        List<UserDetails> userDetails = new LinkedList<>();
+        for (SecurityProperties.User user : authenticationProperties.getUsers()) {
+            List<SimpleGrantedAuthority> roleAuthorities = user
+                    .getRoles()
+                    .stream()
+                    .map(s -> StringUtils.prependIfMissing(s, RoleAuthority.DEFAULT_ROLE_PREFIX))
+                    .map(SimpleGrantedAuthority::new)
+                    .collect(Collectors.toList());
+            userDetails.add(new User(user.getName(), passwordEncoder.encode(user.getPassword()), roleAuthorities));
+        }
+        return new InMemoryUserDetailsManager(userDetails);
     }
 
     @Bean

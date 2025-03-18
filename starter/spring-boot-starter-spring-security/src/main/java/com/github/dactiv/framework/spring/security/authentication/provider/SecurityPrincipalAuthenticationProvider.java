@@ -8,6 +8,7 @@ import com.github.dactiv.framework.spring.security.authentication.service.TypeSe
 import com.github.dactiv.framework.spring.security.authentication.token.AuditAuthenticationToken;
 import com.github.dactiv.framework.spring.security.authentication.token.RequestAuthenticationToken;
 import com.github.dactiv.framework.spring.security.entity.AuditAuthenticationDetails;
+import io.micrometer.common.util.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -54,6 +55,9 @@ public class SecurityPrincipalAuthenticationProvider implements AuthenticationMa
 
         AuditAuthenticationDetails details = Casts.cast(token.getDetails());
         RequestAuthenticationToken authenticationToken = new RequestAuthenticationToken(details, token);
+        if (StringUtils.isEmpty(authenticationToken.getType())) {
+            return null;
+        }
 
         try {
             SecurityPrincipal userDetails = doPrincipalAuthenticate(authenticationToken);
@@ -77,7 +81,7 @@ public class SecurityPrincipalAuthenticationProvider implements AuthenticationMa
             String presentedPassword = token.getCredentials().toString();
             if (!typeSecurityPrincipalManager.matchesSecurityPrincipalPassword(presentedPassword, token, principal)) {
                 throw new BadCredentialsException(messages.getMessage(
-                        "SecurityPrincipalAuthenticationProvider.badCredentials",
+                        "AbstractUserDetailsAuthenticationProvider.badCredentials",
                         "用户名或密码错误"));
             }
 
@@ -88,7 +92,7 @@ public class SecurityPrincipalAuthenticationProvider implements AuthenticationMa
             // 如果 hideUserNotFoundExceptions true 并且是 UsernameNotFoundException 异常，抛出 用户名密码错误异常
             if (UsernameNotFoundException.class.isAssignableFrom(e.getClass()) && authenticationProperties.isHideUserNotFoundExceptions()) {
                 throw new BadCredentialsException(messages.getMessage(
-                        "SecurityPrincipalAuthenticationProvider.badCredentials",
+                        "AbstractUserDetailsAuthenticationProvider.badCredentials",
                         "用户名或密码错误"));
             } else if (e instanceof AuthenticationException) {
                 throw e;
@@ -109,7 +113,7 @@ public class SecurityPrincipalAuthenticationProvider implements AuthenticationMa
         if (Objects.isNull(userDetails)) {
             if (authenticationProperties.isHideUserNotFoundExceptions()) {
                 throw new BadCredentialsException(messages.getMessage(
-                        "SecurityPrincipalAuthenticationProvider.badCredentials",
+                        "AbstractUserDetailsAuthenticationProvider.badCredentials",
                         "用户名或密码错误"));
             } else {
                 throw new UsernameNotFoundException(messages.getMessage(
