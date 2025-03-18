@@ -19,6 +19,7 @@ import com.github.dactiv.framework.mybatis.plus.interceptor.EncryptInnerIntercep
 import com.github.dactiv.framework.mybatis.plus.interceptor.LastModifiedDateInnerInterceptor;
 import com.github.dactiv.framework.spring.web.query.QueryGenerator;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -32,6 +33,7 @@ import org.springframework.context.annotation.Configuration;
  * @author maurice.chen
  */
 @Configuration
+@ConditionalOnClass(MybatisPlusInterceptor.class)
 @AutoConfigureBefore(MybatisAutoConfiguration.class)
 @EnableConfigurationProperties({CryptoProperties.class, OperationDataTraceProperties.class})
 @ConditionalOnProperty(prefix = "dactiv.mybatis.plus", value = "enabled", matchIfMissing = true)

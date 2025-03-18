@@ -5,6 +5,7 @@ import com.github.dactiv.framework.captcha.DelegateCaptchaService;
 import com.github.dactiv.framework.captcha.intercept.Interceptor;
 import com.github.dactiv.framework.captcha.token.InterceptToken;
 import com.github.dactiv.framework.commons.RestResult;
+import com.github.dactiv.framework.spring.web.captcha.CaptchaController;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +22,7 @@ import java.util.Map;
  * @author maurice.chen
  */
 @RestController
-@RequestMapping("captcha")
+@RequestMapping(CaptchaController.CONTROLLER_NAME)
 public class CaptchaExtendController {
 
     private final Interceptor interceptor;

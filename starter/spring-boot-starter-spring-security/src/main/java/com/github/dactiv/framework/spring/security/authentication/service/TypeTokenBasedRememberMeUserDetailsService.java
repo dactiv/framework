@@ -2,6 +2,8 @@ package com.github.dactiv.framework.spring.security.authentication.service;
 
 import com.github.dactiv.framework.security.entity.SecurityPrincipal;
 import com.github.dactiv.framework.spring.security.authentication.token.TypeAuthenticationToken;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.userdetails.User;
@@ -18,7 +20,7 @@ import java.util.Objects;
  *
  * @author maurice.chen
  */
-public class TypeTokenBasedRememberMeUserDetailsService implements UserDetailsService {
+public class TypeTokenBasedRememberMeUserDetailsService implements UserDetailsService, MessageSourceAware {
 
     private final TypeSecurityPrincipalManager typeSecurityPrincipalManager;
 
@@ -65,7 +67,8 @@ public class TypeTokenBasedRememberMeUserDetailsService implements UserDetailsSe
         }
     }
 
-    public void setMessages(MessageSourceAccessor messages) {
-        this.messages = messages;
+    @Override
+    public void setMessageSource(MessageSource messageSource) {
+        this.messages = new MessageSourceAccessor(messageSource);
     }
 }

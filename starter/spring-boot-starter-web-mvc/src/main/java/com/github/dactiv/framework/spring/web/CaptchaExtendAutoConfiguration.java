@@ -25,7 +25,7 @@ import org.springframework.validation.Validator;
 @ConditionalOnClass(CaptchaAutoConfiguration.class)
 @AutoConfigureBefore(CaptchaAutoConfiguration.class)
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-public class CaptchaExtAutoConfiguration {
+public class CaptchaExtendAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(prefix = "dactiv.captcha.controller", value = "enabled", matchIfMissing = true)

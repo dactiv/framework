@@ -8,8 +8,10 @@ import com.github.dactiv.framework.spring.security.authentication.token.RequestA
 import com.github.dactiv.framework.spring.security.authentication.token.TypeAuthenticationToken;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.MessageSourceAccessor;
-import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -26,7 +28,7 @@ import java.util.Optional;
  *
  * @author maurice.chen
  */
-public class TypeSecurityPrincipalManager implements InitializingBean {
+public class TypeSecurityPrincipalManager implements InitializingBean, MessageSourceAware {
 
     /**
      * 认证缓存块名称
@@ -51,7 +53,7 @@ public class TypeSecurityPrincipalManager implements InitializingBean {
     /**
      * spring security 国际化访问者
      */
-    private final MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
+    private MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
 
     public TypeSecurityPrincipalManager(List<TypeSecurityPrincipalService> typeSecurityPrincipalServices,
                                         CacheManager cacheManager) {
@@ -77,7 +79,7 @@ public class TypeSecurityPrincipalManager implements InitializingBean {
                 "找不到适用于 " + type + " 的 TypeSecurityPrincipalService 实现"
         );
 
-        return optional.orElseThrow(() -> new AuthenticationServiceException(message));
+        return optional.orElseThrow(() -> new InternalAuthenticationServiceException(message));
     }
 
     /**
@@ -206,5 +208,10 @@ public class TypeSecurityPrincipalManager implements InitializingBean {
      */
     public CacheManager getCacheManager() {
         return cacheManager;
+    }
+
+    @Override
+    public void setMessageSource(MessageSource messageSource) {
+        this.messages = new MessageSourceAccessor(messageSource);
     }
 }

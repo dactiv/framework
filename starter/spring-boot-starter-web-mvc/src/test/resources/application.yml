@@ -4,6 +4,14 @@ dactiv:
       mvc:
         filter-view-base-packages: com.github.dactiv.framework.spring.web.test.result.entity
 
+management:
+  info:
+    env:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 spring:
   data:

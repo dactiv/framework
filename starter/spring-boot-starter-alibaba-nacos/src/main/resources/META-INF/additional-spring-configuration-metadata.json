@@ -16,6 +16,12 @@
       "type": "java.lang.Boolean",
       "description": "是否开启 nacos 事件监听支持.",
       "defaultValue": false
+    },
+    {
+      "name": "spring.cloud.nacos.discovery.event.instance-registered-subscribe",
+      "type": "java.lang.Boolean",
+      "description": "是否实例注册后马上广播事件",
+      "defaultValue": false
     }
   ]
 }

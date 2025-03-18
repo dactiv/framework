@@ -1,2 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=plus.com.github.dactiv.framework.mybatis.MybatisPlusAutoConfiguration
-
