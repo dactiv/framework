@@ -3,11 +3,9 @@ package com.github.dactiv.framework.spring.web.result;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.commons.exception.ErrorCodeException;
+import com.github.dactiv.framework.security.filter.result.IgnoreOrDesensitizeResultHolder;
 import com.github.dactiv.framework.spring.web.SpringWebMvcProperties;
 import com.github.dactiv.framework.spring.web.mvc.SpringMvcUtils;
-import com.github.dactiv.framework.spring.web.result.filter.FilterResultAnnotationBuilder;
-import com.github.dactiv.framework.spring.web.result.filter.holder.FilterResultHolder;
-import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,8 +24,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * rest 响应同一格式实现类
@@ -121,8 +121,6 @@ public class RestResponseBodyAdvice implements ResponseBodyAdvice<Object> {
         // 判断是否支持格式发，目前针对只有头的 X-REQUEST-CLIENT = supportClients 变量集合才会格式化
         boolean support = properties.isAllRestResultFormat() || (clients != null && clients.stream().anyMatch(properties::isSupportClient));
 
-        setFilterResultId(httpRequest.getServletRequest());
-
         if (support && execute && MediaType.APPLICATION_JSON.isCompatibleWith(selectedContentType)) {
             HttpStatus status = HttpStatus.valueOf(httpResponse.getServletResponse().getStatus());
             // 获取执行状态
@@ -136,11 +134,6 @@ public class RestResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             } else {
                 // 获取实际要响应的 data 内容
                 Object data = Objects.isNull(body) ? new LinkedHashMap<>() : body;
-                List<Annotation> annotatedTypes = Arrays.asList(data.getClass().getAnnotations());
-                if (annotatedTypes.stream().anyMatch(a -> FilterResultAnnotationBuilder.ANNOTATIONS_TO_ADD.contains(a.annotationType()))) {
-                    // FIXME 由于 RestResult 的范型为 Object 会导致在使用 @IncludeView 等注解时，无法找到响应的类型匹配，先这样加，后面在想办法改改。
-                    data = Casts.convertValue(data, data.getClass());
-                }
                 result = RestResult.of(message, status.value(), RestResult.SUCCESS_EXECUTE_CODE, data);
             }
 
@@ -152,6 +145,7 @@ public class RestResponseBodyAdvice implements ResponseBodyAdvice<Object> {
                     result.setExecuteCode(ErrorCodeException.DEFAULT_EXCEPTION_CODE);
                 }
             }
+
             response.setStatusCode(HttpStatus.valueOf(result.getStatus()));
             String url = httpRequest.getServletRequest().getRequestURI();
             String prefix = httpRequest.getHeaders().getFirst(DEFAULT_FORWARDED_PREFIX_HEADER_NAME);
@@ -159,44 +153,11 @@ public class RestResponseBodyAdvice implements ResponseBodyAdvice<Object> {
                 url = prefix + url;
             }
             result.getMetadata().put(RestResult.DEFAULT_URL_NAME, url);
-            return result;
+            return IgnoreOrDesensitizeResultHolder.convert(result);
         } else {
             return body;
         }
 
     }
-
-    /**
-     * 设置过滤返回对象结果集的值
-     *
-     * @param request http 请求对象
-     */
-    public void setFilterResultId(HttpServletRequest request) {
-        String id = getFilterResultId(request);
-        if (StringUtils.isBlank(id)) {
-            return ;
-        }
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("当前收到要过滤的响应数据 id 为 [{}]", id);
-        }
-        FilterResultHolder.get().add(id);
-    }
-
-    /**
-     * 获取过滤返回对象结果集的值
-     *
-     * @param request http 请求
-     *
-     * @return 过滤返回对象结果集的值
-     */
-    public String getFilterResultId(HttpServletRequest request) {
-        String id = request.getHeader(properties.getFilterResultIdHeaderName());
-
-        if (StringUtils.isBlank(id)) {
-            id = request.getParameter(properties.getFilterResultIdParamName());
-        }
-        return id;
-    }
-
 
 }

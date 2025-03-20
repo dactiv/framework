@@ -10,7 +10,10 @@ import com.github.dactiv.framework.spring.security.authentication.TypeSecurityPr
 import com.github.dactiv.framework.spring.security.authentication.cache.CacheManager;
 import com.github.dactiv.framework.spring.security.authentication.cache.support.InMemoryCacheManager;
 import com.github.dactiv.framework.spring.security.authentication.config.*;
-import com.github.dactiv.framework.spring.security.authentication.handler.*;
+import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationFailureHandler;
+import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationFailureResponse;
+import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationSuccessHandler;
+import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationSuccessResponse;
 import com.github.dactiv.framework.spring.security.authentication.provider.TypeRememberMeAuthenticationProvider;
 import com.github.dactiv.framework.spring.security.authentication.service.TypeSecurityPrincipalManager;
 import com.github.dactiv.framework.spring.security.authentication.service.TypeTokenBasedRememberMeServices;
@@ -208,17 +211,5 @@ public class SpringSecurityAutoConfiguration {
             userDetails.add(new User(user.getName(), passwordEncoder.encode(user.getPassword()), roleAuthorities));
         }
         return new InMemoryUserDetailsManager(userDetails);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(IgnoreAuthenticationSuccessDataResponse.class)
-    public IgnoreAuthenticationSuccessDataResponse ignoreAuthenticationSuccessDataResponse(AuthenticationProperties properties) {
-        return new IgnoreAuthenticationSuccessDataResponse(properties);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean(AuthenticationSuccessDesensitizeDataResponse.class)
-    public AuthenticationSuccessDesensitizeDataResponse authenticationSuccessDesensitizeDataResponse(AuthenticationProperties properties) {
-        return new AuthenticationSuccessDesensitizeDataResponse(properties);
     }
 }

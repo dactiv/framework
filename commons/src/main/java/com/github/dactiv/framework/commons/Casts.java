@@ -2,9 +2,15 @@ package com.github.dactiv.framework.commons;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dactiv.framework.commons.annotation.IgnoreField;
 import com.github.dactiv.framework.commons.exception.SystemException;
+import com.github.dactiv.framework.commons.jackson.serializer.DesensitizeSerializer;
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.Option;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.converters.DateConverter;
@@ -677,4 +683,30 @@ public abstract class Casts {
         return String.format("%0" + String.valueOf(count).length() + "d", Math.abs(Objects.hash(args) % count + 1));
     }
 
+    public static Map<String, Object> ignoreObjectFieldtoMap(Object source, List<String> properties) {
+        DocumentContext documentContext = createDocumentContext(source);
+        properties.forEach(documentContext::delete);
+        return documentContext.json();
+    }
+
+    public static Map<String, Object> desensitizeObjectFieldtoMap(Object source, List<String> properties) {
+        DocumentContext documentContext = createDocumentContext(source);
+        for (String property : properties) {
+            Object value = documentContext.read(property);
+            if (Objects.isNull(value)) {
+                continue;
+            }
+            documentContext.set(property, DesensitizeSerializer.desensitize(value.toString()));
+        }
+        return documentContext.json();
+    }
+
+    private static DocumentContext createDocumentContext(Object source) {
+        JsonNode rootNode = objectMapper.valueToTree(source);
+        JsonNode filteredNode = rootNode.deepCopy();
+
+        Configuration conf = Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL);
+
+        return JsonPath.using(conf).parse(filteredNode.toString());
+    }
 }

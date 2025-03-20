@@ -26,16 +26,6 @@ public class SpringWebMvcProperties {
     private List<String> filterViewBasePackages = new ArrayList<>();
 
     /**
-     * 过滤属性的 id 头名称, "X-FILTER-RESULT-ID"
-     */
-    private String filterResultIdHeaderName = RestResponseBodyAdvice.DEFAULT_FILTER_RESULT_ID_HEADER_NAME;
-
-    /**
-     * 过滤属性的 id 参数名称, 默认为 "filterResultId"
-     */
-    private String filterResultIdParamName = RestResponseBodyAdvice.DEFAULT_FILTER_RESULT_ID_PARAM_NAME;
-
-    /**
      * 支持格式化的客户端集合，默认为 "SPRING_GATEWAY"
      */
     private List<String> restResultFormatSupportClients = RestResponseBodyAdvice.DEFAULT_SUPPORT_CLIENT;
@@ -94,42 +84,6 @@ public class SpringWebMvcProperties {
      */
     public void setFilterViewBasePackages(List<String> filterViewBasePackages) {
         this.filterViewBasePackages = filterViewBasePackages;
-    }
-
-    /**
-     * 获取过滤属性的 id 头名称
-     *
-     * @return 过滤属性的 id 头名称
-     */
-    public String getFilterResultIdHeaderName() {
-        return filterResultIdHeaderName;
-    }
-
-    /**
-     * 设置过滤属性的 id 头名称
-     *
-     * @param filterResultIdHeaderName 过滤属性的 id 头名称
-     */
-    public void setFilterResultIdHeaderName(String filterResultIdHeaderName) {
-        this.filterResultIdHeaderName = filterResultIdHeaderName;
-    }
-
-    /**
-     * 获取过滤属性的 id 参数名称
-     *
-     * @return 过滤属性的 id 参数名称
-     */
-    public String getFilterResultIdParamName() {
-        return filterResultIdParamName;
-    }
-
-    /**
-     * 设置过滤属性的 id 参数名称
-     *
-     * @param filterResultIdParamName 过滤属性的 id 参数名称
-     */
-    public void setFilterResultIdParamName(String filterResultIdParamName) {
-        this.filterResultIdParamName = filterResultIdParamName;
     }
 
     /**

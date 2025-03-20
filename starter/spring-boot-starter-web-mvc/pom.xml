@@ -57,6 +57,11 @@
 
         <dependency>
             <groupId>com.github.dactiv.framework</groupId>
+            <artifactId>spring-boot-starter-basic-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.dactiv.framework</groupId>
             <artifactId>spring-boot-starter-idempotent</artifactId>
             <optional>true</optional>
         </dependency>
