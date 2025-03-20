@@ -64,7 +64,7 @@ public interface TypeSecurityPrincipalService {
      * @return true 是，否则 false
      */
     default boolean matchesPassword(String presentedPassword,
-                                    RequestAuthenticationToken token,
+                                    TypeAuthenticationToken token,
                                     SecurityPrincipal principal) {
         return getPasswordEncoder().matches(presentedPassword, principal.getCredentials().toString());
     }
@@ -78,7 +78,7 @@ public interface TypeSecurityPrincipalService {
      * @return 新的认证 token
      */
     default AuditAuthenticationToken createSuccessAuthentication(SecurityPrincipal principal,
-                                                                 RequestAuthenticationToken token,
+                                                                 TypeAuthenticationToken token,
                                                                  Collection<? extends GrantedAuthority> grantedAuthorities) {
 
         AuditAuthenticationToken result = new AuditAuthenticationToken(principal, token, grantedAuthorities);
