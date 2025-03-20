@@ -178,7 +178,7 @@ public class TianaiCaptchaService extends AbstractCaptchaService<TianaiRequestBo
                 getCaptchaStorageManager().saveCaptcha(captcha, interceptToken);
 
                 long useTime = imageCaptchaTrack.getEndSlidingTime().getTime() - imageCaptchaTrack.getStartSlidingTime().getTime();
-                return RestResult.ofSuccess("校验成功, 本次使用 " + useTime / 1000 + " 秒", DigestUtils.md5DigestAsHex(captcha.getValue().getBytes()));
+                return RestResult.ofSuccess("校验成功, 本次使用 " + useTime / 1000 + " 秒", (Object)DigestUtils.md5DigestAsHex(captcha.getValue().getBytes()));
             }
             return RestResult.of(response.getMsg(), HttpStatus.OK.value(), ErrorCodeException.DEFAULT_EXCEPTION_CODE);
         } catch (Exception e) {
@@ -208,7 +208,8 @@ public class TianaiCaptchaService extends AbstractCaptchaService<TianaiRequestBo
         imageCaptchaInfo.setTolerant(tianaiCaptchaProperties.getTolerantMap().getOrDefault(type, 0.00F));
         // 这个map数据应该存到缓存中，校验的时候需要用到该数据
         Map<String, Object> map = imageCaptchaValidator.generateImageCaptchaValidData(imageCaptchaInfo);
-
+        // 兼容 js 动态函数名称使用
+        imageCaptchaInfo.setType(imageCaptchaInfo.getType().toLowerCase());
         Map<String, Object> body = Casts.convertValue(imageCaptchaInfo, Casts.MAP_TYPE_REFERENCE);
 
         return GenerateCaptchaResult.of(body, SystemException.convertSupplier(() -> Casts.getObjectMapper().writeValueAsString(map)));
