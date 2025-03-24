@@ -8,7 +8,6 @@ import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 忽略或脱敏结果持有者
@@ -146,19 +145,19 @@ public class IgnoreOrDesensitizeResultHolder {
     }
 
 
-    public static Map<String, Object> convert(Object source) {
-        Map<String, Object> convert = Casts.convertValue(source, Casts.MAP_TYPE_REFERENCE);
+    public static Object convert(Object source) {
+        //Map<String, Object> convert = Casts.convertValue(source, Casts.MAP_TYPE_REFERENCE);
 
         List<String> ignoreProperties = IgnoreOrDesensitizeResultHolder.getIgnoreProperties();
         if (CollectionUtils.isNotEmpty(ignoreProperties)) {
-            convert = Casts.ignoreObjectFieldtoMap(convert, ignoreProperties);
+            source = Casts.ignoreObjectFieldToMap(source, ignoreProperties);
         }
 
         List<String> desensitizeProperties = IgnoreOrDesensitizeResultHolder.getDesensitizeProperties();
         if (CollectionUtils.isNotEmpty(desensitizeProperties)) {
-            convert = Casts.desensitizeObjectFieldtoMap(convert, desensitizeProperties);
+            source = Casts.desensitizeObjectFieldToMap(source, desensitizeProperties);
         }
 
-        return convert;
+        return source;
     }
 }

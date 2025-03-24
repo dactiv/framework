@@ -31,5 +31,7 @@ public class TestCasts {
         value = Casts.setUrlPathVariableValue(url, variableValue);
 
         Assertions.assertEquals(value, "http://localhost:9010/api/v1/buckets/{bucketName}/objects/download?prefix={filename}");
+
+        String json = "{\"templateCode\":\"SMS_314856207\",\"signCode\":\"广西海象爱家科技\"}";
     }
 }

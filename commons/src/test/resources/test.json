@@ -1,0 +1,209 @@
+{
+  "message": "OK",
+  "status": 200,
+  "executeCode": "200",
+  "data": [
+    {
+      "id": "CONSOLE",
+      "value": [
+        {
+          "id": 1,
+          "email": "chan.alex@foxmail.com",
+          "emailVerified": {
+            "name": "是",
+            "value": 1
+          },
+          "status": {
+            "name": "启用",
+            "value": 1
+          },
+          "gender": {
+            "name": "男",
+            "value": 10
+          },
+          "username": "admin",
+          "lastAuthenticationTime": 1742623237000,
+          "realName": "超级管理员",
+          "phoneNumber": "18776974353",
+          "phoneNumberVerified": {
+            "name": "是",
+            "value": 1
+          }
+        },
+        {
+          "id": 23,
+          "email": "chan.alex1@foxmail.com",
+          "emailVerified": {
+            "name": "是",
+            "value": 1
+          },
+          "status": {
+            "name": "启用",
+            "value": 1
+          },
+          "gender": {
+            "name": "男",
+            "value": 10
+          },
+          "username": "test1",
+          "lastAuthenticationTime": 1740475014000,
+          "realName": "超级管理员",
+          "phoneNumber": "18776974354",
+          "phoneNumberVerified": {
+            "name": "是",
+            "value": 1
+          }
+        },
+        {
+          "id": 24,
+          "email": "chan.alex2@foxmail.com",
+          "emailVerified": {
+            "name": "是",
+            "value": 1
+          },
+          "status": {
+            "name": "启用",
+            "value": 1
+          },
+          "gender": {
+            "name": "男",
+            "value": 10
+          },
+          "username": "test2",
+          "lastAuthenticationTime": 1740475014000,
+          "realName": "超级管理员",
+          "phoneNumber": "18776974355",
+          "phoneNumberVerified": {
+            "name": "是",
+            "value": 1
+          }
+        },
+        {
+          "id": 25,
+          "email": "chan.alex3@foxmail.com",
+          "emailVerified": {
+            "name": "是",
+            "value": 1
+          },
+          "status": {
+            "name": "启用",
+            "value": 1
+          },
+          "gender": {
+            "name": "男",
+            "value": 10
+          },
+          "username": "test3",
+          "lastAuthenticationTime": 1740475014000,
+          "realName": "超级管理员",
+          "phoneNumber": "18776974356",
+          "phoneNumberVerified": {
+            "name": "是",
+            "value": 1
+          }
+        },
+        {
+          "id": 26,
+          "email": "chan.alex4@foxmail.com",
+          "emailVerified": {
+            "name": "是",
+            "value": 1
+          },
+          "status": {
+            "name": "启用",
+            "value": 1
+          },
+          "gender": {
+            "name": "男",
+            "value": 10
+          },
+          "username": "test4",
+          "lastAuthenticationTime": 1740475014000,
+          "realName": "超级管理员",
+          "phoneNumber": "18776974357",
+          "phoneNumberVerified": {
+            "name": "是",
+            "value": 1
+          }
+        },
+        {
+          "id": 27,
+          "email": "chan.alex5@foxmail.com",
+          "emailVerified": {
+            "name": "是",
+            "value": 1
+          },
+          "status": {
+            "name": "启用",
+            "value": 1
+          },
+          "gender": {
+            "name": "男",
+            "value": 10
+          },
+          "username": "test5",
+          "lastAuthenticationTime": 1740475014000,
+          "realName": "超级管理员",
+          "phoneNumber": "18776974358",
+          "phoneNumberVerified": {
+            "name": "是",
+            "value": 1
+          }
+        },
+        {
+          "id": 28,
+          "email": "chan.alex6@foxmail.com",
+          "emailVerified": {
+            "name": "是",
+            "value": 1
+          },
+          "status": {
+            "name": "启用",
+            "value": 1
+          },
+          "gender": {
+            "name": "男",
+            "value": 10
+          },
+          "username": "test6",
+          "lastAuthenticationTime": 1740475014000,
+          "realName": "超级管理员",
+          "phoneNumber": "18776974359",
+          "phoneNumberVerified": {
+            "name": "是",
+            "value": 1
+          }
+        },
+        {
+          "id": 29,
+          "email": "chan.alex7@foxmail.com",
+          "emailVerified": {
+            "name": "是",
+            "value": 1
+          },
+          "status": {
+            "name": "启用",
+            "value": 1
+          },
+          "gender": {
+            "name": "男",
+            "value": 10
+          },
+          "username": "test7",
+          "lastAuthenticationTime": 1740475014000,
+          "realName": "超级管理员",
+          "phoneNumber": "18776974360",
+          "phoneNumberVerified": {
+            "name": "是",
+            "value": 1
+          }
+        }
+      ],
+      "name": "管理后台用户"
+    }
+  ],
+  "timestamp": 1742623248317,
+  "metadata": {
+    "url": "/authentication/findSystemUsers"
+  }
+}

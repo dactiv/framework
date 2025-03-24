@@ -19,7 +19,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 响应 json 数据的认证失败处理实现
@@ -77,7 +76,7 @@ public class JsonAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
 
         if (loginRequestMatchers.stream().anyMatch(matcher -> matcher.matches(request))) {
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            Map<String, Object> data = IgnoreOrDesensitizeResultHolder.convert(result);
+            Object data = IgnoreOrDesensitizeResultHolder.convert(result);
             response.getWriter().write(Casts.getObjectMapper().writeValueAsString(data));
         }
     }

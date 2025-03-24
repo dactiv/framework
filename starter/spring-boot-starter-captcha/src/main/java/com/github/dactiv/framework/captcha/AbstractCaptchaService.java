@@ -167,15 +167,12 @@ public abstract class AbstractCaptchaService<B> implements CaptchaService, Captc
 
         String interceptorType = getInterceptorType();
         if (StringUtils.isNotEmpty(interceptorType) && BooleanUtils.toBoolean(isGenerateInterceptor)) {
-            InterceptToken interceptToken = interceptor.generateCaptchaIntercept(
-                    token.getToken().getName(),
-                    token.getType(),
-                    interceptorType
-            );
+            InterceptToken interceptToken = interceptor.generateCaptchaIntercept(token, interceptorType);
             token.setInterceptToken(interceptToken);
         }
 
         captchaStorageManager.saveBuildToken(token);
+
         return token;
     }
 

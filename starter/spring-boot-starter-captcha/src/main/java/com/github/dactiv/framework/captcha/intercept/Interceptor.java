@@ -1,5 +1,6 @@
 package com.github.dactiv.framework.captcha.intercept;
 
+import com.github.dactiv.framework.captcha.token.BuildToken;
 import com.github.dactiv.framework.captcha.token.InterceptToken;
 import com.github.dactiv.framework.commons.RestResult;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +24,15 @@ public interface Interceptor {
      * @return 绑定 token
      */
     InterceptToken generateCaptchaIntercept(String token, String type, String interceptType);
+
+    /**
+     * 生成验证码拦截
+     * @param buildToken 要拦截的 token
+     * @param interceptType 拦截的 token 类型
+     *
+     * @return 绑定 token
+     */
+    InterceptToken generateCaptchaIntercept(BuildToken buildToken, String interceptType);
 
     /**
      * 校验验证码

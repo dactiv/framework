@@ -32,16 +32,17 @@ public class DelegateCaptchaInterceptor implements Interceptor {
 
         BuildToken buildToken = captchaService.getBuildToken(token);
 
-        if (Objects.isNull(buildToken)) {
-            throw new SystemException("找不到 token 值为 [" + token + "] 的绑定token");
-        }
+        return generateCaptchaIntercept(buildToken, interceptType);
+    }
 
+    @Override
+    public InterceptToken generateCaptchaIntercept(BuildToken buildToken, String interceptType) {
+        SystemException.isTrue(Objects.nonNull(buildToken), "buildToken 不能为空");
         CaptchaService interceptorService = delegateCaptchaService.getCaptchaServiceByType(interceptType);
 
         InterceptToken interceptToken = interceptorService.generateInterceptorToken(buildToken);
 
         buildToken.setInterceptToken(interceptToken);
-        //captchaService.saveBuildToken(buildToken);
 
         return interceptToken;
     }

@@ -11,6 +11,7 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
+import net.minidev.json.JSONArray;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.converters.DateConverter;
@@ -120,6 +121,9 @@ public abstract class Casts {
      */
     public static final TypeReference<Map<String, Object>> MAP_TYPE_REFERENCE = new TypeReference<>() {};
 
+    /**
+     * map 参数类型引用
+     */
     public static final ParameterizedTypeReference<Map<String, Object>> MAP_PARAMETERIZED_TYPE_REFERENCE = new ParameterizedTypeReference<>() {};
 
     /**
@@ -374,9 +378,21 @@ public abstract class Casts {
 
     }
 
+    private static class MapConverter implements Converter {
+
+        @Override
+        public <T> T convert(Class<T> aClass, Object o) {
+            if (String.class.isAssignableFrom(o.getClass())) {
+                return SystemException.convertSupplier(() -> getObjectMapper().readValue(o.toString(), aClass), (String)null);
+            }
+            return convertValue(o, aClass);
+        }
+    }
+
     static {
         registerDateConverter(DEFAULT_DATE_FORMATTER_PATTERN, DEFAULT_DATE_TIME_FORMATTER_PATTERN);
         registerCollectionConverter();
+        ConvertUtils.register(new MapConverter(), Map.class);
     }
 
     /**
@@ -683,20 +699,35 @@ public abstract class Casts {
         return String.format("%0" + String.valueOf(count).length() + "d", Math.abs(Objects.hash(args) % count + 1));
     }
 
-    public static Map<String, Object> ignoreObjectFieldtoMap(Object source, List<String> properties) {
+    public static Map<String, Object> ignoreObjectFieldToMap(Object source, List<String> properties) {
         DocumentContext documentContext = createDocumentContext(source);
         properties.forEach(documentContext::delete);
         return documentContext.json();
     }
 
-    public static Map<String, Object> desensitizeObjectFieldtoMap(Object source, List<String> properties) {
+    public static Map<String, Object> desensitizeObjectFieldToMap(Object source, List<String> properties) {
         DocumentContext documentContext = createDocumentContext(source);
         for (String property : properties) {
             Object value = documentContext.read(property);
             if (Objects.isNull(value)) {
                 continue;
             }
-            documentContext.set(property, DesensitizeSerializer.desensitize(value.toString()));
+            if (value instanceof JSONArray array) {
+
+                Configuration pathConfig = Configuration.builder()
+                        .options(Option.AS_PATH_LIST)
+                        .build();
+                List<String> paths = JsonPath.using(pathConfig).parse(source).read(property);
+                for (int i = 0; i < array.size(); i++) {
+                    if (Objects.isNull(array.get(i))) {
+                        continue;
+                    }
+                    String desensitizeValue = Objects.toString(array.get(i), StringUtils.EMPTY);
+                    documentContext.set(paths.get(i),DesensitizeSerializer.desensitize(desensitizeValue));
+                }
+            } else {
+                documentContext.set(property, DesensitizeSerializer.desensitize(value.toString()));
+            }
         }
         return documentContext.json();
     }

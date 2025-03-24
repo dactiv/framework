@@ -55,16 +55,6 @@ public class RestResponseBodyAdvice implements ResponseBodyAdvice<Object> {
     public static final String DEFAULT_FORWARDED_PREFIX_HEADER_NAME = "X-FORWARDED-PREFIX";
 
     /**
-     * 默认过滤属性的 id 头名称
-     */
-    public static final String DEFAULT_FILTER_RESULT_ID_HEADER_NAME = "X-FILTER-RESULT-ID";
-
-    /**
-     * 默认过滤属性的 id 参数名称
-     */
-    public static final String DEFAULT_FILTER_RESULT_ID_PARAM_NAME = "filterResultId";
-
-    /**
      * 默认支持的客户端类型集合
      */
     public static final List<String> DEFAULT_SUPPORT_CLIENT = Collections.singletonList("SPRING_GATEWAY");
