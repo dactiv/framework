@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.BlockAttackInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.github.dactiv.framework.crypto.algorithm.ByteSource;
 import com.github.dactiv.framework.crypto.algorithm.cipher.AesCipherService;
+import com.github.dactiv.framework.crypto.algorithm.cipher.OperationMode;
 import com.github.dactiv.framework.crypto.algorithm.cipher.RsaCipherService;
 import com.github.dactiv.framework.mybatis.MybatisAutoConfiguration;
 import com.github.dactiv.framework.mybatis.config.OperationDataTraceProperties;
@@ -77,7 +79,15 @@ public class MybatisPlusAutoConfiguration {
     @Bean(CryptoProperties.MYBATIS_PLUS_DATA_AES_CRYPTO_SERVICE_NAME)
     @ConditionalOnProperty(prefix = "dactiv.mybatis.plus.crypto", value = "enabled", matchIfMissing = true)
     public DataAesCryptoService dataAesCryptoService(CryptoProperties cryptoProperties) {
-        return new DataAesCryptoService(new AesCipherService(), cryptoProperties.getDataAesCryptoKey());
+
+        AesCipherService aesCipherService = new AesCipherService();
+        aesCipherService.setInitializationVectorSize(0);
+        aesCipherService.setMode(OperationMode.ECB);
+        aesCipherService.setRandomNumberGenerator(null);
+
+        ByteSource source = DataAesCryptoService.generate16ByteKey(cryptoProperties.getDataAesCryptoKey());
+
+        return new DataAesCryptoService(aesCipherService, source.getBase64());
     }
 
     @ConditionalOnMissingBean(DataRsaCryptoService.class)

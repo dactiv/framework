@@ -209,6 +209,9 @@ public class RestResult<T> implements Serializable {
      * @return rest 结果集
      */
     public static <T> RestResult<T> ofException(Throwable throwable) {
+        if (throwable instanceof ErrorCodeException errorCode) {
+            return of(errorCode.getMessage(), Integer.parseInt(ErrorCodeException.DEFAULT_EXCEPTION_CODE), errorCode.getErrorCode(), null);
+        }
         return of(throwable.getMessage(), Integer.parseInt(ErrorCodeException.DEFAULT_EXCEPTION_CODE), ErrorCodeException.DEFAULT_EXCEPTION_CODE, null);
     }
 

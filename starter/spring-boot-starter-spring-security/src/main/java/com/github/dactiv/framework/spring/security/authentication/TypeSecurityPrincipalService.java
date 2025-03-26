@@ -137,8 +137,8 @@ public interface TypeSecurityPrincipalService {
      * @param grantedAuthorities 权限信息
      * @return 用户明细信息
      */
-    default AuditAuthenticationSuccessDetails getPrincipalDetails(Object principal,
-                                                                  Authentication token,
+    default AuditAuthenticationSuccessDetails getPrincipalDetails(SecurityPrincipal principal,
+                                                                  TypeAuthenticationToken token,
                                                                   Collection<? extends GrantedAuthority> grantedAuthorities) {
 
         if (token instanceof RequestAuthenticationToken requestAuthenticationToken) {
@@ -166,5 +166,14 @@ public interface TypeSecurityPrincipalService {
      */
     default CacheProperties getAuthorizationCache(TypeAuthenticationToken token) {
         return null;
+    }
+
+
+    default boolean preSaveSecurityPrincipalCache(TypeAuthenticationToken token, SecurityPrincipal principal) {
+        return true;
+    }
+
+    default boolean preSaveGrantedAuthoritiesCache(TypeAuthenticationToken token, SecurityPrincipal principal, Collection<GrantedAuthority> grantedAuthorities) {
+        return true;
     }
 }

@@ -5,6 +5,8 @@ import com.github.dactiv.framework.spring.security.authentication.TypeSecurityPr
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.util.MultiValueMap;
 
+import java.io.Serial;
+
 /**
  * 表单登录授权明细信息
  *
@@ -12,6 +14,8 @@ import org.springframework.util.MultiValueMap;
  */
 public class AuditAuthenticationDetails extends WebAuthenticationDetails implements AuditDetailsSource {
 
+    @Serial
+    private static final long serialVersionUID = -8596125325888745937L;
     /**
      * 登录类型，用于区分使用不同的 {@link TypeSecurityPrincipalService} 执行认证授权等业务
      */

@@ -11,7 +11,6 @@ import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.commons.TimeProperties;
 import com.github.dactiv.framework.commons.exception.ErrorCodeException;
-import com.github.dactiv.framework.commons.exception.ServiceException;
 import com.github.dactiv.framework.commons.exception.SystemException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.collections4.MapUtils;
@@ -218,7 +217,7 @@ public abstract class AbstractCaptchaService<B> implements CaptchaService, Captc
         BuildToken buildToken = getBuildToken(request);
 
         if (Objects.isNull(buildToken)) {
-            throw new ServiceException("绑定 token 已过期");
+            return RestResult.ofException(new ErrorCodeException("绑定 token 已过期", ErrorCodeException.TIMEOUT_CODE));
         }
 
         return verify(buildToken, request);
@@ -229,7 +228,7 @@ public abstract class AbstractCaptchaService<B> implements CaptchaService, Captc
         String token = request.getParameter(getTokenParamName());
         InterceptToken interceptToken = captchaStorageManager.getInterceptToken(token);
         if (Objects.isNull(interceptToken)) {
-            throw new ServiceException("拦截 token 已过期");
+            return RestResult.ofException(new ErrorCodeException("拦截 token 已过期", ErrorCodeException.TIMEOUT_CODE));
         }
         return verify(interceptToken, request);
     }
@@ -370,7 +369,7 @@ public abstract class AbstractCaptchaService<B> implements CaptchaService, Captc
             return new RestResult<>(
                     "验证码已过期",
                     HttpStatus.REQUEST_TIMEOUT.value(),
-                    ErrorCodeException.DEFAULT_EXCEPTION_CODE,
+                    ErrorCodeException.TIMEOUT_CODE,
                     new LinkedHashMap<>()
             );
         }

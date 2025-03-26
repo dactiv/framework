@@ -1,6 +1,7 @@
 package com.github.dactiv.framework.spring.security.authentication.provider;
 
 import com.github.dactiv.framework.commons.Casts;
+import com.github.dactiv.framework.commons.exception.ErrorCodeException;
 import com.github.dactiv.framework.security.entity.SecurityPrincipal;
 import com.github.dactiv.framework.spring.security.authentication.TypeSecurityPrincipalService;
 import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
@@ -8,6 +9,7 @@ import com.github.dactiv.framework.spring.security.authentication.service.TypeSe
 import com.github.dactiv.framework.spring.security.authentication.token.AuditAuthenticationToken;
 import com.github.dactiv.framework.spring.security.authentication.token.RequestAuthenticationToken;
 import com.github.dactiv.framework.spring.security.entity.AuditAuthenticationDetails;
+import com.github.dactiv.framework.spring.security.exception.CodeAuthenticationServiceException;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
@@ -20,6 +22,7 @@ import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.Objects;
 
 /**
@@ -54,7 +57,7 @@ public class SecurityPrincipalAuthenticationProvider implements AuthenticationMa
         }
 
         AuditAuthenticationDetails details = Casts.cast(token.getDetails());
-        RequestAuthenticationToken authenticationToken = new RequestAuthenticationToken(details, token);
+        RequestAuthenticationToken authenticationToken = new RequestAuthenticationToken(details, token, new LinkedHashMap<>());
         if (StringUtils.isEmpty(authenticationToken.getType())) {
             return null;
         }
@@ -96,7 +99,9 @@ public class SecurityPrincipalAuthenticationProvider implements AuthenticationMa
                         "用户名或密码错误"));
             } else if (e instanceof AuthenticationException) {
                 throw e;
-            } else {
+            } else if (e instanceof ErrorCodeException errorCode) {
+                throw new CodeAuthenticationServiceException(e.getMessage(), errorCode.getErrorCode());
+            }else {
                 throw new InternalAuthenticationServiceException(e.getMessage(), e);
             }
         }

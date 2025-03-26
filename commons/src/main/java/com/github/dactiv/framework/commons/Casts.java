@@ -736,7 +736,9 @@ public abstract class Casts {
         JsonNode rootNode = objectMapper.valueToTree(source);
         JsonNode filteredNode = rootNode.deepCopy();
 
-        Configuration conf = Configuration.defaultConfiguration().addOptions(Option.DEFAULT_PATH_LEAF_TO_NULL);
+        Configuration conf = Configuration.builder()
+                .options(Option.SUPPRESS_EXCEPTIONS, Option.DEFAULT_PATH_LEAF_TO_NULL)
+                .build();
 
         return JsonPath.using(conf).parse(filteredNode.toString());
     }

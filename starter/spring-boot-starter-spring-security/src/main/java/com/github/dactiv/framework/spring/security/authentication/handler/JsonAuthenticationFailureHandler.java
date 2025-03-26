@@ -4,6 +4,7 @@ import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
+import com.github.dactiv.framework.spring.security.exception.CodeAuthenticationServiceException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.collections4.CollectionUtils;
@@ -63,6 +64,9 @@ public class JsonAuthenticationFailureHandler implements AuthenticationFailureHa
                 e,
                 new LinkedHashMap<>()
         );
+        if (e instanceof CodeAuthenticationServiceException errorCode) {
+            result.setExecuteCode(errorCode.getCode());
+        }
 
         if (CollectionUtils.isNotEmpty(failureResponses)) {
             failureResponses.forEach(f -> f.setting(result, request, e));

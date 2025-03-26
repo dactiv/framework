@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.SpringSecurityMessageSource;
 
+import java.io.Serial;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 
@@ -17,6 +18,8 @@ import java.util.Objects;
  */
 public class TypeAuthenticationToken extends AbstractAuthenticationToken {
 
+    @Serial
+    private static final long serialVersionUID = -6826606139646961317L;
     private final Object principal;
 
     private final Object credentials;

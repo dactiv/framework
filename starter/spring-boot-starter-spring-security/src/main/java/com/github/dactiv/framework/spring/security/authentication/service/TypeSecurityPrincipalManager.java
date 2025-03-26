@@ -133,7 +133,7 @@ public class TypeSecurityPrincipalManager implements InitializingBean, MessageSo
                 grantedAuthorities = typeSecurityPrincipalService.getPrincipalGrantedAuthorities(token, principal);
             }
 
-            if (CollectionUtils.isNotEmpty(grantedAuthorities)) {
+            if (CollectionUtils.isNotEmpty(grantedAuthorities) || typeSecurityPrincipalService.preSaveGrantedAuthoritiesCache(token, principal, grantedAuthorities)) {
                 CacheProperties cacheProperties = typeSecurityPrincipalService.getAuthorizationCache(token);
                 cacheManager.saveGrantedAuthorities(grantedAuthorities, CacheProperties.of(cacheProperties.getName(principal.getName()), cacheProperties.getExpiresTime()));
             }
@@ -148,7 +148,7 @@ public class TypeSecurityPrincipalManager implements InitializingBean, MessageSo
         TypeSecurityPrincipalService typeSecurityPrincipalService = getTypeSecurityPrincipalService(token.getType());
         CacheProperties authenticationCache = typeSecurityPrincipalService.getAuthenticationCache(token);
         // 如果启用认证缓存，存储用户信息到缓存里
-        if (Objects.isNull(authenticationCache)) {
+        if (Objects.isNull(authenticationCache) || !typeSecurityPrincipalService.preSaveSecurityPrincipalCache(token, principal)) {
             return ;
         }
         cacheManager.saveSecurityPrincipal(principal, authenticationCache);
