@@ -23,6 +23,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.objenesis.instantiator.util.ClassUtils;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -713,11 +714,14 @@ public abstract class Casts {
                 continue;
             }
             if (value instanceof JSONArray array) {
-
                 Configuration pathConfig = Configuration.builder()
-                        .options(Option.AS_PATH_LIST)
+                        .options(Option.SUPPRESS_EXCEPTIONS, Option.AS_PATH_LIST)
                         .build();
                 List<String> paths = JsonPath.using(pathConfig).parse(source).read(property);
+                if(CollectionUtils.isEmpty(paths)) {
+                    continue;
+                }
+
                 for (int i = 0; i < array.size(); i++) {
                     if (Objects.isNull(array.get(i))) {
                         continue;
