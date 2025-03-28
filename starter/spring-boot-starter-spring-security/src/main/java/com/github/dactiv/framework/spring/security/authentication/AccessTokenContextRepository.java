@@ -2,6 +2,7 @@ package com.github.dactiv.framework.spring.security.authentication;
 
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.Casts;
+import com.github.dactiv.framework.commons.ReflectionUtils;
 import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.commons.id.IdEntity;
 import com.github.dactiv.framework.commons.id.number.NumberIdEntity;
@@ -31,7 +32,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.DeferredSecurityContext;
 import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
@@ -57,8 +57,6 @@ public class AccessTokenContextRepository extends HttpSessionSecurityContextRepo
 
     private final AntPathRequestMatcher loginRequestMatcher;
 
-    private SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
-
     private final CipherAlgorithmService cipherAlgorithmService = new CipherAlgorithmService();
 
     public AccessTokenContextRepository(CacheManager cacheManager,
@@ -78,6 +76,10 @@ public class AccessTokenContextRepository extends HttpSessionSecurityContextRepo
         if (Objects.nonNull(context.get().getAuthentication())) {
             return context;
         }
+
+        SecurityContextHolderStrategy securityContextHolderStrategy = Casts.cast(
+                ReflectionUtils.getFieldValue(this,"securityContextHolderStrategy")
+        );
 
         return new AccessTokenDeferredSecurityContext(() -> readSecurityContextFromRequest(request), securityContextHolderStrategy);
     }
@@ -254,17 +256,11 @@ public class AccessTokenContextRepository extends HttpSessionSecurityContextRepo
         }
     }
 
-    @Override
+    /*@Override
     public boolean containsContext(HttpServletRequest request) {
         boolean superValue = super.containsContext(request);
         SecurityContext context = readSecurityContextFromRequest(request);
         return superValue || Objects.nonNull(context);
-    }
-
-    @Override
-    public void setSecurityContextHolderStrategy(SecurityContextHolderStrategy strategy) {
-        this.securityContextHolderStrategy = strategy;
-        super.setSecurityContextHolderStrategy(strategy);
-    }
+    }*/
 
 }

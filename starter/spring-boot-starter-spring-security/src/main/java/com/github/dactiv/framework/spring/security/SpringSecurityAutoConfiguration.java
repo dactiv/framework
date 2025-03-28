@@ -19,6 +19,7 @@ import com.github.dactiv.framework.spring.security.authentication.service.TypeSe
 import com.github.dactiv.framework.spring.security.authentication.service.TypeTokenBasedRememberMeServices;
 import com.github.dactiv.framework.spring.security.controller.TokenController;
 import com.github.dactiv.framework.spring.security.plugin.PluginEndpoint;
+import com.github.dactiv.framework.spring.security.session.JsonSessionInformationExpiredStrategy;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.spring.starter.RedissonAutoConfigurationV2;
 import org.springframework.beans.factory.ObjectProvider;
@@ -34,6 +35,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -211,5 +214,17 @@ public class SpringSecurityAutoConfiguration {
             userDetails.add(new User(user.getName(), passwordEncoder.encode(user.getPassword()), roleAuthorities));
         }
         return new InMemoryUserDetailsManager(userDetails);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(JsonSessionInformationExpiredStrategy.class)
+    public JsonSessionInformationExpiredStrategy jsonSessionInformationExpiredStrategy() {
+        return new JsonSessionInformationExpiredStrategy();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(SessionRegistry.class)
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
     }
 }

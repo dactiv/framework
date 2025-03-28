@@ -42,8 +42,8 @@ public class RedissonCaptchaStorageManager implements CaptchaStorageManager {
     protected RBucket<SimpleCaptcha> getSimpleCaptchaBucket(String token) {
         String name = captchaProperties
                 .getBuildTokenCache()
-                .getName(token + CacheProperties.DEFAULT_SEPARATOR + DEFAULT_CAPTCHA_NAME);
-        return redissonClient.getBucket(captchaProperties.getBuildTokenCache().getName(name));
+                .getName( DEFAULT_CAPTCHA_NAME + CacheProperties.DEFAULT_SEPARATOR + token);
+        return redissonClient.getBucket(name);
     }
 
     @Override

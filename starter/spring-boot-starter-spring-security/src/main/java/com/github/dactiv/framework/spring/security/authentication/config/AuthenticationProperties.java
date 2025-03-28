@@ -119,6 +119,11 @@ public class AuthenticationProperties {
     private boolean hideUserNotFoundExceptions = true;
 
     /**
+     * 最大 session 数
+     */
+    private int maximumSessions = Integer.MAX_VALUE;
+
+    /**
      * 要忽略的审计类型
      */
     private List<String> ignoreAuditTypes;
@@ -149,6 +154,24 @@ public class AuthenticationProperties {
      */
     public void setPluginAuthorizationManagerSources(List<String> pluginAuthorizationManagerSources) {
         this.pluginAuthorizationManagerSources = pluginAuthorizationManagerSources;
+    }
+
+    /**
+     * 获取最大 session 数
+     *
+     * @return 最大 session 数
+     */
+    public int getMaximumSessions() {
+        return maximumSessions;
+    }
+
+    /**
+     * 设置最大 session 数
+     *
+     * @param maximumSessions 最大 session 数
+     */
+    public void setMaximumSessions(int maximumSessions) {
+        this.maximumSessions = maximumSessions;
     }
 
     /**

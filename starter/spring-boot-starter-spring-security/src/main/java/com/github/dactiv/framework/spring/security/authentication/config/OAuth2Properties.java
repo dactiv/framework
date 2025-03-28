@@ -137,7 +137,7 @@ public class OAuth2Properties {
      * 授权缓存配置
      */
     private CacheProperties authorizationCache = CacheProperties.of(
-            "dactiv:uni-portal:authentication:oauth2:authorization:",
+            "dactiv:authentication:oauth2:authorization:",
             TimeProperties.of(5, TimeUnit.MINUTES)
     );
 

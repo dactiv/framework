@@ -11,6 +11,7 @@ import com.github.dactiv.framework.spring.security.authentication.provider.TypeR
 import com.github.dactiv.framework.spring.security.authentication.service.PersistentTokenRememberMeUserDetailsService;
 import com.github.dactiv.framework.spring.security.authentication.service.TypeTokenBasedRememberMeServices;
 import com.github.dactiv.framework.spring.security.plugin.PluginSourceAuthorizationManager;
+import com.github.dactiv.framework.spring.security.session.JsonSessionInformationExpiredStrategy;
 import com.github.dactiv.framework.spring.web.result.error.ErrorResultResolver;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.aop.Advisor;
@@ -36,6 +37,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -76,13 +78,19 @@ public class DefaultWebSecurityAutoConfiguration {
 
     private final TypeTokenBasedRememberMeServices typeSecurityPrincipalManager;
 
+    private final JsonSessionInformationExpiredStrategy jsonSessionInformationExpiredStrategy;
+
+    private final SessionRegistry sessionRegistry;
+
     public DefaultWebSecurityAutoConfiguration(AccessTokenContextRepository accessTokenContextRepository,
                                                AuthenticationProperties authenticationProperties,
                                                RememberMeProperties rememberMeProperties,
                                                TypeRememberMeAuthenticationProvider typeRememberMeAuthenticationProvider,
                                                TypeTokenBasedRememberMeServices typeSecurityPrincipalManager,
                                                ObjectProvider<ErrorResultResolver> errorResultResolvers,
-                                               ObjectProvider<WebSecurityConfigurerAfterAdapter> webSecurityConfigurerAfterAdapter) {
+                                               ObjectProvider<WebSecurityConfigurerAfterAdapter> webSecurityConfigurerAfterAdapter,
+                                               JsonSessionInformationExpiredStrategy jsonSessionInformationExpiredStrategy,
+                                               SessionRegistry sessionRegistry) {
         this.accessTokenContextRepository = accessTokenContextRepository;
         this.authenticationProperties = authenticationProperties;
         this.rememberMeProperties = rememberMeProperties;
@@ -90,6 +98,8 @@ public class DefaultWebSecurityAutoConfiguration {
         this.typeSecurityPrincipalManager = typeSecurityPrincipalManager;
         this.webSecurityConfigurerAfterAdapters = webSecurityConfigurerAfterAdapter.stream().collect(Collectors.toList());
         this.resultResolvers = errorResultResolvers.stream().collect(Collectors.toList());
+        this.jsonSessionInformationExpiredStrategy = jsonSessionInformationExpiredStrategy;
+        this.sessionRegistry = sessionRegistry;
     }
 
     @Bean
@@ -115,6 +125,11 @@ public class DefaultWebSecurityAutoConfiguration {
                 .cors(c -> c.configure(httpSecurity))
                 .csrf(AbstractHttpConfigurer::disable)
                 .requestCache(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session
+                        .maximumSessions(authenticationProperties.getMaximumSessions())
+                        .sessionRegistry(sessionRegistry)
+                        .expiredSessionStrategy(jsonSessionInformationExpiredStrategy)
+                )
                 .securityContext(s -> s.securityContextRepository(accessTokenContextRepository));
 
         if (rememberMeProperties.isEnabled()) {
@@ -190,23 +205,6 @@ public class DefaultWebSecurityAutoConfiguration {
         authenticationProvider.setPasswordEncoder(passwordEncoder);
         return authenticationProvider;
     }
-
-    /*@Bean
-    public InMemoryUserDetailsManager userDetailsService(AuthenticationProperties authenticationProperties,
-                                                         PasswordEncoder passwordEncoder) {
-
-        List<UserDetails> userDetails = new LinkedList<>();
-        for (SecurityProperties.User user : authenticationProperties.getUsers()) {
-            List<SimpleGrantedAuthority> roleAuthorities = user
-                    .getRoles()
-                    .stream()
-                    .map(s -> StringUtils.prependIfMissing(s, RoleAuthority.DEFAULT_ROLE_PREFIX))
-                    .map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList());
-            userDetails.add(new User(user.getName(), passwordEncoder.encode(user.getPassword()), roleAuthorities));
-        }
-        return new InMemoryUserDetailsManager(userDetails);
-    }*/
 
     @Bean
     @ConditionalOnMissingBean(PluginSourceAuthorizationManager.class)

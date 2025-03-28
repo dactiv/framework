@@ -314,7 +314,7 @@ public abstract class AbstractCaptchaService<B> implements CaptchaService, Captc
         captcha.setExpireTime(getCaptchaExpireTime());
         captcha.setValue(value);
         String verifySuccess = request.getParameter(captchaProperties.getVerifySuccessDeleteParamName());
-        if (StringUtils.isNotEmpty(verifySuccess)) {
+        if (StringUtils.isEmpty(verifySuccess)) {
             verifySuccess = Boolean.TRUE.toString();
         }
         captcha.setVerifySuccessDelete(BooleanUtils.toBoolean(verifySuccess));
