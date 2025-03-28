@@ -2,6 +2,7 @@ package com.github.dactiv.framework.spring.security.entity;
 
 import com.github.dactiv.framework.spring.security.audit.config.AuditDetailsSource;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Map;
 
@@ -11,6 +12,9 @@ import java.util.Map;
  * @author maurice.chen
  */
 public class AuditAuthenticationSuccessDetails implements Serializable, AuditDetailsSource {
+
+    @Serial
+    private static final long serialVersionUID = -5201412324396969736L;
 
     private final Object requestDetails;
 

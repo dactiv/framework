@@ -86,7 +86,7 @@ public class RedissonCacheManager implements CacheManager {
             return ;
         }
 
-        AuditAuthenticationToken authenticationToken = Casts.cast(context);
+        AuditAuthenticationToken authenticationToken = Casts.cast(context.getAuthentication());
 
         RBucket<SecurityContext> bucket = getSecurityContextBucket(
                 authenticationToken.getType(),
@@ -99,8 +99,7 @@ public class RedissonCacheManager implements CacheManager {
     @Override
     public void saveSecurityContext(SecurityContext context, CacheProperties accessTokenCache) {
 
-        AuditAuthenticationToken authenticationToken = Casts.cast(context);
-        //SecurityPrincipal securityPrincipal = Casts.cast(authenticationToken.getPrincipal());
+        AuditAuthenticationToken authenticationToken = Casts.cast(context.getAuthentication());
         RBucket<SecurityContext> bucket = getSecurityContextBucket(
                 authenticationToken.getType(),
                 authenticationToken.getSecurityPrincipal().getId(),

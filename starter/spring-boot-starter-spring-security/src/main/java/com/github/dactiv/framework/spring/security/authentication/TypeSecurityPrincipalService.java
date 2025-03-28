@@ -85,7 +85,7 @@ public interface TypeSecurityPrincipalService {
         result.setAuthenticated(true);
         result.setRememberMe(false);
 
-        AuditAuthenticationSuccessDetails successDetails = getPrincipalDetails(principal, token, grantedAuthorities);
+        AuditAuthenticationSuccessDetails successDetails = getPrincipalDetails(principal, token, result, grantedAuthorities);
         successDetails.setRemember(result.isRememberMe());
         result.setDetails(successDetails);
 
@@ -99,7 +99,7 @@ public interface TypeSecurityPrincipalService {
         result.setAuthenticated(true);
         result.setRememberMe(false);
 
-        AuditAuthenticationSuccessDetails successDetails = getPrincipalDetails(principal, token, jwtAuthenticationToken.getAuthorities());
+        AuditAuthenticationSuccessDetails successDetails = getPrincipalDetails(principal, token, result, jwtAuthenticationToken.getAuthorities());
         successDetails.setRemember(result.isRememberMe());
         result.setDetails(successDetails);
 
@@ -122,7 +122,7 @@ public interface TypeSecurityPrincipalService {
         result.setAuthenticated(true);
         result.setRememberMe(true);
 
-        AuditAuthenticationSuccessDetails successDetails = getPrincipalDetails(principal, token, grantedAuthorities);
+        AuditAuthenticationSuccessDetails successDetails = getPrincipalDetails(principal, token, result, grantedAuthorities);
         successDetails.setRemember(result.isRememberMe());
         result.setDetails(successDetails);
 
@@ -139,6 +139,7 @@ public interface TypeSecurityPrincipalService {
      */
     default AuditAuthenticationSuccessDetails getPrincipalDetails(SecurityPrincipal principal,
                                                                   TypeAuthenticationToken token,
+                                                                  AuditAuthenticationToken successToken,
                                                                   Collection<? extends GrantedAuthority> grantedAuthorities) {
 
         if (token instanceof RequestAuthenticationToken requestAuthenticationToken) {

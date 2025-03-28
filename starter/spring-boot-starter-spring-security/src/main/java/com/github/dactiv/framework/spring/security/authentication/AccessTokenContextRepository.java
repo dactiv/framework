@@ -29,7 +29,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.DeferredSecurityContext;
 import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -54,6 +57,8 @@ public class AccessTokenContextRepository extends HttpSessionSecurityContextRepo
 
     private final AntPathRequestMatcher loginRequestMatcher;
 
+    private SecurityContextHolderStrategy securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy();
+
     private final CipherAlgorithmService cipherAlgorithmService = new CipherAlgorithmService();
 
     public AccessTokenContextRepository(CacheManager cacheManager,
@@ -65,6 +70,16 @@ public class AccessTokenContextRepository extends HttpSessionSecurityContextRepo
                 authenticationProperties.getLoginProcessingUrl(),
                 HttpMethod.POST.name()
         );
+    }
+
+    @Override
+    public DeferredSecurityContext loadDeferredContext(HttpServletRequest request) {
+        DeferredSecurityContext context =  super.loadDeferredContext(request);
+        if (Objects.nonNull(context.get().getAuthentication())) {
+            return context;
+        }
+
+        return new AccessTokenDeferredSecurityContext(() -> readSecurityContextFromRequest(request), securityContextHolderStrategy);
     }
 
     @Override
@@ -185,7 +200,6 @@ public class AccessTokenContextRepository extends HttpSessionSecurityContextRepo
         json.put(NumberIdEntity.CREATION_TIME_FIELD_NAME, System.currentTimeMillis());
         json.put(IdAuditEvent.TYPE_FIELD_NAME, token.getType());
         json.put(IdEntity.ID_FIELD_NAME, token.getSecurityPrincipal().getId());
-        json.put(AuthenticationProperties.SECURITY_FORM_USERNAME_PARAM_NAME, token.getSecurityPrincipal().getUsername());
 
         if (token.getSecurityPrincipal() instanceof MobileSecurityPrincipal) {
             MobileSecurityPrincipal mobileSecurityPrincipal = Casts.cast(token.getPrincipal());
@@ -246,4 +260,11 @@ public class AccessTokenContextRepository extends HttpSessionSecurityContextRepo
         SecurityContext context = readSecurityContextFromRequest(request);
         return superValue || Objects.nonNull(context);
     }
+
+    @Override
+    public void setSecurityContextHolderStrategy(SecurityContextHolderStrategy strategy) {
+        this.securityContextHolderStrategy = strategy;
+        super.setSecurityContextHolderStrategy(strategy);
+    }
+
 }

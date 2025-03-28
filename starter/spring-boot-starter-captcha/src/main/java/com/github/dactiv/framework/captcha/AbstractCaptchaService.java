@@ -253,9 +253,8 @@ public abstract class AbstractCaptchaService<B> implements CaptchaService, Captc
             token = captchaStorageManager.getInterceptToken(tokenValue);
         }
 
-        if (Objects.isNull(token)) {
-            throw new ErrorCodeException("验证码 token 已过期", ErrorCodeException.CONTENT_NOT_EXIST);
-        }
+        SystemException.isTrue(Objects.nonNull(token), () -> new ErrorCodeException("验证码 token 已过期", ErrorCodeException.CONTENT_NOT_EXIST));
+        SystemException.isTrue(getType().equals(token.getType()), "验证码类型不匹配，token 值为: " + tokenValue + " 的验证码类型为:" + token.getType() +", 但实现类的类型为: " + getType());
 
         B entity = bindRequest(request);
 
@@ -314,9 +313,11 @@ public abstract class AbstractCaptchaService<B> implements CaptchaService, Captc
 
         captcha.setExpireTime(getCaptchaExpireTime());
         captcha.setValue(value);
-
-        String verifySuccessDelete = Objects.toString(request.getParameter(captchaProperties.getVerifySuccessDeleteParamName()), Boolean.TRUE.toString());
-        captcha.setVerifySuccessDelete(BooleanUtils.toBoolean(verifySuccessDelete));
+        String verifySuccess = request.getParameter(captchaProperties.getVerifySuccessDeleteParamName());
+        if (StringUtils.isNotEmpty(verifySuccess)) {
+            verifySuccess = Boolean.TRUE.toString();
+        }
+        captcha.setVerifySuccessDelete(BooleanUtils.toBoolean(verifySuccess));
 
         TimeProperties retryTime = getRetryTime();
         if (Objects.nonNull(retryTime)) {
