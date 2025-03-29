@@ -18,6 +18,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.actuate.audit.AuditEvent;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.client.elc.NativeQueryBuilder;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.IndexOperations;
@@ -88,6 +89,21 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
             LOGGER.warn("新增 elasticsearch {} 审计事件出现异常", event.getPrincipal(), e);
         }
 
+    }
+
+    @Override
+    protected long doCount(FindMetadata<BoolQuery.Builder> metadata) {
+        NativeQueryBuilder builder = new NativeQueryBuilder().withQuery(new Query(metadata.getTargetQuery().build()));
+        try {
+            return countData(builder.build(), metadata.getStoragePositioning());
+        } catch (Exception e) {
+            LOGGER.warn("统计 elasticsearch 审计事件出现异常", e);
+            return 0;
+        }
+    }
+
+    private long countData(NativeQuery query, String index) {
+        return elasticsearchOperations.count(query, Map.class, IndexCoordinates.of(index));
     }
 
     public static void createIndexIfNotExists(IndexOperations indexOperations, String mappingFilePath) throws IOException {

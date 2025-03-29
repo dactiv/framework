@@ -70,6 +70,21 @@ public class MongoAuditEventRepository extends AbstractExtendAuditEventRepositor
     }
 
     @Override
+    protected long doCount(FindMetadata<Criteria> findMetadata) {
+        Query mongodbQuery = new Query(findMetadata.getTargetQuery());
+        return countData(findMetadata.getStoragePositioning(), mongodbQuery);
+    }
+
+    private long countData(String storagePositioning, Query mongodbQuery) {
+        try {
+            return mongoTemplate.count(mongodbQuery, Map.class, storagePositioning);
+        } catch (Exception e) {
+            LOGGER.warn("统计 mongodb 审计事件出现异常", e);
+            return 0;
+        }
+    }
+
+    @Override
     protected Criteria createQuery(Instant after, Map<String, Object> query) {
         Criteria criteria = new Criteria();
 
@@ -111,12 +126,8 @@ public class MongoAuditEventRepository extends AbstractExtendAuditEventRepositor
             );
         }
 
-        try {
-            return findData(entity.getStoragePositioning(), mongodbQuery);
-        } catch (Exception e) {
-            LOGGER.warn("查询 elasticsearch 审计事件出现异常", e);
-            return new LinkedList<>();
-        }
+        return findData(entity.getStoragePositioning(), mongodbQuery);
+
     }
 
     private List<AuditEvent> findData(String index, Query query) {
@@ -128,7 +139,7 @@ public class MongoAuditEventRepository extends AbstractExtendAuditEventRepositor
                     .toList();
             content.addAll(data);
         } catch (Exception e) {
-            LOGGER.error("查询集合 [{}] 出现错误", index, e);
+            LOGGER.error("查询 mongodb 集合 [{}] 出现错误", index, e);
         }
 
         return content;
@@ -145,7 +156,7 @@ public class MongoAuditEventRepository extends AbstractExtendAuditEventRepositor
             }
             return createAuditEvent(map);
         } catch (Exception e) {
-            LOGGER.error("查询集合 [{}] 出现错误", index, e);
+            LOGGER.error("查询 mongodb 集合 [{}] 出现错误", index, e);
         }
 
         return null;

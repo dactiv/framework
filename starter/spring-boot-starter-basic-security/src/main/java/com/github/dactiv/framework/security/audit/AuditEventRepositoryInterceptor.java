@@ -40,4 +40,8 @@ public interface AuditEventRepositoryInterceptor<T> {
     default void postCreateQuery(FindMetadata<T> findMetadata) {
 
     }
+
+    default boolean preCount(Instant after, Map<String, Object> query) {
+        return true;
+    }
 }

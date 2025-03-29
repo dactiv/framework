@@ -1,9 +1,7 @@
 package com.github.dactiv.framework.spring.security;
 
 import com.github.dactiv.framework.security.entity.RoleAuthority;
-import com.github.dactiv.framework.spring.security.audit.ControllerAuditHandlerInterceptor;
-import com.github.dactiv.framework.spring.security.audit.RequestBodyAttributeAdviceAdapter;
-import com.github.dactiv.framework.spring.security.audit.SecurityAuditEventRepositoryInterceptor;
+import com.github.dactiv.framework.spring.security.audit.*;
 import com.github.dactiv.framework.spring.security.audit.config.ControllerAuditProperties;
 import com.github.dactiv.framework.spring.security.authentication.AccessTokenContextRepository;
 import com.github.dactiv.framework.spring.security.authentication.TypeSecurityPrincipalService;
@@ -157,6 +155,12 @@ public class SpringSecurityAutoConfiguration {
         public void addInterceptors(InterceptorRegistry registry) {
             registry.addInterceptor(controllerAuditHandlerInterceptor);
         }
+    }
+
+    @Bean
+    @ConditionalOnProperty(prefix = "dactiv.security.audit", name = "enabled", havingValue = "true")
+    public AuditPrincipalPointcutAdvisor auditPrincipalPointcutAdvisor() {
+        return new AuditPrincipalPointcutAdvisor(new AuditPrincipalMethodInterceptor());
     }
 
     @Bean

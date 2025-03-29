@@ -28,6 +28,16 @@ public interface ExtendAuditEventRepository extends AuditEventRepository {
     Page<AuditEvent> findPage(PageRequest pageRequest, Instant after, Map<String, Object> query);
 
     /**
+     * 统计数量
+     *
+     * @param after 时间范围（在改至之后的所有数据）
+     * @param query 查询内容
+     *
+     * @return 统计数
+     */
+    long count(Instant after, Map<String, Object> query);
+
+    /**
      * 获取查询信息
      *
      * @param after 时间范围（在改至之后的所有数据）

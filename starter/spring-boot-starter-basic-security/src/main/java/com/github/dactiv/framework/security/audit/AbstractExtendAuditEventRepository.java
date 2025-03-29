@@ -7,6 +7,7 @@ import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.commons.id.IdEntity;
 import com.github.dactiv.framework.commons.page.Page;
 import com.github.dactiv.framework.commons.page.PageRequest;
+import com.github.dactiv.framework.commons.page.TotalPage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.actuate.audit.AuditEvent;
 
@@ -59,9 +60,30 @@ public abstract class AbstractExtendAuditEventRepository<T> implements ExtendAud
     public Page<AuditEvent> findPage(PageRequest pageRequest, Instant after, Map<String, Object> query) {
         query.put(PageRequest.NUMBER_FIELD_NAME, pageRequest.getNumber() - 1);
         query.put(PageRequest.SIZE_FIELD_NAME, pageRequest.getSize());
+
         List<AuditEvent> content = find(after, query);
-        return new Page<>(pageRequest, content);
+        long count = count(after, query);
+
+        return new TotalPage<>(pageRequest, content, count);
     }
+
+    @Override
+    public long count(Instant after, Map<String, Object> query) {
+        for (AuditEventRepositoryInterceptor<T> interceptor : interceptors) {
+            if (!interceptor.preCount(after, query)) {
+                return 0;
+            }
+        }
+
+        T targetQuery = createQuery(after, query);
+        FindMetadata<T> findMetadata = createFindEntity(targetQuery, after, query);
+
+        interceptors.forEach(interceptor -> interceptor.postCreateQuery(findMetadata));
+
+        return doCount(findMetadata);
+    }
+
+    protected abstract long doCount(FindMetadata<T> findMetadata);
 
     protected abstract T createQuery(Instant after, Map<String, Object> query);
 
