@@ -20,4 +20,5 @@ public interface AuditPrincipal {
      * @param principal 操作人
      */
     void setPrincipal(String principal);
+
 }

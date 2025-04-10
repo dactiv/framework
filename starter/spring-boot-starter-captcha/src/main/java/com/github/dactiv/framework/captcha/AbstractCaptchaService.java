@@ -162,10 +162,10 @@ public abstract class AbstractCaptchaService<B> implements CaptchaService, Captc
         token.setArgs(args);
 
         String generateInterceptorValue = httpServletRequest.getParameter(captchaProperties.getIgnoreInterceptorParamName());
-        String isGenerateInterceptor = Objects.toString(generateInterceptorValue, Boolean.TRUE.toString());
+        String isGenerateInterceptor = StringUtils.defaultIfEmpty(generateInterceptorValue, Boolean.TRUE.toString());
 
         String interceptorType = getInterceptorType();
-        if (StringUtils.isNotEmpty(interceptorType) && BooleanUtils.toBoolean(isGenerateInterceptor)) {
+        if (BooleanUtils.toBoolean(isGenerateInterceptor)) {
             InterceptToken interceptToken = interceptor.generateCaptchaIntercept(token, interceptorType);
             token.setInterceptToken(interceptToken);
         }

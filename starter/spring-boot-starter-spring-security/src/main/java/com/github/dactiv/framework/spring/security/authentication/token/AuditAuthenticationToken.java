@@ -94,6 +94,15 @@ public class AuditAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public String getName() {
+        return getType() + CacheProperties.DEFAULT_SEPARATOR + principal.getId();
+    }
+
+    /**
+     * 获取完整名称
+     *
+     * @return 完整名称
+     */
+    public String getFullName() {
         return getType() + CacheProperties.DEFAULT_SEPARATOR + principal.getName();
     }
 
