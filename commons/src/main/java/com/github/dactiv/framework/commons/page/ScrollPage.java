@@ -21,7 +21,7 @@ public class ScrollPage<T> implements Serializable {
     /**
      * 分页请求
      */
-    private ScrollPageRequest pageRequest;
+    protected ScrollPageRequest pageRequest;
     /**
      * 数据元素
      */

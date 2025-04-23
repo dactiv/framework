@@ -721,11 +721,9 @@ public abstract class Casts {
                 if(CollectionUtils.isEmpty(paths)) {
                     continue;
                 }
-
-                for (int i = 0; i < array.size(); i++) {
-                    if (Objects.isNull(array.get(i))) {
-                        continue;
-                    }
+                JSONArray nonNullArray = new JSONArray(paths.size());
+                array.stream().filter(Objects::nonNull).forEach(nonNullArray::add);
+                for (int i = 0; i < nonNullArray.size(); i++) {
                     String desensitizeValue = Objects.toString(array.get(i), StringUtils.EMPTY);
                     documentContext.set(paths.get(i),DesensitizeSerializer.desensitize(desensitizeValue));
                 }

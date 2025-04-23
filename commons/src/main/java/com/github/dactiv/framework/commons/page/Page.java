@@ -1,6 +1,8 @@
 package com.github.dactiv.framework.commons.page;
 
 
+import com.github.dactiv.framework.commons.Casts;
+
 import java.io.Serial;
 import java.util.List;
 
@@ -13,10 +15,6 @@ public class Page<T> extends ScrollPage<T> {
 
     @Serial
     private static final long serialVersionUID = -8548642105903724207L;
-    /**
-     * 分页请求
-     */
-    private PageRequest pageRequest;
 
     /**
      * 分页对象
@@ -32,7 +30,6 @@ public class Page<T> extends ScrollPage<T> {
      */
     public Page(PageRequest pageRequest, List<T> elements) {
         super(pageRequest, elements);
-        this.pageRequest = pageRequest;
     }
 
     /**
@@ -41,7 +38,7 @@ public class Page<T> extends ScrollPage<T> {
      * @return 页号
      */
     public int getNumber() {
-        return pageRequest == null ? 0 : pageRequest.getNumber();
+        return pageRequest == null ? 0 : Casts.cast(pageRequest, PageRequest.class).getNumber();
     }
 
     /**
