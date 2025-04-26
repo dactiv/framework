@@ -1,9 +1,11 @@
 package com.github.dactiv.framework.commons.jackson.deserializer;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.deser.ContextualDeserializer;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.enumerate.NameEnum;
 import com.github.dactiv.framework.commons.exception.SystemException;
@@ -20,17 +22,17 @@ import java.util.Optional;
  *
  * @author maurice.chen
  */
-public class NameEnumDeserializer<T extends NameEnum> extends JsonDeserializer<T> {
+public class NameEnumDeserializer<T extends NameEnum> extends JsonDeserializer<T> implements ContextualDeserializer {
+
+    private Class<?> targetType;
 
     @Override
     public T deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         JsonNode jsonNode = p.getCodec().readTree(p);
 
         String nodeValue = NameValueEnumDeserializer.getNodeValue(jsonNode);
-        Class<?> type = NameValueEnumDeserializer.getType(p);
-
         List<NameEnum> valueEnums = Arrays
-                .stream(type.getEnumConstants())
+                .stream(targetType.getEnumConstants())
                 .map(v -> Casts.cast(v, NameEnum.class))
                 .toList();
 
@@ -47,9 +49,14 @@ public class NameEnumDeserializer<T extends NameEnum> extends JsonDeserializer<T
         }
 
         NameEnum result = optional
-                .orElseThrow(() -> new SystemException("在类型 [" + type + "] 枚举里找不到值为 [" + nodeValue + "] 的类型"));
+                .orElseThrow(() -> new SystemException("在类型 [" + targetType + "] 枚举里找不到值为 [" + nodeValue + "] 的类型"));
 
         return Casts.cast(result);
     }
 
+    @Override
+    public JsonDeserializer<?> createContextual(DeserializationContext ctxt, BeanProperty property)  {
+        this.targetType = NameValueEnumDeserializer.getCurrentTargetType(ctxt, property);
+        return this;
+    }
 }

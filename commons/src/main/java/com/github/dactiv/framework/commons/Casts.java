@@ -61,6 +61,8 @@ public abstract class Casts {
      */
     public static final String DOT = ".";
 
+    public static final String VERSION_SPLIT_REGEX = "\\.";
+
     /**
      *
      */
@@ -743,5 +745,24 @@ public abstract class Casts {
                 .build();
 
         return JsonPath.using(conf).parse(filteredNode.toString());
+    }
+
+    public static String incrementVersionRevision(String version) {
+        String[] parts = version.split(VERSION_SPLIT_REGEX);
+        int revision = Integer.parseInt(parts[2]) + 1;
+
+        // 修订号进位逻辑
+        if (revision >= 100) { // 假设修订号上限为99
+            revision = 0;
+            int minor = Integer.parseInt(parts[1]) + 1;
+            if (minor >= 10) { // 次版本号上限为9
+                minor = 0;
+                int major = Integer.parseInt(parts[0]) + 1;
+                return major + DOT + minor + DOT + BigDecimal.ZERO;
+            }
+            parts[1] = String.valueOf(minor);
+        }
+        parts[2] = String.valueOf(revision);
+        return String.join(DOT, parts);
     }
 }

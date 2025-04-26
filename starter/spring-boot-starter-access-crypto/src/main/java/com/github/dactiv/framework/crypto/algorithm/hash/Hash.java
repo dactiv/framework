@@ -70,8 +70,16 @@ public class Hash extends AbstractByteSource implements Serializable {
      * @param bytes         字节数组
      */
     public Hash(String algorithmName, byte[] bytes) {
-        this.algorithmName = algorithmName;
-        this.bytes = bytes;
+        this(algorithmName, (Object)bytes);
+    }
+    /**
+     * 简单的 hash 实现
+     *
+     * @param algorithmName 算法名称
+     * @param bytes         字节数组
+     */
+    public Hash(String algorithmName, byte[] bytes, Object salt, int hashIterations) {
+        this(algorithmName, (Object)bytes,salt, hashIterations);
     }
 
     /**

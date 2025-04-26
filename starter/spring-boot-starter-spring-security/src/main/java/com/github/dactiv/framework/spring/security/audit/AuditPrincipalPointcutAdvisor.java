@@ -5,10 +5,13 @@ import org.aopalliance.aop.Advice;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.support.AbstractPointcutAdvisor;
 import org.springframework.aop.support.StaticMethodMatcherPointcut;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.Serial;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * 审计用户参数解析器实现
@@ -31,8 +34,9 @@ public class AuditPrincipalPointcutAdvisor extends AbstractPointcutAdvisor {
         return new StaticMethodMatcherPointcut() {
             @Override
             public boolean matches(Method method, Class<?> targetClass) {
+                RequestMapping requestMapping = AnnotationUtils.findAnnotation(method, RequestMapping.class);
                 return Arrays.stream(method.getParameterTypes())
-                        .anyMatch(AuditPrincipal.class::isAssignableFrom);
+                        .anyMatch(AuditPrincipal.class::isAssignableFrom) && Objects.nonNull(requestMapping);
             }
 
         };

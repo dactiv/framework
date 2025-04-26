@@ -44,7 +44,7 @@ public class PluginSourceAuthorizationManager implements AuthorizationManager<Me
         }
 
         if (!AuditAuthenticationToken.class.isAssignableFrom(authentication.getClass())) {
-            return new AuthorizationDecision(false);
+            return null;
         }
 
         List<String> resourceTypes = Arrays

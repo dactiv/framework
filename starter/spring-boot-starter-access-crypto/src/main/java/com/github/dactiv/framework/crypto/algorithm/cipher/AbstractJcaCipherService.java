@@ -305,7 +305,7 @@ public abstract class AbstractJcaCipherService implements CipherService {
      *
      * @throws CryptoException 加密或解密错误时抛出
      */
-    private void crypt(InputStream in, OutputStream out, byte[] key, byte[] iv, int mode) throws CryptoException {
+    protected void crypt(InputStream in, OutputStream out, byte[] key, byte[] iv, int mode) throws CryptoException {
 
         if (in == null) {
             throw new NullPointerException("InputStream 参数不能为 null.");

@@ -176,7 +176,7 @@ public class FilenameObject extends FileObject {
 
         extraHeaders.put(MINIO_ORIGINAL_FILE_NAME, originalFilename);
 
-        filenameObject.setExtraHeaders(fileObject.getExtraHeaders());
+        filenameObject.setExtraHeaders(extraHeaders);
         filenameObject.setExtraQueryParams(fileObject.getExtraQueryParams());
 
         return filenameObject;
