@@ -4,6 +4,15 @@ spring:
       host: localhost
       port: 6379
       password: 20160826
+  jackson:
+    default-property-inclusion: non_empty
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+      write_dates_as_timestamps: true
+      write_bigdecimal_as_plain: true
+    deserialization:
+      fail-on-unknown-properties: false
   main:
     banner-mode: "off"
   application:

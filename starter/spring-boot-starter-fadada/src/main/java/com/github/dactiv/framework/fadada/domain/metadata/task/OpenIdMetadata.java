@@ -1,6 +1,11 @@
 package com.github.dactiv.framework.fadada.domain.metadata.task;
 
 public class OpenIdMetadata {
+
+    public static final String PERSON_TYPE_VALUE = "person";
+
+    public static final String CORP_TYPE_VALUE = "corp";
+
     private String idType;
     private String openId;
 
