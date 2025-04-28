@@ -2,9 +2,9 @@ package com.github.dactiv.framework.spring.security.authentication.cache;
 
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.RestResult;
+import com.github.dactiv.framework.commons.domain.ExpiredToken;
+import com.github.dactiv.framework.commons.domain.RefreshToken;
 import com.github.dactiv.framework.security.entity.SecurityPrincipal;
-import com.github.dactiv.framework.spring.security.authentication.token.ExpiredToken;
-import com.github.dactiv.framework.spring.security.authentication.token.RefreshToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 

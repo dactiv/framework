@@ -3,11 +3,11 @@ package com.github.dactiv.framework.spring.security.authentication.cache.support
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
+import com.github.dactiv.framework.commons.domain.ExpiredToken;
+import com.github.dactiv.framework.commons.domain.RefreshToken;
 import com.github.dactiv.framework.commons.exception.ErrorCodeException;
 import com.github.dactiv.framework.security.entity.SecurityPrincipal;
 import com.github.dactiv.framework.spring.security.authentication.cache.CacheManager;
-import com.github.dactiv.framework.spring.security.authentication.token.ExpiredToken;
-import com.github.dactiv.framework.spring.security.authentication.token.RefreshToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.util.DigestUtils;

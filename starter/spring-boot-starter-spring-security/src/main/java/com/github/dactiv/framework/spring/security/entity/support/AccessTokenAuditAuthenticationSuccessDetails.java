@@ -1,6 +1,6 @@
 package com.github.dactiv.framework.spring.security.entity.support;
 
-import com.github.dactiv.framework.spring.security.authentication.token.ExpiredToken;
+import com.github.dactiv.framework.commons.domain.ExpiredToken;
 import com.github.dactiv.framework.spring.security.entity.AccessTokenDetails;
 import com.github.dactiv.framework.spring.security.entity.AuditAuthenticationSuccessDetails;
 

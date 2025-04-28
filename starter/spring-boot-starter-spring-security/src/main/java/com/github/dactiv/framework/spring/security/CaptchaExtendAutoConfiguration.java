@@ -19,9 +19,9 @@ import org.springframework.context.annotation.Lazy;
  * @author maurice.chen
  */
 @Configuration
+@ConditionalOnClass(CaptchaAutoConfiguration.class)
 @AutoConfigureAfter(CaptchaAutoConfiguration.class)
 @EnableConfigurationProperties(CaptchaProperties.class)
-@ConditionalOnClass(SpringSecurityAutoConfiguration.class)
 @ConditionalOnProperty(prefix = "dactiv.captcha", value = "enabled", matchIfMissing = true)
 public class CaptchaExtendAutoConfiguration {
 

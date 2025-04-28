@@ -1,4 +1,4 @@
-package com.github.dactiv.framework.spring.security.authentication.token;
+package com.github.dactiv.framework.commons.domain;
 
 import com.github.dactiv.framework.commons.TimeProperties;
 

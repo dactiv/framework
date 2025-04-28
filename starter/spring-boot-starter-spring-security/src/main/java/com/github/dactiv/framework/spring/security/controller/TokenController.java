@@ -2,13 +2,13 @@ package com.github.dactiv.framework.spring.security.controller;
 
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
+import com.github.dactiv.framework.commons.domain.AccessToken;
+import com.github.dactiv.framework.commons.domain.ExpiredToken;
+import com.github.dactiv.framework.commons.domain.RefreshToken;
 import com.github.dactiv.framework.commons.exception.ErrorCodeException;
 import com.github.dactiv.framework.spring.security.authentication.cache.CacheManager;
 import com.github.dactiv.framework.spring.security.authentication.config.AccessTokenProperties;
-import com.github.dactiv.framework.spring.security.authentication.token.AccessToken;
 import com.github.dactiv.framework.spring.security.authentication.token.AuditAuthenticationToken;
-import com.github.dactiv.framework.spring.security.authentication.token.ExpiredToken;
-import com.github.dactiv.framework.spring.security.authentication.token.RefreshToken;
 import com.github.dactiv.framework.spring.security.entity.AccessTokenDetails;
 import com.github.dactiv.framework.spring.security.entity.AuditAuthenticationSuccessDetails;
 import org.apache.commons.lang3.StringUtils;

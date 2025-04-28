@@ -3,6 +3,8 @@ package com.github.dactiv.framework.spring.security.authentication;
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.ReflectionUtils;
+import com.github.dactiv.framework.commons.domain.ExpiredToken;
+import com.github.dactiv.framework.commons.domain.RefreshToken;
 import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.commons.id.IdEntity;
 import com.github.dactiv.framework.commons.id.number.NumberIdEntity;
@@ -17,8 +19,6 @@ import com.github.dactiv.framework.spring.security.authentication.cache.CacheMan
 import com.github.dactiv.framework.spring.security.authentication.config.AccessTokenProperties;
 import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
 import com.github.dactiv.framework.spring.security.authentication.token.AuditAuthenticationToken;
-import com.github.dactiv.framework.spring.security.authentication.token.ExpiredToken;
-import com.github.dactiv.framework.spring.security.authentication.token.RefreshToken;
 import com.github.dactiv.framework.spring.security.entity.AccessTokenDetails;
 import com.github.dactiv.framework.spring.security.entity.support.MobileSecurityPrincipal;
 import com.github.dactiv.framework.spring.web.device.DeviceUtils;

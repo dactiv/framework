@@ -29,6 +29,11 @@ public class ErrorCodeException extends SystemException {
     public static final String CONTENT_NOT_EXIST = "100404";
 
     /**
+     * 内容已存在代码
+     */
+    public static final String CONTENT_EXIST = "100409";
+
+    /**
      * 客户端发送的请求超过了服务器允许的时间代码
      */
     public static final String TIMEOUT_CODE = "100408";

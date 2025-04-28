@@ -155,7 +155,7 @@ public class SpringWebMvcAutoConfiguration {
         module.addSerializer(ValueEnum.class, new ValueEnumSerializer());
         module.addSerializer(NameEnum.class, new NameEnumSerializer());
 
-        module.addDeserializer(NameValueEnum.class, new NameValueEnumDeserializer());
+        module.addDeserializer(NameValueEnum.class, new NameValueEnumDeserializer<>());
         module.addDeserializer(ValueEnum.class, new ValueEnumDeserializer<>());
         module.addDeserializer(NameEnum.class, new NameEnumDeserializer<>());
 
