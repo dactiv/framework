@@ -1,4 +1,4 @@
-package com.github.dactiv.framework.fadada.domain.body.template;
+package com.github.dactiv.framework.fadada.domain.body.template.doc;
 
 import java.io.Serial;
 import java.io.Serializable;

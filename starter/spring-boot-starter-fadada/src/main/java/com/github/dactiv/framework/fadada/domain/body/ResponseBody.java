@@ -1,4 +1,4 @@
-package com.github.dactiv.framework.fadada.domain;
+package com.github.dactiv.framework.fadada.domain.body;
 
 import java.io.Serial;
 

@@ -1,13 +1,16 @@
 package com.github.dactiv.framework.fadada.domain.body.doc;
 
+import com.github.dactiv.framework.fadada.enumerate.DocFileType;
+import com.github.dactiv.framework.fadada.enumerate.StorageType;
+
 import java.io.Serial;
 import java.io.Serializable;
 
 public class GetUploadUrlRequestBody implements Serializable {
     @Serial
     private static final long serialVersionUID = -4463545593560128746L;
-    private String fileType = "doc";
-    private String storageType = "cloud";
+    private String fileType = DocFileType.DOC.getValue();
+    private String storageType = StorageType.CLOUD.getValue();
 
     public GetUploadUrlRequestBody() {
     }

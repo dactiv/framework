@@ -1,30 +1,39 @@
-package com.github.dactiv.framework.fadada.domain.body.template;
+package com.github.dactiv.framework.fadada.domain.body.template.doc;
 
 import java.io.Serial;
 import java.io.Serializable;
 
-public class CreateDocTemplateRequestBody implements Serializable {
+public class CopyCreateDocTemplateRequestBody implements Serializable {
+
     @Serial
-    private static final long serialVersionUID = -4035617440160728121L;
+    private static final long serialVersionUID = -7664931162481837549L;
 
     private String openCorpId;
+    private String docTemplateId;
     private String docTemplateName;
     private String createSerialNo;
-    private String fileId;
 
-    public CreateDocTemplateRequestBody() {
+    public CopyCreateDocTemplateRequestBody() {
     }
 
     public String getOpenCorpId() {
-        return this.openCorpId;
+        return openCorpId;
     }
 
     public void setOpenCorpId(String openCorpId) {
         this.openCorpId = openCorpId;
     }
 
+    public String getDocTemplateId() {
+        return docTemplateId;
+    }
+
+    public void setDocTemplateId(String docTemplateId) {
+        this.docTemplateId = docTemplateId;
+    }
+
     public String getDocTemplateName() {
-        return this.docTemplateName;
+        return docTemplateName;
     }
 
     public void setDocTemplateName(String docTemplateName) {
@@ -32,18 +41,10 @@ public class CreateDocTemplateRequestBody implements Serializable {
     }
 
     public String getCreateSerialNo() {
-        return this.createSerialNo;
+        return createSerialNo;
     }
 
     public void setCreateSerialNo(String createSerialNo) {
         this.createSerialNo = createSerialNo;
-    }
-
-    public String getFileId() {
-        return this.fileId;
-    }
-
-    public void setFileId(String fileId) {
-        this.fileId = fileId;
     }
 }

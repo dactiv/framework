@@ -1,6 +1,7 @@
 package com.github.dactiv.framework.fadada.domain.body.doc;
 
 import com.github.dactiv.framework.fadada.domain.metadata.doc.FddFileUrlMetadata;
+import com.github.dactiv.framework.fadada.enumerate.StorageType;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -11,14 +12,14 @@ public class FileProcessRequestBody implements Serializable {
     @Serial
     private static final long serialVersionUID = 2756013895566833060L;
     private List<FddFileUrlMetadata> fddFileUrlList;
-    private String storageType = "cloud";
+    private String storageType = StorageType.CLOUD.getValue();
     private Boolean separation = false;
 
     public FileProcessRequestBody() {
     }
 
     public FileProcessRequestBody(List<FddFileUrlMetadata> fddFileUrlList) {
-        this(fddFileUrlList, "cloud", false);
+        this(fddFileUrlList, StorageType.CLOUD.getValue(), false);
     }
 
     public FileProcessRequestBody(List<FddFileUrlMetadata> fddFileUrlList, String storageType) {

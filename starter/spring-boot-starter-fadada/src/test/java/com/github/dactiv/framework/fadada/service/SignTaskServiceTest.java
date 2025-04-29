@@ -5,6 +5,7 @@ import com.github.dactiv.framework.fadada.domain.body.task.CreateSignTaskWithTem
 import com.github.dactiv.framework.fadada.domain.metadata.ActorMetadata;
 import com.github.dactiv.framework.fadada.domain.metadata.task.AddTaskActorMetadata;
 import com.github.dactiv.framework.fadada.domain.metadata.task.OpenIdMetadata;
+import com.github.dactiv.framework.fadada.enumerate.OpenIdType;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ public class SignTaskServiceTest {
     public void testCreateSignTaskWithTemplate() {
         CreateSignTaskWithTemplateRequestBody body = new CreateSignTaskWithTemplateRequestBody();
         body.setSignTaskSubject("签署任务模板发起V5.1签署任务-个人1677138236");
-        body.setInitiator(OpenIdMetadata.getInstance(OpenIdMetadata.CORP_TYPE_VALUE, signTaskService.getFadadaConfig().getOpenCorpId()));
+        body.setInitiator(OpenIdMetadata.getInstance(OpenIdType.CORP.getValue(), signTaskService.getFadadaConfig().getOpenCorpId()));
         body.setSignTemplateId("1745824442782185394");
         body.setExpiresTime(String.valueOf(Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant()).getTime()));
         body.setAutoStart(true);
@@ -40,7 +41,7 @@ public class SignTaskServiceTest {
         AddTaskActorMetadata addTaskActor = new AddTaskActorMetadata();
         ActorMetadata actor = new ActorMetadata();
         actor.setActorId("参与方2");
-        actor.setActorType(OpenIdMetadata.PERSON_TYPE_VALUE);
+        actor.setActorType(OpenIdType.PERSON.getValue());
         actor.setActorName("陈小菠");
         actor.setPermissions(List.of("sign"));
         addTaskActor.setActor(actor);

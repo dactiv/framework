@@ -22,7 +22,7 @@ public class FadadaConfig {
 
     private String baseUrl;
 
-    private CacheProperties accessToken = CacheProperties.of("dactiv:fadada:access-token:");
+    private CacheProperties accessToken = CacheProperties.of("dactiv:fadada:access-token");
 
     private String redirectUrl;
 

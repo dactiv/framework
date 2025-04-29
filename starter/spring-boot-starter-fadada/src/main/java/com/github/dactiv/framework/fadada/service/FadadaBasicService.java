@@ -7,7 +7,7 @@ import com.github.dactiv.framework.crypto.algorithm.SimpleByteSource;
 import com.github.dactiv.framework.crypto.algorithm.hash.Hash;
 import com.github.dactiv.framework.crypto.algorithm.hash.HashAlgorithmMode;
 import com.github.dactiv.framework.fadada.config.FadadaConfig;
-import com.github.dactiv.framework.fadada.domain.ResponseBody;
+import com.github.dactiv.framework.fadada.domain.body.ResponseBody;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

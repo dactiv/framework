@@ -3,7 +3,7 @@ package com.github.dactiv.framework.fadada.service;
 import com.github.dactiv.framework.commons.TimeProperties;
 import com.github.dactiv.framework.commons.domain.AccessToken;
 import com.github.dactiv.framework.fadada.config.FadadaConfig;
-import com.github.dactiv.framework.fadada.domain.ResponseBody;
+import com.github.dactiv.framework.fadada.domain.body.ResponseBody;
 import com.github.dactiv.framework.idempotent.annotation.Concurrent;
 import com.github.dactiv.framework.nacos.task.annotation.NacosCronScheduled;
 import org.redisson.api.RBucket;
