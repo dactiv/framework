@@ -139,21 +139,21 @@ public class TianaiCaptchaService extends AbstractCaptchaService<TianaiRequestBo
         String captchaValue = request.getParameter(getCaptchaParamName());
         String md5 = DigestUtils.md5DigestAsHex(captcha.getValue().getBytes());
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("[tianal 验证码] 匹配验证码信息:请求值为:{},对比值为:{}", captchaValue, md5);
+            LOGGER.debug("[tianai 验证码] 匹配验证码信息:请求值为:{},对比值为:{}", captchaValue, md5);
         }
         if (!StringUtils.equals(md5, captchaValue)) {
             return false;
         }
 
         ImageCaptchaTrack track = SystemException.convertSupplier(() -> Casts.getObjectMapper().readValue(captcha.getValue(), ImageCaptchaTrack.class));
-        Assert.notNull(track, "[tianal 验证码] 读取 ImageCaptchaTrack 数据为 null");
+        Assert.notNull(track, "[tianai 验证码] 读取 ImageCaptchaTrack 数据为 null");
         Duration duration = Duration.between(
                 LocalDateTime.ofInstant(track.getStartSlidingTime().toInstant(), ZoneId.systemDefault()),
                 LocalDateTime.ofInstant(track.getEndSlidingTime().toInstant(), ZoneId.systemDefault())
         );
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
-                    "[tianal 验证码] 调用滑动时间比对，当前滑动时间值为:{} 秒, 服务验证码超时值为:{} 秒",
+                    "[tianai 验证码] 调用滑动时间比对，当前滑动时间值为:{} 秒, 服务验证码超时值为:{} 秒",
                     duration.getSeconds(),
                     tianaiCaptchaProperties.getServerVerifyTimeout().toSeconds()
             );

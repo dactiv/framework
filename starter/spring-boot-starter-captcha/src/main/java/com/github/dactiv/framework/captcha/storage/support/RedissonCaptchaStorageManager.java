@@ -31,8 +31,8 @@ public class RedissonCaptchaStorageManager implements CaptchaStorageManager {
         this.captchaProperties = captchaProperties;
     }
 
-    protected RBucket<BuildToken> getBuildTokenBucket(String token) {
-        return redissonClient.getBucket(captchaProperties.getBuildTokenCache().getName(token));
+    protected RBucket<BuildToken> getBuildTokenBucket(String type, String token) {
+        return redissonClient.getBucket(captchaProperties.getBuildTokenCache().getName(type + CacheProperties.DEFAULT_SEPARATOR + token));
     }
 
     protected RBucket<InterceptToken> getInterceptTokenBucket(String token) {
@@ -42,13 +42,13 @@ public class RedissonCaptchaStorageManager implements CaptchaStorageManager {
     protected RBucket<SimpleCaptcha> getSimpleCaptchaBucket(String token) {
         String name = captchaProperties
                 .getBuildTokenCache()
-                .getName( DEFAULT_CAPTCHA_NAME + CacheProperties.DEFAULT_SEPARATOR + token);
+                .getName(DEFAULT_CAPTCHA_NAME + CacheProperties.DEFAULT_SEPARATOR + token);
         return redissonClient.getBucket(name);
     }
 
     @Override
     public void saveBuildToken(BuildToken token) {
-        RBucket<BuildToken> bucket = getBuildTokenBucket(token.getToken().getName());
+        RBucket<BuildToken> bucket = getBuildTokenBucket(token.getType(), token.getToken().getName());
         TimeProperties timeProperties = captchaProperties.getBuildTokenCache().getExpiresTime();
         if (Objects.nonNull(timeProperties)) {
             bucket.setAsync(token, timeProperties.getValue(), timeProperties.getUnit());
@@ -69,8 +69,8 @@ public class RedissonCaptchaStorageManager implements CaptchaStorageManager {
     }
 
     @Override
-    public BuildToken getBuildToken(String token) {
-        return getBuildTokenBucket(token).get();
+    public BuildToken getBuildToken(String type, String token) {
+        return getBuildTokenBucket(type, token).get();
     }
 
     @Override
@@ -80,7 +80,7 @@ public class RedissonCaptchaStorageManager implements CaptchaStorageManager {
 
     @Override
     public void deleteBuildToken(BuildToken buildToken) {
-        getBuildTokenBucket(buildToken.getToken().getName()).deleteAsync();
+        getBuildTokenBucket(buildToken.getType(), buildToken.getToken().getName()).deleteAsync();
         if (Objects.isNull(buildToken.getInterceptToken())) {
             return ;
         }
@@ -89,7 +89,7 @@ public class RedissonCaptchaStorageManager implements CaptchaStorageManager {
 
     @Override
     public void saveCaptcha(SimpleCaptcha captcha, InterceptToken interceptToken) {
-        RBucket<SimpleCaptcha> bucket = getSimpleCaptchaBucket(interceptToken.getToken().getName());
+        RBucket<SimpleCaptcha> bucket = getSimpleCaptchaBucket(interceptToken.obtainTokenName());
         TimeProperties timeProperties = captchaProperties.getInterceptorTokenCache().getExpiresTime();
         if (Objects.nonNull(timeProperties)) {
             bucket.setAsync(captcha, timeProperties.getValue(), timeProperties.getUnit());
@@ -100,11 +100,11 @@ public class RedissonCaptchaStorageManager implements CaptchaStorageManager {
 
     @Override
     public SimpleCaptcha getCaptcha(InterceptToken interceptToken) {
-        return getSimpleCaptchaBucket(interceptToken.getToken().getName()).get();
+        return getSimpleCaptchaBucket(interceptToken.obtainTokenName()).get();
     }
 
     @Override
     public void deleteCaptcha(InterceptToken interceptToken) {
-        getSimpleCaptchaBucket(interceptToken.getToken().getName()).deleteAsync();
+        getSimpleCaptchaBucket(interceptToken.obtainTokenName()).deleteAsync();
     }
 }

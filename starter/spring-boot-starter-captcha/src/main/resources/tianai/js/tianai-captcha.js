@@ -23,7 +23,7 @@ const Me = H("string"), w = H("function"), ye = H("number"), V = (t) => t !== nu
 }, Ve = S("Date"), je = S("File"), qe = S("Blob"), ze = S("FileList"), We = (t) => V(t) && w(t.pipe), Xe = (t) => {
   let e;
   return t && (typeof FormData == "function" && t instanceof FormData || w(t.append) && ((e = M(t)) === "formdata" || // detect form-data instance
-  e === "object" && w(t.toString) && t.toString() === "[object FormData]"));
+      e === "object" && w(t.toString) && t.toString() === "[object FormData]"));
 }, $e = S("URLSearchParams"), Je = (t) => t.trim ? t.trim() : t.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, "");
 function B(t, e, { allOwnKeys: n = !1 } = {}) {
   if (t === null || typeof t > "u")
@@ -105,10 +105,10 @@ const Ye = (t, e, n, { allOwnKeys: i } = {}) => (B(e, (r, s) => {
     i.push(n);
   return i;
 }, rt = S("HTMLFormElement"), st = (t) => t.toLowerCase().replace(
-  /[-_\s]([a-z\d])(\w*)/g,
-  function(n, i, r) {
-    return i.toUpperCase() + r;
-  }
+    /[-_\s]([a-z\d])(\w*)/g,
+    function(n, i, r) {
+      return i.toUpperCase() + r;
+    }
 ), re = (({ hasOwnProperty: t }) => (e, n) => t.call(e, n))(Object.prototype), ot = S("RegExp"), Te = (t, e) => {
   const n = Object.getOwnPropertyDescriptors(t), i = {};
   B(n, (r, s) => {
@@ -319,11 +319,11 @@ function j(t, e, n) {
       if (a.endsWith(p, "{}"))
         p = i ? p : p.slice(0, -2), f = JSON.stringify(f);
       else if (a.isArray(f) && yt(f) || (a.isFileList(f) || a.endsWith(p, "[]")) && (b = a.toArray(f)))
-        return p = Re(p), b.forEach(function(L, Fe) {
-          !(a.isUndefined(L) || L === null) && e.append(
-            // eslint-disable-next-line no-nested-ternary
-            o === !0 ? oe([p], Fe, s) : o === null ? p : p + "[]",
-            l(L)
+        return p = Re(p), b.forEach(function(P, Fe) {
+          !(a.isUndefined(P) || P === null) && e.append(
+              // eslint-disable-next-line no-nested-ternary
+              o === !0 ? oe([p], Fe, s) : o === null ? p : p + "[]",
+              l(P)
           );
         }), !1;
     }
@@ -340,11 +340,11 @@ function j(t, e, n) {
         throw Error("Circular reference detected in " + p.join("."));
       h.push(f), a.forEach(f, function(b, O) {
         (!(a.isUndefined(b) || b === null) && r.call(
-          e,
-          b,
-          a.isString(O) ? O.trim() : O,
-          p,
-          E
+            e,
+            b,
+            a.isString(O) ? O.trim() : O,
+            p,
+            E
         )) === !0 && g(b, p ? p.concat(O) : [O]);
       }), h.pop();
     }
@@ -458,7 +458,7 @@ const ce = bt, xe = {
   let t;
   return typeof navigator < "u" && ((t = navigator.product) === "ReactNative" || t === "NativeScript" || t === "NS") ? !1 : typeof window < "u" && typeof document < "u";
 })(), Rt = (() => typeof WorkerGlobalScope < "u" && // eslint-disable-next-line no-undef
-self instanceof WorkerGlobalScope && typeof self.importScripts == "function")(), T = {
+    self instanceof WorkerGlobalScope && typeof self.importScripts == "function")(), T = {
   isBrowser: !0,
   classes: {
     URLSearchParams: Tt,
@@ -532,9 +532,9 @@ const ee = {
       if ((c = a.isFileList(e)) || i.indexOf("multipart/form-data") > -1) {
         const d = this.env && this.env.FormData;
         return j(
-          c ? { "files[]": e } : e,
-          d && new d(),
-          this.formSerializer
+            c ? { "files[]": e } : e,
+            d && new d(),
+            this.formSerializer
         );
       }
     }
@@ -611,14 +611,14 @@ function _(t) {
 function F(t) {
   return t === !1 || t == null ? t : a.isArray(t) ? t.map(F) : String(t);
 }
-function Pt(t) {
+function Lt(t) {
   const e = /* @__PURE__ */ Object.create(null), n = /([^\s,;=]+)\s*(?:=\s*([^,;]+))?/g;
   let i;
   for (; i = n.exec(t); )
     e[i[1]] = i[2];
   return e;
 }
-const Lt = (t) => /^[-_a-zA-Z0-9^`|~,!#$%&'*+.]+$/.test(t.trim());
+const Pt = (t) => /^[-_a-zA-Z0-9^`|~,!#$%&'*+.]+$/.test(t.trim());
 function W(t, e, n, i, r) {
   if (a.isFunction(i))
     return i.call(this, e, n);
@@ -657,7 +657,7 @@ class q {
       (!h || r[h] === void 0 || l === !0 || l === void 0 && r[h] !== !1) && (r[h || d] = F(c));
     }
     const o = (c, d) => a.forEach(c, (l, u) => s(l, u, d));
-    return a.isPlainObject(e) || e instanceof this.constructor ? o(e, n) : a.isString(e) && (e = e.trim()) && !Lt(e) ? o(Bt(e), n) : e != null && s(n, e, i), this;
+    return a.isPlainObject(e) || e instanceof this.constructor ? o(e, n) : a.isString(e) && (e = e.trim()) && !Pt(e) ? o(Bt(e), n) : e != null && s(n, e, i), this;
   }
   get(e, n) {
     if (e = _(e), e) {
@@ -667,7 +667,7 @@ class q {
         if (!n)
           return r;
         if (n === !0)
-          return Pt(r);
+          return Lt(r);
         if (a.isFunction(n))
           return n.call(this, r, i);
         if (a.isRegExp(n))
@@ -774,52 +774,52 @@ function X(t, e) {
 function Ne(t) {
   return !!(t && t.__CANCEL__);
 }
-function P(t, e, n) {
+function L(t, e, n) {
   m.call(this, t ?? "canceled", m.ERR_CANCELED, e, n), this.name = "CanceledError";
 }
-a.inherits(P, m, {
+a.inherits(L, m, {
   __CANCEL__: !0
 });
 function kt(t, e, n) {
   const i = n.config.validateStatus;
   !n.status || !i || i(n.status) ? t(n) : e(new m(
-    "Request failed with status code " + n.status,
-    [m.ERR_BAD_REQUEST, m.ERR_BAD_RESPONSE][Math.floor(n.status / 100) - 4],
-    n.config,
-    n.request,
-    n
+      "Request failed with status code " + n.status,
+      [m.ERR_BAD_REQUEST, m.ERR_BAD_RESPONSE][Math.floor(n.status / 100) - 4],
+      n.config,
+      n.request,
+      n
   ));
 }
 const Dt = T.isStandardBrowserEnv ? (
-  // Standard browser envs support document.cookie
-  function() {
-    return {
-      write: function(n, i, r, s, o, c) {
-        const d = [];
-        d.push(n + "=" + encodeURIComponent(i)), a.isNumber(r) && d.push("expires=" + new Date(r).toGMTString()), a.isString(s) && d.push("path=" + s), a.isString(o) && d.push("domain=" + o), c === !0 && d.push("secure"), document.cookie = d.join("; ");
-      },
-      read: function(n) {
-        const i = document.cookie.match(new RegExp("(^|;\\s*)(" + n + ")=([^;]*)"));
-        return i ? decodeURIComponent(i[3]) : null;
-      },
-      remove: function(n) {
-        this.write(n, "", Date.now() - 864e5);
-      }
-    };
-  }()
+    // Standard browser envs support document.cookie
+    function() {
+      return {
+        write: function(n, i, r, s, o, c) {
+          const d = [];
+          d.push(n + "=" + encodeURIComponent(i)), a.isNumber(r) && d.push("expires=" + new Date(r).toGMTString()), a.isString(s) && d.push("path=" + s), a.isString(o) && d.push("domain=" + o), c === !0 && d.push("secure"), document.cookie = d.join("; ");
+        },
+        read: function(n) {
+          const i = document.cookie.match(new RegExp("(^|;\\s*)(" + n + ")=([^;]*)"));
+          return i ? decodeURIComponent(i[3]) : null;
+        },
+        remove: function(n) {
+          this.write(n, "", Date.now() - 864e5);
+        }
+      };
+    }()
 ) : (
-  // Non standard browser env (web workers, react-native) lack needed support.
-  function() {
-    return {
-      write: function() {
-      },
-      read: function() {
-        return null;
-      },
-      remove: function() {
-      }
-    };
-  }()
+    // Non standard browser env (web workers, react-native) lack needed support.
+    function() {
+      return {
+        write: function() {
+        },
+        read: function() {
+          return null;
+        },
+        remove: function() {
+        }
+      };
+    }()
 );
 function Ut(t) {
   return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(t);
@@ -831,36 +831,36 @@ function Be(t, e) {
   return t && !Ut(e) ? Mt(t, e) : e;
 }
 const Ht = T.isStandardBrowserEnv ? (
-  // Standard browser envs have full support of the APIs needed to test
-  // whether the request URL is of the same origin as current location.
-  function() {
-    const e = /(msie|trident)/i.test(navigator.userAgent), n = document.createElement("a");
-    let i;
-    function r(s) {
-      let o = s;
-      return e && (n.setAttribute("href", o), o = n.href), n.setAttribute("href", o), {
-        href: n.href,
-        protocol: n.protocol ? n.protocol.replace(/:$/, "") : "",
-        host: n.host,
-        search: n.search ? n.search.replace(/^\?/, "") : "",
-        hash: n.hash ? n.hash.replace(/^#/, "") : "",
-        hostname: n.hostname,
-        port: n.port,
-        pathname: n.pathname.charAt(0) === "/" ? n.pathname : "/" + n.pathname
+    // Standard browser envs have full support of the APIs needed to test
+    // whether the request URL is of the same origin as current location.
+    function() {
+      const e = /(msie|trident)/i.test(navigator.userAgent), n = document.createElement("a");
+      let i;
+      function r(s) {
+        let o = s;
+        return e && (n.setAttribute("href", o), o = n.href), n.setAttribute("href", o), {
+          href: n.href,
+          protocol: n.protocol ? n.protocol.replace(/:$/, "") : "",
+          host: n.host,
+          search: n.search ? n.search.replace(/^\?/, "") : "",
+          hash: n.hash ? n.hash.replace(/^#/, "") : "",
+          hostname: n.hostname,
+          port: n.port,
+          pathname: n.pathname.charAt(0) === "/" ? n.pathname : "/" + n.pathname
+        };
+      }
+      return i = r(window.location.href), function(o) {
+        const c = a.isString(o) ? r(o) : o;
+        return c.protocol === i.protocol && c.host === i.host;
       };
-    }
-    return i = r(window.location.href), function(o) {
-      const c = a.isString(o) ? r(o) : o;
-      return c.protocol === i.protocol && c.host === i.host;
-    };
-  }()
+    }()
 ) : (
-  // Non standard browser envs (web workers, react-native) lack needed support.
-  function() {
-    return function() {
-      return !0;
-    };
-  }()
+    // Non standard browser envs (web workers, react-native) lack needed support.
+    function() {
+      return function() {
+        return !0;
+      };
+    }()
 );
 function Vt(t) {
   const e = /^([-+\w]{1,25})(:?\/\/|:)/.exec(t);
@@ -920,7 +920,7 @@ const qt = typeof XMLHttpRequest < "u", zt = qt && function(t) {
       if (!l)
         return;
       const g = A.from(
-        "getAllResponseHeaders" in l && l.getAllResponseHeaders()
+          "getAllResponseHeaders" in l && l.getAllResponseHeaders()
       ), p = {
         data: !o || o === "text" || o === "json" ? l.responseText : l.response,
         status: l.status,
@@ -945,10 +945,10 @@ const qt = typeof XMLHttpRequest < "u", zt = qt && function(t) {
       let f = t.timeout ? "timeout of " + t.timeout + "ms exceeded" : "timeout exceeded";
       const p = t.transitional || xe;
       t.timeoutErrorMessage && (f = t.timeoutErrorMessage), i(new m(
-        f,
-        p.clarifyTimeoutError ? m.ETIMEDOUT : m.ECONNABORTED,
-        t,
-        l
+          f,
+          p.clarifyTimeoutError ? m.ETIMEDOUT : m.ECONNABORTED,
+          t,
+          l
       )), l = null;
     }, T.isStandardBrowserEnv) {
       const g = (t.withCredentials || Ht(u)) && t.xsrfCookieName && Dt.read(t.xsrfCookieName);
@@ -957,7 +957,7 @@ const qt = typeof XMLHttpRequest < "u", zt = qt && function(t) {
     r === void 0 && s.setContentType(null), "setRequestHeader" in l && a.forEach(s.toJSON(), function(f, p) {
       l.setRequestHeader(p, f);
     }), a.isUndefined(t.withCredentials) || (l.withCredentials = !!t.withCredentials), o && o !== "json" && (l.responseType = t.responseType), typeof t.onDownloadProgress == "function" && l.addEventListener("progress", ue(t.onDownloadProgress, !0)), typeof t.onUploadProgress == "function" && l.upload && l.upload.addEventListener("progress", ue(t.onUploadProgress)), (t.cancelToken || t.signal) && (c = (g) => {
-      l && (i(!g || g.type ? new P(null, t, l) : g), l.abort(), l = null);
+      l && (i(!g || g.type ? new L(null, t, l) : g), l.abort(), l = null);
     }, t.cancelToken && t.cancelToken.subscribe(c), t.signal && (t.signal.aborted ? c() : t.signal.addEventListener("abort", c)));
     const E = Vt(u);
     if (E && T.protocols.indexOf(E) === -1) {
@@ -979,7 +979,7 @@ a.forEach(k, (t, e) => {
     Object.defineProperty(t, "adapterName", { value: e });
   }
 });
-const Pe = {
+const Le = {
   getAdapter: (t) => {
     t = a.isArray(t) ? t : [t];
     const { length: e } = t;
@@ -988,10 +988,10 @@ const Pe = {
       ;
     if (!i)
       throw i === !1 ? new m(
-        `Adapter ${n} is not supported by the environment`,
-        "ERR_NOT_SUPPORT"
+          `Adapter ${n} is not supported by the environment`,
+          "ERR_NOT_SUPPORT"
       ) : new Error(
-        a.hasOwnProp(k, n) ? `Adapter '${n}' is not available in the build` : `Unknown adapter '${n}'`
+          a.hasOwnProp(k, n) ? `Adapter '${n}' is not available in the build` : `Unknown adapter '${n}'`
       );
     if (!a.isFunction(i))
       throw new TypeError("adapter is not a function");
@@ -1001,23 +1001,23 @@ const Pe = {
 };
 function $(t) {
   if (t.cancelToken && t.cancelToken.throwIfRequested(), t.signal && t.signal.aborted)
-    throw new P(null, t);
+    throw new L(null, t);
 }
 function de(t) {
   return $(t), t.headers = A.from(t.headers), t.data = X.call(
-    t,
-    t.transformRequest
-  ), ["post", "put", "patch"].indexOf(t.method) !== -1 && t.headers.setContentType("application/x-www-form-urlencoded", !1), Pe.getAdapter(t.adapter || te.adapter)(t).then(function(i) {
-    return $(t), i.data = X.call(
       t,
-      t.transformResponse,
-      i
+      t.transformRequest
+  ), ["post", "put", "patch"].indexOf(t.method) !== -1 && t.headers.setContentType("application/x-www-form-urlencoded", !1), Le.getAdapter(t.adapter || te.adapter)(t).then(function(i) {
+    return $(t), i.data = X.call(
+        t,
+        t.transformResponse,
+        i
     ), i.headers = A.from(i.headers), i;
   }, function(i) {
     return Ne(i) || ($(t), i && i.response && (i.response.data = X.call(
-      t,
-      t.transformResponse,
-      i.response
+        t,
+        t.transformResponse,
+        i.response
     ), i.response.headers = A.from(i.response.headers))), Promise.reject(i);
   });
 }
@@ -1087,7 +1087,7 @@ function C(t, e) {
     a.isUndefined(E) && h !== c || (n[u] = E);
   }), n;
 }
-const Le = "1.5.0", ne = {};
+const Pe = "1.5.0", ne = {};
 ["object", "boolean", "number", "function", "string", "symbol"].forEach((t, e) => {
   ne[t] = function(i) {
     return typeof i === t || "a" + (e < 1 ? "n " : " ") + t;
@@ -1096,19 +1096,19 @@ const Le = "1.5.0", ne = {};
 const he = {};
 ne.transitional = function(e, n, i) {
   function r(s, o) {
-    return "[Axios v" + Le + "] Transitional option '" + s + "'" + o + (i ? ". " + i : "");
+    return "[Axios v" + Pe + "] Transitional option '" + s + "'" + o + (i ? ". " + i : "");
   }
   return (s, o, c) => {
     if (e === !1)
       throw new m(
-        r(o, " has been removed" + (n ? " in " + n : "")),
-        m.ERR_DEPRECATED
+          r(o, " has been removed" + (n ? " in " + n : "")),
+          m.ERR_DEPRECATED
       );
     return n && !he[o] && (he[o] = !0, console.warn(
-      r(
-        o,
-        " has been deprecated since v" + n + " and will be removed in the near future"
-      )
+        r(
+            o,
+            " has been deprecated since v" + n + " and will be removed in the near future"
+        )
     )), e ? e(s, o, c) : !0;
   };
 };
@@ -1162,14 +1162,14 @@ class U {
       serialize: R.function
     }, !0)), n.method = (n.method || this.defaults.method || "get").toLowerCase();
     let o = s && a.merge(
-      s.common,
-      s[n.method]
+        s.common,
+        s[n.method]
     );
     s && a.forEach(
-      ["delete", "get", "head", "post", "put", "patch", "common"],
-      (f) => {
-        delete s[f];
-      }
+        ["delete", "get", "head", "post", "put", "patch", "common"],
+        (f) => {
+          delete s[f];
+        }
     ), n.headers = A.concat(o, s);
     const c = [];
     let d = !0;
@@ -1263,7 +1263,7 @@ class ie {
         i.unsubscribe(s);
       }, o;
     }, e(function(s, o, c) {
-      i.reason || (i.reason = new P(s, o, c), n(i.reason));
+      i.reason || (i.reason = new L(s, o, c), n(i.reason));
     });
   }
   /**
@@ -1392,10 +1392,10 @@ function Ie(t) {
 }
 const y = Ie(te);
 y.Axios = D;
-y.CanceledError = P;
+y.CanceledError = L;
 y.CancelToken = Xt;
 y.isCancel = Ne;
-y.VERSION = Le;
+y.VERSION = Pe;
 y.toFormData = j;
 y.AxiosError = m;
 y.Cancel = y.CanceledError;
@@ -1407,7 +1407,7 @@ y.isAxiosError = Jt;
 y.mergeConfig = C;
 y.AxiosHeaders = A;
 y.formToJSON = (t) => _e(a.isHTMLForm(t) ? new FormData(t) : t);
-y.getAdapter = Pe.getAdapter;
+y.getAdapter = Le.getAdapter;
 y.HttpStatusCode = Yt;
 y.default = y;
 const pe = y;
@@ -1416,7 +1416,7 @@ class Kt {
     this.config = e, this.config.postConfig = this.config.postConfig || {
       captchaParamName: "_tianaiCaptcha",
       tokenParamName: "_tianaiCaptchaToken"
-    }, this.config.slider = this.config.slider || this.sliderConfig(), this.config.rotate = this.config.rotate || this.rotateConfig(), this.config.concat = this.config.concat || this.concatConfig(), this.config.dateFormat = this.config.dateFormat || "yyyy-MM-dd HH:mm:ss'", this.config.loadingText = this.config.loadingText || "", this.config.title = this.config.title || "安全验证", this.config.validText = this.config.validText || "", this.config.width = this.config.width || 400, this.config.showMerchantName = this.config.showMerchantName === void 0 ? !0 : this.config.showMerchantName, this.config.success = this.config.success || console.info, this.config.fail = this.config.fail || console.error, this.config.failRefreshCaptcha = this.config.failRefreshCaptcha === void 0 ? !0 : this.config.failRefreshCaptcha, this.config.baseUrl || (this.config.baseUrl = "_$_[baseUrlToken]_$_"), this.http = pe.create({ baseURL: this.config.baseUrl }), this.containerTemplate = '<div class="__tianai-container" id="tianai-container"></div>', this.contentTemplate = `
+    }, this.config.slider = this.config.slider || this.sliderConfig(), this.config.rotate = this.config.rotate || this.rotateConfig(), this.config.concat = this.config.concat || this.concatConfig(), this.config.dateFormat = this.config.dateFormat || "yyyy-MM-dd HH:mm:ss'", this.config.loadingText = this.config.loadingText || "", this.config.title = this.config.title || "安全验证", this.config.validText = this.config.validText || "", this.config.width = this.config.width || 400, this.config.showMerchantName = this.config.showMerchantName === void 0 ? !0 : this.config.showMerchantName, this.config.success = this.config.success || console.info, this.config.fail = this.config.fail || console.error, this.config.failRefreshCaptcha = this.config.failRefreshCaptcha === void 0 ? !0 : this.config.failRefreshCaptcha, this.config.baseUrl || (this.config.baseUrl = "$baseUrlToken$"), this.http = pe.create({ baseURL: this.config.baseUrl }), this.containerTemplate = '<div class="__tianai-container" id="tianai-container"></div>', this.contentTemplate = `
         <div class="__tianai-content" style="width:${this.config.width}px" id="tianai-content">
           <div class="__tianai-content-title" id="tianai-content-title">
             <div class="__tianai-content-title-text">${this.config.title}</div>
@@ -1501,7 +1501,7 @@ class Kt {
     this.generateData = e, this.removeLoading();
     const n = document.getElementById("tianai-content-title");
     let i = document.getElementById("tianai-slider-move-btn");
-    if (!i && (n.insertAdjacentHTML("afterend", this.contentOperate), i = document.getElementById("tianai-slider-move-btn"), i.addEventListener("mousedown", this.sliderDown.bind(this)), document.getElementById("tianai-operating-refresh-btn").addEventListener("click", this.generateCaptcha.bind(this)), document.getElementById("tianai-operating-close-btn").addEventListener("click", this.hide.bind(this)), this.config.showMerchantName && e.merchantName)) {
+    if (!i && (n.insertAdjacentHTML("afterend", this.contentOperate), i = document.getElementById("tianai-slider-move-btn"), i.addEventListener("mousedown", this.sliderDown.bind(this)), i.addEventListener("touchstart", this.sliderDown.bind(this)), document.getElementById("tianai-operating-refresh-btn").addEventListener("click", this.generateCaptcha.bind(this)), document.getElementById("tianai-operating-close-btn").addEventListener("click", this.hide.bind(this)), this.config.showMerchantName && e.merchantName)) {
       const h = document.getElementById("tianai-operating-merchant");
       h.innerHTML = e.merchantName || "";
     }

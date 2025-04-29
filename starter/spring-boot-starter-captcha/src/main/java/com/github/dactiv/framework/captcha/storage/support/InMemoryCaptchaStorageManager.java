@@ -4,6 +4,7 @@ import com.github.dactiv.framework.captcha.SimpleCaptcha;
 import com.github.dactiv.framework.captcha.storage.CaptchaStorageManager;
 import com.github.dactiv.framework.captcha.token.BuildToken;
 import com.github.dactiv.framework.captcha.token.InterceptToken;
+import com.github.dactiv.framework.commons.CacheProperties;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +25,7 @@ public class InMemoryCaptchaStorageManager implements CaptchaStorageManager {
 
     @Override
     public void saveBuildToken(BuildToken token) {
-        BUILD_TOKEN_CACHE.put(token.getToken().getName(), token);
+        BUILD_TOKEN_CACHE.put(token.getType() + CacheProperties.DEFAULT_SEPARATOR + token.getToken().getName(), token);
     }
 
     @Override
@@ -33,8 +34,8 @@ public class InMemoryCaptchaStorageManager implements CaptchaStorageManager {
     }
 
     @Override
-    public BuildToken getBuildToken(String token) {
-        return BUILD_TOKEN_CACHE.get(token);
+    public BuildToken getBuildToken(String type, String token) {
+        return BUILD_TOKEN_CACHE.get(type + CacheProperties.DEFAULT_SEPARATOR + token);
     }
 
     @Override
@@ -44,7 +45,7 @@ public class InMemoryCaptchaStorageManager implements CaptchaStorageManager {
 
     @Override
     public void deleteBuildToken(BuildToken buildToken) {
-        BUILD_TOKEN_CACHE.remove(buildToken.getToken().getName());
+        BUILD_TOKEN_CACHE.remove(buildToken.getType() + CacheProperties.DEFAULT_SEPARATOR + buildToken.getToken().getName());
     }
 
     @Override

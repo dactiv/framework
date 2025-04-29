@@ -38,6 +38,9 @@ public class ObjectItem implements Serializable {
     }
 
     public LocalDateTime getLastModified() {
+        if (Objects.isNull(item.lastModified())) {
+            return null;
+        }
         return item.lastModified().toLocalDateTime();
     }
 

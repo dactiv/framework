@@ -38,10 +38,11 @@ public interface CaptchaService {
      * 获取绑定 token
      *
      * @param token token 值
+     * @param type 验证码类型
      *
      * @return 绑定 token
      */
-    BuildToken getBuildToken(String token);
+    BuildToken getBuildToken(String type, String token);
 
     /**
      * 验证请求

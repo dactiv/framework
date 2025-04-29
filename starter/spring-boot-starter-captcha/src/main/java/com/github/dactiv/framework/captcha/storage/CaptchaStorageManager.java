@@ -29,10 +29,11 @@ public interface CaptchaStorageManager {
      * 获取绑定 token
      *
      * @param token token 值
+     * @param type token 类型
      *
      * @return 绑定 token
      */
-    BuildToken getBuildToken(String token);
+    BuildToken getBuildToken(String type, String token);
 
     /**
      * 获取拦截 token

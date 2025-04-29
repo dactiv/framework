@@ -30,7 +30,7 @@ public class DelegateCaptchaInterceptor implements Interceptor {
 
         CaptchaService captchaService = delegateCaptchaService.getCaptchaServiceByType(type);
 
-        BuildToken buildToken = captchaService.getBuildToken(token);
+        BuildToken buildToken = captchaService.getBuildToken(type, token);
 
         return generateCaptchaIntercept(buildToken, interceptType);
     }

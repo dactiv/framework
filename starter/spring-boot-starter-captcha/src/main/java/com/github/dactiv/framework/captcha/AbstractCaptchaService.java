@@ -165,7 +165,7 @@ public abstract class AbstractCaptchaService<B> implements CaptchaService, Captc
         String isGenerateInterceptor = StringUtils.defaultIfEmpty(generateInterceptorValue, Boolean.TRUE.toString());
 
         String interceptorType = getInterceptorType();
-        if (BooleanUtils.toBoolean(isGenerateInterceptor)) {
+        if (BooleanUtils.toBoolean(isGenerateInterceptor) && StringUtils.isNotEmpty(interceptorType)) {
             InterceptToken interceptToken = interceptor.generateCaptchaIntercept(token, interceptorType);
             token.setInterceptToken(interceptToken);
         }
@@ -234,20 +234,31 @@ public abstract class AbstractCaptchaService<B> implements CaptchaService, Captc
     }
 
     @Override
-    public BuildToken getBuildToken(String token) {
-        return captchaStorageManager.getBuildToken(token);
+    public BuildToken getBuildToken(String type, String token) {
+        return captchaStorageManager.getBuildToken(type, token);
     }
 
     @Override
     public BuildToken getBuildToken(HttpServletRequest request) {
         String token = request.getParameter(getTokenParamName());
-        return getBuildToken(token);
+        String type = getCaptchaTypeParam(request);
+        return getBuildToken(type, token);
+    }
+
+    public String getCaptchaTypeParam(HttpServletRequest request) {
+        String type = request.getParameter(captchaProperties.getCaptchaTypeParamName());
+        if (StringUtils.isEmpty(type)) {
+            type = request.getHeader(captchaProperties.getCaptchaTypeHeaderName());
+        }
+
+        return type;
     }
 
     @Override
     public Object generateCaptcha(HttpServletRequest request) throws Exception {
         String tokenValue = request.getParameter(getTokenParamName());
-        InterceptToken token = getBuildToken(tokenValue);
+        String type = getCaptchaTypeParam(request);
+        InterceptToken token = getBuildToken(type, tokenValue);
 
         if (Objects.isNull(token)) {
             token = captchaStorageManager.getInterceptToken(tokenValue);

@@ -32,4 +32,8 @@ public interface InterceptToken extends Serializable, Expired {
      * @return 类型
      */
     String getType();
+
+    default String obtainTokenName() {
+        return getType() + CacheProperties.DEFAULT_SEPARATOR + getToken().getName();
+    }
 }
