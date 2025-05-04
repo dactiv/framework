@@ -52,3 +52,7 @@ dactiv:
     client-corp-id: 1903980686920245248
     open-corp-id: 6cd4cc94e4a545e5a02c521fb174d15e
     base-url: https://uat-api.fadada.com/api/v5
+    auth:
+      person:
+        redirect-url: http://test.hxaj.net/api/authentication/real/name/authentication/callback/10
+        unbind-account: true

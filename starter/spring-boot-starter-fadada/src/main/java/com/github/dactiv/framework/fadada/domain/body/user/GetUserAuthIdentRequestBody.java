@@ -1,5 +1,7 @@
 package com.github.dactiv.framework.fadada.domain.body.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
@@ -15,17 +17,18 @@ public class GetUserAuthIdentRequestBody implements Serializable {
     private String mobile;
     private String bankAccountNo;
     private List<String> identMethod;
-    private String faceauthMode;
+    @JsonProperty("faceauthMode")
+    private String faceAuthMode;
 
     public GetUserAuthIdentRequestBody() {
     }
 
-    public String getFaceauthMode() {
-        return this.faceauthMode;
+    public String getFaceAuthMode() {
+        return this.faceAuthMode;
     }
 
-    public void setFaceauthMode(String faceauthMode) {
-        this.faceauthMode = faceauthMode;
+    public void setFaceAuthMode(String faceAuthMode) {
+        this.faceAuthMode = faceAuthMode;
     }
 
     public String getUserName() {

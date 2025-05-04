@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -25,6 +26,10 @@ public class FadadaConfig {
     private CacheProperties accessToken = CacheProperties.of("dactiv:fadada:access-token");
 
     private String redirectUrl;
+
+    private List<String> authScopes = List.of("ident_info","seal_info","signtask_init","signtask_info","signtask_file");
+
+    private String faceAuthMode = "tencent";
 
     public FadadaConfig() {
     }
@@ -75,6 +80,22 @@ public class FadadaConfig {
 
     public void setRedirectUrl(String redirectUrl) {
         this.redirectUrl = redirectUrl;
+    }
+
+    public List<String> getAuthScopes() {
+        return authScopes;
+    }
+
+    public void setAuthScopes(List<String> authScopes) {
+        this.authScopes = authScopes;
+    }
+
+    public String getFaceAuthMode() {
+        return faceAuthMode;
+    }
+
+    public void setFaceAuthMode(String faceAuthMode) {
+        this.faceAuthMode = faceAuthMode;
     }
 
     public HttpHeaders createBasicParam() {

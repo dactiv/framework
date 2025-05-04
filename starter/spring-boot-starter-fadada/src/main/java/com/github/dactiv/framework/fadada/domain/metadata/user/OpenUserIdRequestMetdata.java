@@ -1,19 +1,19 @@
-package com.github.dactiv.framework.fadada.domain.body.user;
+package com.github.dactiv.framework.fadada.domain.metadata.user;
 
 import java.io.Serial;
 import java.io.Serializable;
 
-public class GetUserRequestBody implements Serializable {
+public class OpenUserIdRequestMetdata implements Serializable {
     @Serial
     private static final long serialVersionUID = -1347725221604256124L;
 
     private String openUserId;
 
-    public GetUserRequestBody(String openUserId) {
+    public OpenUserIdRequestMetdata(String openUserId) {
         this.openUserId = openUserId;
     }
 
-    public GetUserRequestBody() {
+    public OpenUserIdRequestMetdata() {
     }
 
     public String getOpenUserId() {

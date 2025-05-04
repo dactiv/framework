@@ -78,7 +78,11 @@ public class FadadaBasicService {
     protected void sign(HttpHeaders headers) {
         String timestamp = String.valueOf(System.currentTimeMillis());
         headers.add("X-FASC-Timestamp", timestamp);
+        String sign = generateSignString(headers, timestamp);
+        headers.add("X-FASC-Sign", sign);
+    }
 
+    public String generateSignString(HttpHeaders headers, String timestamp) {
         // 获取 MultiValueMap 中的所有键
         List<String> keys = new ArrayList<>(headers.keySet());
         // 对键进行升序排序
@@ -86,12 +90,24 @@ public class FadadaBasicService {
 
         MultiValueMap<String, String> sortedMultiValueMap = new LinkedMultiValueMap<>();
         keys.forEach(key -> sortedMultiValueMap.put(key, headers.get(key)));
+        return generateSignString(sortedMultiValueMap, timestamp);
+    }
 
-        String paramString = Casts.castRequestBodyMapToString(sortedMultiValueMap);
+    public String generateSignString(Map<String, String> params, String timestamp) {
+        // 获取 MultiValueMap 中的所有键
+        Map<String, String> treeMap = new TreeMap<>(params);
+
+        MultiValueMap<String, String> sortedMultiValueMap = new LinkedMultiValueMap<>();
+        treeMap.forEach(sortedMultiValueMap::add);
+
+        return generateSignString(sortedMultiValueMap, timestamp);
+    }
+
+    public String generateSignString(MultiValueMap<String, String> sortedMap, String timestamp) {
+        String paramString = Casts.castRequestBodyMapToString(sortedMap);
         String signText = new Hash(HashAlgorithmMode.SHA256.getName(), paramString, null, -1).getHex().toLowerCase();
         byte[] secretSigning = hmac256(fadadaConfig.getSecret().getSecretKey().getBytes(StandardCharsets.UTF_8),timestamp);
-        String sign = new SimpleByteSource(hmac256(secretSigning, signText)).getHex();
-        headers.add("X-FASC-Sign", sign);
+        return new SimpleByteSource(hmac256(secretSigning, signText)).getHex();
     }
 
     public byte[] hmac256(byte[] key, String msg) {

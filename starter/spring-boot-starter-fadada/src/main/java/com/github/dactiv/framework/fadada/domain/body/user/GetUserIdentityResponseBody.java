@@ -6,7 +6,7 @@ import com.github.dactiv.framework.fadada.domain.metadata.user.UserInfoMetadata;
 import java.io.Serial;
 import java.io.Serializable;
 
-public class UserResponseBody implements Serializable {
+public class GetUserIdentityResponseBody implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 8630087348213288465L;

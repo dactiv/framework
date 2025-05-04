@@ -4,6 +4,8 @@ import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.fadada.config.FadadaConfig;
 import com.github.dactiv.framework.fadada.domain.body.task.CreateSignTaskResponseBody;
 import com.github.dactiv.framework.fadada.domain.body.task.CreateSignTaskWithTemplateRequestBody;
+import com.github.dactiv.framework.fadada.domain.body.task.GetSignTaskActorUrlRequestBody;
+import com.github.dactiv.framework.fadada.domain.body.task.SignTaskActorGetUrlResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
@@ -21,4 +23,10 @@ public class SignTaskService extends FadadaBasicService {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
         return executeApi("/sign-task/create-with-template", authService.getCacheAccessToken().getToken(), param, CreateSignTaskResponseBody.class);
     }
+
+    public SignTaskActorGetUrlResponseBody getSignTaskActorUrl(GetSignTaskActorUrlRequestBody body) {
+        Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
+        return executeApi("/sign-task/actor/get-url", authService.getCacheAccessToken().getToken(), param, SignTaskActorGetUrlResponseBody.class);
+    }
+
 }

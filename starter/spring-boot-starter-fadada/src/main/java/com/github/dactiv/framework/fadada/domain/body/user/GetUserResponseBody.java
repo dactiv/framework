@@ -1,25 +1,21 @@
 package com.github.dactiv.framework.fadada.domain.body.user;
 
+import com.github.dactiv.framework.fadada.domain.metadata.user.ClientUserIdRequestMetadata;
+
+import java.io.Serial;
 import java.util.List;
 
-public class UserAuthStatusResponseBody {
-    private String clientUserId;
+public class GetUserResponseBody extends ClientUserIdRequestMetadata {
+    @Serial
+    private static final long serialVersionUID = -4359711467729294433L;
+
     private String clientUserName;
     private String bindingStatus;
     private List<String> authScope;
     private String identStatus;
     private String availableStatus;
-    private String openUserId;
 
-    public UserAuthStatusResponseBody() {
-    }
-
-    public String getClientUserId() {
-        return clientUserId;
-    }
-
-    public void setClientUserId(String clientUserId) {
-        this.clientUserId = clientUserId;
+    public GetUserResponseBody() {
     }
 
     public String getClientUserName() {
@@ -60,13 +56,5 @@ public class UserAuthStatusResponseBody {
 
     public void setAvailableStatus(String availableStatus) {
         this.availableStatus = availableStatus;
-    }
-
-    public String getOpenUserId() {
-        return openUserId;
-    }
-
-    public void setOpenUserId(String openUserId) {
-        this.openUserId = openUserId;
     }
 }
