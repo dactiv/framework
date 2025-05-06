@@ -3,7 +3,6 @@ package com.github.dactiv.framework.fadada.domain.metadata.task;
 import com.github.dactiv.framework.fadada.domain.metadata.ActorMetadata;
 import com.github.dactiv.framework.fadada.domain.metadata.FillFieldMetadata;
 import com.github.dactiv.framework.fadada.domain.metadata.SignConfigMetadata;
-import com.github.dactiv.framework.fadada.domain.metadata.SignFieldMetadata;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -16,7 +15,7 @@ public class AddTaskActorMetadata implements Serializable {
 
     private ActorMetadata actor;
     private List<FillFieldMetadata> fillFields;
-    private List<SignFieldMetadata> signFields;
+    private List<AddTaskActorSignFieldMetadata> signFields;
     private SignConfigMetadata signConfigInfo;
 
     public AddTaskActorMetadata() {
@@ -38,11 +37,11 @@ public class AddTaskActorMetadata implements Serializable {
         this.fillFields = fillFields;
     }
 
-    public List<SignFieldMetadata> getSignFields() {
+    public List<AddTaskActorSignFieldMetadata> getSignFields() {
         return signFields;
     }
 
-    public void setSignFields(List<SignFieldMetadata> signFields) {
+    public void setSignFields(List<AddTaskActorSignFieldMetadata> signFields) {
         this.signFields = signFields;
     }
 

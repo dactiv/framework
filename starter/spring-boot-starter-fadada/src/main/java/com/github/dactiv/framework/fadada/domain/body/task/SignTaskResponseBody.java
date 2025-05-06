@@ -1,6 +1,7 @@
 package com.github.dactiv.framework.fadada.domain.body.task;
 
 import com.github.dactiv.framework.fadada.domain.metadata.task.SignTaskActorMetadata;
+import com.github.dactiv.framework.fadada.enumerate.SignTaskStatus;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -13,7 +14,7 @@ public class SignTaskResponseBody implements Serializable {
     private String signTaskId;
     private String transReferenceId;
     private String signTaskSubject;
-    private String signTaskStatus;
+    private SignTaskStatus signTaskStatus;
     private String initiatorName;
     private String initiatorMemberId;
     private String initiatorMemberName;
@@ -66,11 +67,11 @@ public class SignTaskResponseBody implements Serializable {
         this.signTaskSubject = signTaskSubject;
     }
 
-    public String getSignTaskStatus() {
+    public SignTaskStatus getSignTaskStatus() {
         return signTaskStatus;
     }
 
-    public void setSignTaskStatus(String signTaskStatus) {
+    public void setSignTaskStatus(SignTaskStatus signTaskStatus) {
         this.signTaskStatus = signTaskStatus;
     }
 

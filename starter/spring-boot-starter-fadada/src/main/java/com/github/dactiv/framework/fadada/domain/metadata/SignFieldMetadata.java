@@ -12,7 +12,6 @@ public class SignFieldMetadata implements Serializable {
     private String fieldName;
     private Long sealId;
     private Boolean moveable;
-    private String createSerialNo;
 
     public SignFieldMetadata() {
     }
@@ -57,11 +56,4 @@ public class SignFieldMetadata implements Serializable {
         this.sealId = sealId;
     }
 
-    public String getCreateSerialNo() {
-        return this.createSerialNo;
-    }
-
-    public void setCreateSerialNo(String createSerialNo) {
-        this.createSerialNo = createSerialNo;
-    }
 }

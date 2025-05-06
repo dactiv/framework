@@ -23,9 +23,9 @@ public class UserServiceTest {
     @Test
     public void testUnbindUser() {
         OpenUserIdRequestMetdata userId = new OpenUserIdRequestMetdata("84a44f32ed614822bab88292993161b4");
-        GetUserIdentityResponseBody body = userService.getUserIdentity(userId);
+        //GetUserIdentityResponseBody body = userService.getUserIdentity(userId);
         //ClientUserIdRequestMetadata requestBody = new ClientUserIdRequestMetadata("CONSOLE:60");
-        //userService.unbind(userId);
+        userService.unbind(userId);
         //GetUserResponseBody body = userService.getUser(requestBody);
     }
 

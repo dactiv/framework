@@ -8,6 +8,7 @@ import com.github.dactiv.framework.fadada.config.FadadaConfig;
 import com.github.dactiv.framework.fadada.domain.body.task.*;
 import com.github.dactiv.framework.fadada.domain.metadata.task.OpenIdMetadata;
 import com.github.dactiv.framework.fadada.domain.metadata.task.SignTaskFilterMetadata;
+import com.github.dactiv.framework.fadada.domain.metadata.task.SignTaskIdMetadata;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
@@ -44,6 +45,26 @@ public class SignTaskService extends FadadaBasicService {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
         SignTaskPageResponseBody responseBody = executeApi("/sign-task/owner/get-list", authService.getCacheAccessToken().getToken(), param, SignTaskPageResponseBody.class);
         return new TotalPage<>(pageRequest, responseBody.getSignTasks(), responseBody.getTotalCount());
+    }
+
+    public SignTaskDetailResponseBody getSignTask(SignTaskIdMetadata signTaskId) {
+        Map<String, Object> param = Casts.convertValue(signTaskId, Casts.MAP_TYPE_REFERENCE);
+        return executeApi("/sign-task/app/get-detail", authService.getCacheAccessToken().getToken(), param, SignTaskDetailResponseBody.class);
+    }
+
+    public void cancelSignTask(SignTaskIdMetadata signTaskId) {
+        Map<String, Object> param = Casts.convertValue(signTaskId, Casts.MAP_TYPE_REFERENCE);
+        executeApi("/sign-task/cancel", authService.getCacheAccessToken().getToken(), param, Void.class);
+    }
+
+    public void deleteSignTask(SignTaskIdMetadata signTaskId) {
+        Map<String, Object> param = Casts.convertValue(signTaskId, Casts.MAP_TYPE_REFERENCE);
+        executeApi("/sign-task/delete", authService.getCacheAccessToken().getToken(), param, Void.class);
+    }
+
+    public void extensionSignTask(ExtensionSignTaskRequestBody body) {
+        Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
+        executeApi("/sign-task/extension", authService.getCacheAccessToken().getToken(), param, Void.class);
     }
 
 }
