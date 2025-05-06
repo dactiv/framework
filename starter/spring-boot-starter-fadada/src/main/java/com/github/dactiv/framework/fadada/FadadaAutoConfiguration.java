@@ -2,6 +2,7 @@ package com.github.dactiv.framework.fadada;
 
 import com.github.dactiv.framework.fadada.config.FadadaConfig;
 import com.github.dactiv.framework.fadada.config.PersonAuthConfig;
+import com.github.dactiv.framework.fadada.config.SignTaskConfig;
 import com.github.dactiv.framework.fadada.service.*;
 import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -11,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-@EnableConfigurationProperties({FadadaConfig.class, PersonAuthConfig.class})
+@EnableConfigurationProperties({FadadaConfig.class, PersonAuthConfig.class, SignTaskConfig.class})
 public class FadadaAutoConfiguration {
 
     @Bean
@@ -25,8 +26,8 @@ public class FadadaAutoConfiguration {
     }
 
     @Bean
-    public SignTaskService fadadaSignTaskService(FadadaConfig fadadaConfig, AuthService authService, RestTemplate restTemplate) {
-        return new SignTaskService(fadadaConfig, authService, restTemplate);
+    public SignTaskService fadadaSignTaskService(FadadaConfig fadadaConfig, SignTaskConfig signTaskConfig, AuthService authService, RestTemplate restTemplate) {
+        return new SignTaskService(fadadaConfig, signTaskConfig, authService, restTemplate);
     }
 
     @Bean

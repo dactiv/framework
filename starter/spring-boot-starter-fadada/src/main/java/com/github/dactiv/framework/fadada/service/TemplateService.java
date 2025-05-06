@@ -104,4 +104,9 @@ public class TemplateService extends FadadaBasicService {
         executeApi("/sign-template/set-status", authService.getCacheAccessToken().getToken(), param, Void.class);
     }
 
+    public Map<String, Object> getSignTemplateDetail(SignTemplateDetailRequestBody body) {
+        Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
+        return executeApi("/sign-template/get-detail", authService.getCacheAccessToken().getToken(), param, Map.class);
+    }
+
 }

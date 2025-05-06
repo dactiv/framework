@@ -39,9 +39,6 @@ public class SignTaskServiceTest {
         body.setSignTaskSubject("签署任务模板发起V5.1签署任务-个人1677138236");
         body.setInitiator(OpenIdMetadata.getInstance(OpenIdType.CORP.getValue(), signTaskService.getFadadaConfig().getOpenCorpId()));
         body.setSignTemplateId("1745985574854194173");
-        body.setExpiresTime(String.valueOf(Date.from(LocalDateTime.now().plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant()).getTime()));
-        body.setAutoStart(true);
-        body.setAutoFillFinalize(true);
         body.setTransReferenceId(UUID.randomUUID().toString().replaceAll("-",""));
 
         AddTaskActorMetadata addTaskActor1 = new AddTaskActorMetadata();
@@ -49,7 +46,7 @@ public class SignTaskServiceTest {
         actor1.setActorId("甲方");
         actor1.setActorType(OpenIdType.PERSON.getValue());
         actor1.setActorName("陈小菠");
-        actor1.setActorOpenId("784bf53e5f864aad89e363eaa0dea3a5");
+        actor1.setActorOpenId("a188a8554ae547feaf5ec32470ba3c4b");
         actor1.setPermissions(List.of("sign"));
         addTaskActor1.setActor(actor1);
 
@@ -57,8 +54,8 @@ public class SignTaskServiceTest {
         ActorMetadata actor2 = new ActorMetadata();
         actor2.setActorId("乙方");
         actor2.setActorType(OpenIdType.PERSON.getValue());
-        actor2.setActorName("李晚秋");
-        actor2.setActorOpenId("4d95bd403fb8437aa424ee4cfbff2666");
+        actor2.setActorName("黄若鹏");
+        actor2.setActorOpenId("d204597801424f0092b02cf9493dae0b");
         actor2.setPermissions(List.of("sign"));
         addTaskActor2.setActor(actor2);
         //actor.setActorOpenId("777cc772b4db4b638a42cb15bb296981");

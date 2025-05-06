@@ -5,24 +5,48 @@ import com.github.dactiv.framework.commons.page.Page;
 import com.github.dactiv.framework.commons.page.PageRequest;
 import com.github.dactiv.framework.commons.page.TotalPage;
 import com.github.dactiv.framework.fadada.config.FadadaConfig;
+import com.github.dactiv.framework.fadada.config.SignTaskConfig;
 import com.github.dactiv.framework.fadada.domain.body.task.*;
 import com.github.dactiv.framework.fadada.domain.metadata.task.OpenIdMetadata;
 import com.github.dactiv.framework.fadada.domain.metadata.task.SignTaskFilterMetadata;
 import com.github.dactiv.framework.fadada.domain.metadata.task.SignTaskIdMetadata;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 public class SignTaskService extends FadadaBasicService {
 
     private final AuthService authService;
 
-    public SignTaskService(FadadaConfig fadadaConfig, AuthService authService, RestTemplate restTemplate) {
+    private final SignTaskConfig signTaskConfig;
+
+    public SignTaskService(FadadaConfig fadadaConfig, SignTaskConfig signTaskConfig, AuthService authService, RestTemplate restTemplate) {
         super(fadadaConfig, restTemplate);
         this.authService = authService;
+        this.signTaskConfig = signTaskConfig;
     }
 
     public CreateSignTaskResponseBody createSignTaskWithTemplate(CreateSignTaskWithTemplateRequestBody body) {
+        if (StringUtils.isEmpty(body.getExpiresTime()) && Objects.nonNull(signTaskConfig.getExpiresTime())) {
+            LocalDateTime expiresTime = LocalDateTime
+                    .now()
+                    .plus(signTaskConfig.getExpiresTime().getValue(), signTaskConfig.getExpiresTime().getUnit().toChronoUnit());
+            body.setExpiresTime(String.valueOf(Date.from(expiresTime.atZone(ZoneId.systemDefault()).toInstant()).getTime()));
+        }
+
+        if (Objects.isNull(body.getAutoStart())) {
+            body.setAutoStart(signTaskConfig.getAutoStart());
+        }
+
+        if (Objects.isNull(body.getAutoFillFinalize())) {
+            body.setAutoFillFinalize(signTaskConfig.getAutoStart());
+        }
+
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
         return executeApi("/sign-task/create-with-template", authService.getCacheAccessToken().getToken(), param, CreateSignTaskResponseBody.class);
     }

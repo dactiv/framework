@@ -22,7 +22,7 @@ public class ActorMetadata implements Serializable {
     private String certNoForMatch;
     private String accountName;
     private Boolean accountEditable;
-    private NotificationMetadata notification;
+    private ActorNotificationMetadata notification;
     private Boolean sendNotification;
     private List<String> notifyType;
     private String notifyAddress;
@@ -136,11 +136,11 @@ public class ActorMetadata implements Serializable {
         this.certNoForMatch = certNoForMatch;
     }
 
-    public NotificationMetadata getNotification() {
+    public ActorNotificationMetadata getNotification() {
         return this.notification;
     }
 
-    public void setNotification(NotificationMetadata notification) {
+    public void setNotification(ActorNotificationMetadata notification) {
         this.notification = notification;
     }
 
