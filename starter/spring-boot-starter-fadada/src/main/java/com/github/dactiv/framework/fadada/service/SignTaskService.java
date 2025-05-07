@@ -47,6 +47,10 @@ public class SignTaskService extends FadadaBasicService {
             body.setAutoFillFinalize(signTaskConfig.getAutoStart());
         }
 
+        if (StringUtils.isEmpty(body.getCallbackUrl())) {
+            body.setCallbackUrl(signTaskConfig.getCallbackUrl());
+        }
+
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
         return executeApi("/sign-task/create-with-template", authService.getCacheAccessToken().getToken(), param, CreateSignTaskResponseBody.class);
     }

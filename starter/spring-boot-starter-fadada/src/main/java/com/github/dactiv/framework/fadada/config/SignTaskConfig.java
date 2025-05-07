@@ -20,6 +20,8 @@ public class SignTaskConfig implements Serializable {
 
     private Boolean autoFillFinalize = true;
 
+    private String callbackUrl;
+
     public SignTaskConfig() {
     }
 
@@ -45,5 +47,13 @@ public class SignTaskConfig implements Serializable {
 
     public void setExpiresTime(TimeProperties expiresTime) {
         this.expiresTime = expiresTime;
+    }
+
+    public String getCallbackUrl() {
+        return callbackUrl;
+    }
+
+    public void setCallbackUrl(String callbackUrl) {
+        this.callbackUrl = callbackUrl;
     }
 }
