@@ -43,7 +43,7 @@ public class FadadaBasicService {
 
         HttpHeaders handler = new HttpHeaders();
 
-        handler.add(FadadaConfig.DEFAULT_FASC_APP_ID_HEADER_NAME, fadadaConfig.getSecret().getSecretId());
+        handler.add(FadadaConfig.DEFAULT_FASC_APP_ID_HEADER_NAME, fadadaConfig.getAccessToken().getSecretId());
         handler.add(FadadaConfig.DEFAULT_FASC_SIGN_TYPE_HEADER_NAME, "HMAC-SHA256");
         handler.add(FadadaConfig.DEFAULT_FASC_NONCE_HEADER_NAME, UUID.randomUUID().toString().replaceAll(Casts.NEGATIVE, StringUtils.EMPTY));
         handler.add(FadadaConfig.DEFAULT_FASC_API_SUBVERSION_HEADER_NAME, "5.1");
@@ -132,7 +132,7 @@ public class FadadaBasicService {
     public String generateSignString(MultiValueMap<String, String> sortedMap, String timestamp) {
         String paramString = Casts.castRequestBodyMapToString(sortedMap);
         String signText = new Hash(HashAlgorithmMode.SHA256.getName(), paramString, null, -1).getHex().toLowerCase();
-        byte[] secretSigning = hmac256(fadadaConfig.getSecret().getSecretKey().getBytes(StandardCharsets.UTF_8),timestamp);
+        byte[] secretSigning = hmac256(fadadaConfig.getAccessToken().getSecretKey().getBytes(StandardCharsets.UTF_8),timestamp);
         return new SimpleByteSource(hmac256(secretSigning, signText)).getHex();
     }
 

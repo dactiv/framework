@@ -1,7 +1,6 @@
 package com.github.dactiv.framework.fadada.config;
 
 import com.github.dactiv.framework.commons.CacheProperties;
-import com.github.dactiv.framework.commons.domain.metadata.CloudSecretMetadata;
 import com.github.dactiv.framework.commons.domain.metadata.RefreshAccessTokenMetadata;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -32,15 +31,13 @@ public class FadadaConfig {
 
     public static final String DEFAULT_BIZ_CONTENT_HEADER_NAME = "bizContent";
 
-    private CloudSecretMetadata secret = new CloudSecretMetadata();
-
     private String clientCorpId;
 
     private String openCorpId;
 
     private String baseUrl;
 
-    private RefreshAccessTokenMetadata refreshAccessToken = new RefreshAccessTokenMetadata(CacheProperties.of("dactiv:fadada:access-token"));
+    private RefreshAccessTokenMetadata accessToken = new RefreshAccessTokenMetadata(CacheProperties.of("dactiv:fadada:access-token"));
 
     private String redirectUrl;
 
@@ -49,14 +46,6 @@ public class FadadaConfig {
     private String faceAuthMode = "tencent";
 
     public FadadaConfig() {
-    }
-
-    public CloudSecretMetadata getSecret() {
-        return secret;
-    }
-
-    public void setSecret(CloudSecretMetadata secret) {
-        this.secret = secret;
     }
 
     public String getClientCorpId() {
@@ -83,12 +72,12 @@ public class FadadaConfig {
         this.baseUrl = baseUrl;
     }
 
-    public RefreshAccessTokenMetadata getRefreshAccessToken() {
-        return refreshAccessToken;
+    public RefreshAccessTokenMetadata getAccessToken() {
+        return accessToken;
     }
 
-    public void setRefreshAccessToken(RefreshAccessTokenMetadata refreshAccessToken) {
-        this.refreshAccessToken = refreshAccessToken;
+    public void setAccessToken(RefreshAccessTokenMetadata accessToken) {
+        this.accessToken = accessToken;
     }
 
     public String getRedirectUrl() {

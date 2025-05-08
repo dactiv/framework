@@ -21,11 +21,11 @@ public class DocService extends FadadaBasicService {
 
     public GetUploadUrlResponseBody getUploadUrl(GetUploadUrlRequestBody body) {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        return executeApi("/file/get-upload-url", authService.getCacheAccessToken().getToken(), param, GetUploadUrlResponseBody.class);
+        return executeApi("/file/get-upload-url", authService.getAccessTokenIfCacheNull().getToken(), param, GetUploadUrlResponseBody.class);
     }
 
     public FileProcessResponseBody processFile(FileProcessRequestBody body) {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        return executeApi("/file/process", authService.getCacheAccessToken().getToken(), param, FileProcessResponseBody.class);
+        return executeApi("/file/process", authService.getAccessTokenIfCacheNull().getToken(), param, FileProcessResponseBody.class);
     }
 }

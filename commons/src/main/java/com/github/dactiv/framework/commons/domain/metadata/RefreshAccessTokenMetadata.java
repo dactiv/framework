@@ -19,19 +19,19 @@ public class RefreshAccessTokenMetadata extends CloudSecretMetadata {
     /**
      * 访问 token 缓存配置
      */
-    private CacheProperties accessTokenCache;
+    private CacheProperties cache;
 
     public RefreshAccessTokenMetadata() {
     }
 
-    public RefreshAccessTokenMetadata(CacheProperties accessTokenCache) {
-        this.accessTokenCache = accessTokenCache;
+    public RefreshAccessTokenMetadata(CacheProperties cache) {
+        this.cache = cache;
     }
 
     public RefreshAccessTokenMetadata(TimeProperties refreshAccessTokenLeadTime,
-                                      CacheProperties accessTokenCache) {
+                                      CacheProperties cache) {
         this.refreshAccessTokenLeadTime = refreshAccessTokenLeadTime;
-        this.accessTokenCache = accessTokenCache;
+        this.cache = cache;
     }
 
     public TimeProperties getRefreshAccessTokenLeadTime() {
@@ -42,11 +42,11 @@ public class RefreshAccessTokenMetadata extends CloudSecretMetadata {
         this.refreshAccessTokenLeadTime = refreshAccessTokenLeadTime;
     }
 
-    public CacheProperties getAccessTokenCache() {
-        return accessTokenCache;
+    public CacheProperties getCache() {
+        return cache;
     }
 
-    public void setAccessTokenCache(CacheProperties accessTokenCache) {
-        this.accessTokenCache = accessTokenCache;
+    public void setCache(CacheProperties cache) {
+        this.cache = cache;
     }
 }

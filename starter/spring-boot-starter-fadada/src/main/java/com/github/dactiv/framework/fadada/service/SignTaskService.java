@@ -52,12 +52,12 @@ public class SignTaskService extends FadadaBasicService {
         }
 
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        return executeApi("/sign-task/create-with-template", authService.getCacheAccessToken().getToken(), param, CreateSignTaskResponseBody.class);
+        return executeApi("/sign-task/create-with-template", authService.getAccessTokenIfCacheNull().getToken(), param, CreateSignTaskResponseBody.class);
     }
 
     public SignTaskActorGetUrlResponseBody getSignTaskActorUrl(GetSignTaskActorUrlRequestBody body) {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        return executeApi("/sign-task/actor/get-url", authService.getCacheAccessToken().getToken(), param, SignTaskActorGetUrlResponseBody.class);
+        return executeApi("/sign-task/actor/get-url", authService.getAccessTokenIfCacheNull().getToken(), param, SignTaskActorGetUrlResponseBody.class);
     }
 
     public Page<SignTaskResponseBody> searchSignTaskPage(PageRequest pageRequest,
@@ -71,28 +71,28 @@ public class SignTaskService extends FadadaBasicService {
         body.setListPageNo(pageRequest.getNumber());
         body.setListPageSize(pageRequest.getSize());
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        SignTaskPageResponseBody responseBody = executeApi("/sign-task/owner/get-list", authService.getCacheAccessToken().getToken(), param, SignTaskPageResponseBody.class);
+        SignTaskPageResponseBody responseBody = executeApi("/sign-task/owner/get-list", authService.getAccessTokenIfCacheNull().getToken(), param, SignTaskPageResponseBody.class);
         return new TotalPage<>(pageRequest, responseBody.getSignTasks(), responseBody.getTotalCount());
     }
 
     public SignTaskDetailResponseBody getSignTask(SignTaskIdMetadata signTaskId) {
         Map<String, Object> param = Casts.convertValue(signTaskId, Casts.MAP_TYPE_REFERENCE);
-        return executeApi("/sign-task/app/get-detail", authService.getCacheAccessToken().getToken(), param, SignTaskDetailResponseBody.class);
+        return executeApi("/sign-task/app/get-detail", authService.getAccessTokenIfCacheNull().getToken(), param, SignTaskDetailResponseBody.class);
     }
 
     public void cancelSignTask(SignTaskIdMetadata signTaskId) {
         Map<String, Object> param = Casts.convertValue(signTaskId, Casts.MAP_TYPE_REFERENCE);
-        executeApi("/sign-task/cancel", authService.getCacheAccessToken().getToken(), param, Void.class);
+        executeApi("/sign-task/cancel", authService.getAccessTokenIfCacheNull().getToken(), param, Void.class);
     }
 
     public void deleteSignTask(SignTaskIdMetadata signTaskId) {
         Map<String, Object> param = Casts.convertValue(signTaskId, Casts.MAP_TYPE_REFERENCE);
-        executeApi("/sign-task/delete", authService.getCacheAccessToken().getToken(), param, Void.class);
+        executeApi("/sign-task/delete", authService.getAccessTokenIfCacheNull().getToken(), param, Void.class);
     }
 
     public void extensionSignTask(ExtensionSignTaskRequestBody body) {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        executeApi("/sign-task/extension", authService.getCacheAccessToken().getToken(), param, Void.class);
+        executeApi("/sign-task/extension", authService.getAccessTokenIfCacheNull().getToken(), param, Void.class);
     }
 
 }

@@ -26,34 +26,34 @@ public class TemplateService extends FadadaBasicService {
 
     public GetTemplateEditUrlResponseBody getTemplateEditUrl(GetTemplateEditUrlRequestBody body) {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        return executeApi("/template/edit/get-url", authService.getCacheAccessToken().getToken(), param, GetTemplateEditUrlResponseBody.class);
+        return executeApi("/template/edit/get-url", authService.getAccessTokenIfCacheNull().getToken(), param, GetTemplateEditUrlResponseBody.class);
     }
 
     public GetTemplateCreateUrlResponseBody getTemplateCreateUrl(GetTemplateCreateUrlRequestBody body) {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        return executeApi("/template/create/get-url", authService.getCacheAccessToken().getToken(), param, GetTemplateCreateUrlResponseBody.class);
+        return executeApi("/template/create/get-url", authService.getAccessTokenIfCacheNull().getToken(), param, GetTemplateCreateUrlResponseBody.class);
     }
 
     public GetTemplatePreviewUrlResponseBody getTemplatePreviewUrl(GetTemplatePreviewUrlRequestBody body) {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        return executeApi("/template/preview/get-url", authService.getCacheAccessToken().getToken(), param, GetTemplatePreviewUrlResponseBody.class);
+        return executeApi("/template/preview/get-url", authService.getAccessTokenIfCacheNull().getToken(), param, GetTemplatePreviewUrlResponseBody.class);
     }
 
     // ------------------------------------------------ 文件模版管理 ------------------------------------------------ //
 
     public CreateDocTemplateResponseBody createDocTemplate(CreateDocTemplateRequestBody body) {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        return executeApi("/doc-template/create", authService.getCacheAccessToken().getToken(), param, CreateDocTemplateResponseBody.class);
+        return executeApi("/doc-template/create", authService.getAccessTokenIfCacheNull().getToken(), param, CreateDocTemplateResponseBody.class);
     }
 
     public CopyCreateDocTemplateResponseBody copyDocTemplate(CopyCreateDocTemplateRequestBody body) {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        return executeApi("/doc-template/copy-create", authService.getCacheAccessToken().getToken(), param, CopyCreateDocTemplateResponseBody.class);
+        return executeApi("/doc-template/copy-create", authService.getAccessTokenIfCacheNull().getToken(), param, CopyCreateDocTemplateResponseBody.class);
     }
 
     public void deleteDocTemplate(DeleteDocTemplateRequestBody body) {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        executeApi(" /doc-template/delete", authService.getCacheAccessToken().getToken(), param, Void.class);
+        executeApi(" /doc-template/delete", authService.getAccessTokenIfCacheNull().getToken(), param, Void.class);
     }
 
     public Page<DocTemplateResponseBody> searchDocTemplatePage(PageRequest pageRequest,
@@ -64,14 +64,14 @@ public class TemplateService extends FadadaBasicService {
         body.setListPageSize(pageRequest.getSize());
 
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        DocTemplatePageResponseBody response = executeApi("/doc-template/get-list", authService.getCacheAccessToken().getToken(), param, DocTemplatePageResponseBody.class);
+        DocTemplatePageResponseBody response = executeApi("/doc-template/get-list", authService.getAccessTokenIfCacheNull().getToken(), param, DocTemplatePageResponseBody.class);
 
         return new TotalPage<>(pageRequest, response.getDocTemplates(), response.getTotalCount());
     }
 
     public void setDocTemplateStatus(SetDocTemplateStatusRequestBody body) {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        executeApi("/doc-template/set-status", authService.getCacheAccessToken().getToken(), param, Void.class);
+        executeApi("/doc-template/set-status", authService.getAccessTokenIfCacheNull().getToken(), param, Void.class);
     }
 
     // ------------------------------------------------ 签署模版管理 ------------------------------------------------ //
@@ -84,29 +84,29 @@ public class TemplateService extends FadadaBasicService {
         body.setListPageSize(pageRequest.getSize());
 
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        SignTemplatePageResponseBody response = executeApi("/sign-template/get-list", authService.getCacheAccessToken().getToken(), param, SignTemplatePageResponseBody.class);
+        SignTemplatePageResponseBody response = executeApi("/sign-template/get-list", authService.getAccessTokenIfCacheNull().getToken(), param, SignTemplatePageResponseBody.class);
 
         return new TotalPage<>(pageRequest, response.getSignTemplates(), response.getTotalCount());
     }
 
     public void deleteSignTemplate(DeleteSignTemplateRequestBody body) {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        executeApi("/sign-template/delete", authService.getCacheAccessToken().getToken(), param, Void.class);
+        executeApi("/sign-template/delete", authService.getAccessTokenIfCacheNull().getToken(), param, Void.class);
     }
 
     public CopyCreateSignTemplateResponseBody copySignTemplate(CopyCreateSignTemplateRequestBody body) {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        return executeApi("/sign-template/copy-create", authService.getCacheAccessToken().getToken(), param, CopyCreateSignTemplateResponseBody.class);
+        return executeApi("/sign-template/copy-create", authService.getAccessTokenIfCacheNull().getToken(), param, CopyCreateSignTemplateResponseBody.class);
     }
 
     public void setSignTemplateStatus(SetSignTemplateStatusRequestBody body) {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        executeApi("/sign-template/set-status", authService.getCacheAccessToken().getToken(), param, Void.class);
+        executeApi("/sign-template/set-status", authService.getAccessTokenIfCacheNull().getToken(), param, Void.class);
     }
 
     public Map<String, Object> getSignTemplateDetail(SignTemplateDetailRequestBody body) {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        return executeApi("/sign-template/get-detail", authService.getCacheAccessToken().getToken(), param, Map.class);
+        return executeApi("/sign-template/get-detail", authService.getAccessTokenIfCacheNull().getToken(), param, Map.class);
     }
 
 }

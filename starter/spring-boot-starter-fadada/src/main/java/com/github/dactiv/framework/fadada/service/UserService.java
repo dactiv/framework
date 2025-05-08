@@ -66,32 +66,32 @@ public class UserService extends FadadaBasicService {
             body.setRedirectUrl(personAuthConfig.getRedirectUrl());
         }
 
-        return executeApi("/user/get-auth-url", authService.getCacheAccessToken().getToken(), param, AuthUrlResponseBody.class);
+        return executeApi("/user/get-auth-url", authService.getAccessTokenIfCacheNull().getToken(), param, AuthUrlResponseBody.class);
     }
 
     public GetUserIdentityResponseBody getUserIdentity(OpenUserIdRequestMetdata body) {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        return executeApi("/user/get-identity-info", authService.getCacheAccessToken().getToken(), param, GetUserIdentityResponseBody.class);
+        return executeApi("/user/get-identity-info", authService.getAccessTokenIfCacheNull().getToken(), param, GetUserIdentityResponseBody.class);
     }
 
     public void disable(OpenUserIdRequestMetdata body)  {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        executeApi("/user/disable", authService.getCacheAccessToken().getToken(), param, Void.class);
+        executeApi("/user/disable", authService.getAccessTokenIfCacheNull().getToken(), param, Void.class);
     }
 
     public void enable(OpenUserIdRequestMetdata body)  {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        executeApi("/user/enable", authService.getCacheAccessToken().getToken(), param, Void.class);
+        executeApi("/user/enable", authService.getAccessTokenIfCacheNull().getToken(), param, Void.class);
     }
 
     public GetUserResponseBody getUser(OpenUserIdRequestMetdata body)  {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        return executeApi("/user/get", authService.getCacheAccessToken().getToken(), param, GetUserResponseBody.class);
+        return executeApi("/user/get", authService.getAccessTokenIfCacheNull().getToken(), param, GetUserResponseBody.class);
     }
 
     public void unbind(OpenUserIdRequestMetdata body)  {
         Map<String, Object> param = Casts.convertValue(body, Casts.MAP_TYPE_REFERENCE);
-        executeApi("/user/unbind", authService.getCacheAccessToken().getToken(), param, Void.class);
+        executeApi("/user/unbind", authService.getAccessTokenIfCacheNull().getToken(), param, Void.class);
     }
 
     public PersonAuthConfig getPersonAuthConfig() {

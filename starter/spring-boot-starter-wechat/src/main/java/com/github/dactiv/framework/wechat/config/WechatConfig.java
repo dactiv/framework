@@ -1,6 +1,5 @@
 package com.github.dactiv.framework.wechat.config;
 
-import com.github.dactiv.framework.commons.domain.metadata.RefreshAccessTokenMetadata;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -19,19 +18,7 @@ public class WechatConfig implements Serializable {
     @Serial
     private static final long serialVersionUID = -2546539338401618009L;
 
-    public static final String DEFAULT_PHONE_NUMBER_CODE_PARAM_NAME = "phoneNumberCode";
-
     public static final String DEFAULT_QRCODE_TICKET_PARAM_NAME = "ticket";
-
-    /**
-     * 公众号账户
-     */
-    private RefreshAccessTokenMetadata official = new RefreshAccessTokenMetadata();
-
-    /**
-     * 手机号码参数名称
-     */
-    private String phoneNumberCodeParamName = DEFAULT_PHONE_NUMBER_CODE_PARAM_NAME;
 
     /**
      * 请求状态字段名称
@@ -53,27 +40,7 @@ public class WechatConfig implements Serializable {
      */
     private String successAuthenticationBuildParamName = "wechatCode";
 
-    public String getOfficialQrcodeUrl(String ticket) {
-        return "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + ticket;
-    }
-
     public WechatConfig() {
-    }
-
-    public RefreshAccessTokenMetadata getOfficial() {
-        return official;
-    }
-
-    public void setOfficial(RefreshAccessTokenMetadata official) {
-        this.official = official;
-    }
-
-    public String getPhoneNumberCodeParamName() {
-        return phoneNumberCodeParamName;
-    }
-
-    public void setPhoneNumberCodeParamName(String phoneNumberCodeParamName) {
-        this.phoneNumberCodeParamName = phoneNumberCodeParamName;
     }
 
     public String getStatusCodeFieldName() {

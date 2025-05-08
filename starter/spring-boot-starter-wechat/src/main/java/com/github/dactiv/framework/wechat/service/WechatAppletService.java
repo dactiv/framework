@@ -19,7 +19,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 import java.text.MessageFormat;
 import java.util.LinkedHashMap;
@@ -34,9 +33,8 @@ public class WechatAppletService extends WechatBasicService implements Initializ
 
     public WechatAppletService(AppletConfig appletConfig,
                                WechatConfig wechatConfig,
-                               RestTemplate restTemplate,
                                ConcurrentInterceptor concurrentInterceptor) {
-        super(wechatConfig, restTemplate, concurrentInterceptor);
+        super(wechatConfig, concurrentInterceptor);
         this.appletConfig = appletConfig;
     }
 
@@ -66,7 +64,7 @@ public class WechatAppletService extends WechatBasicService implements Initializ
      * @return 微信手机号码元数据信息
      */
     public PhoneInfoMetadata getPhoneNumber(String code) {
-        AccessToken token = getCacheAccessToken();
+        AccessToken token = getAccessTokenIfCacheNull();
         Map<String, String> body = new LinkedHashMap<>();
         body.put("code", code);
         ResponseEntity<Map<String, Object>> result = getRestTemplate().exchange(

@@ -4,22 +4,27 @@ import com.github.dactiv.framework.fadada.config.FadadaConfig;
 import com.github.dactiv.framework.fadada.config.PersonAuthConfig;
 import com.github.dactiv.framework.fadada.config.SignTaskConfig;
 import com.github.dactiv.framework.fadada.service.*;
-import org.redisson.api.RedissonClient;
+import com.github.dactiv.framework.idempotent.advisor.concurrent.ConcurrentInterceptor;
+import com.github.dactiv.framework.idempotent.config.IdempotentAutoConfiguration;
+import com.github.dactiv.framework.spring.web.SpringWebMvcAutoConfiguration;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-@ConditionalOnProperty(prefix = "dactiv.fadada.enabled", value = "enabled", matchIfMissing = true)
+@AutoConfigureAfter({SpringWebMvcAutoConfiguration.class, IdempotentAutoConfiguration.class})
+@ConditionalOnProperty(prefix = "dactiv.fadada", value = "enabled", matchIfMissing = true)
 @EnableConfigurationProperties({FadadaConfig.class, PersonAuthConfig.class, SignTaskConfig.class})
 public class FadadaAutoConfiguration {
 
     @Bean
-    public AuthService fadadaAuthService(FadadaConfig fadadaConfig, RedissonClient redissonClient, RestTemplate restTemplate) {
-        return new AuthService(fadadaConfig, redissonClient, restTemplate);
+    public AuthService fadadaAuthService(FadadaConfig fadadaConfig, ConcurrentInterceptor concurrentInterceptor, RestTemplate restTemplate) {
+        return new AuthService(fadadaConfig, concurrentInterceptor, restTemplate);
     }
 
     @Bean
@@ -44,6 +49,7 @@ public class FadadaAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(RestTemplate.class)
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
