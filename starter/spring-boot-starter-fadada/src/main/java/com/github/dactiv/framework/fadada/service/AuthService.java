@@ -1,7 +1,9 @@
 package com.github.dactiv.framework.fadada.service;
 
 import com.github.dactiv.framework.commons.TimeProperties;
+import com.github.dactiv.framework.commons.annotation.Time;
 import com.github.dactiv.framework.commons.domain.AccessToken;
+import com.github.dactiv.framework.commons.domain.metadata.RefreshAccessTokenMetadata;
 import com.github.dactiv.framework.fadada.config.FadadaConfig;
 import com.github.dactiv.framework.fadada.domain.body.ResponseBody;
 import com.github.dactiv.framework.idempotent.annotation.Concurrent;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
@@ -29,6 +32,7 @@ public class AuthService extends FadadaBasicService implements InitializingBean 
         this.redissonClient = redissonClient;
     }
 
+    @Async
     @Override
     public void afterPropertiesSet() throws Exception {
         AccessToken accessToken = getCacheAccessToken();
@@ -36,7 +40,7 @@ public class AuthService extends FadadaBasicService implements InitializingBean 
     }
 
     public AccessToken getCacheAccessToken() {
-        RBucket<AccessToken> bucket = redissonClient.getBucket(getFadadaConfig().getAccessToken().getName());
+        RBucket<AccessToken> bucket = redissonClient.getBucket(getFadadaConfig().getRefreshAccessToken().getAccessTokenCache().getName());
         AccessToken accessToken = bucket.get();
         if (Objects.isNull(accessToken)) {
             accessToken = refreshAccessToken();
@@ -46,10 +50,15 @@ public class AuthService extends FadadaBasicService implements InitializingBean 
     }
 
     @NacosCronScheduled(cron = "${dactiv.fadada.refresh-access-token-cron:0 0/30 * * * ? }")
-    @Concurrent(value = "dactiv:fadada:refresh-access-token", exception = "刷新法大大 accessToken 出现并发")
+    @Concurrent(value = "dactiv:fadada:refresh-access-token" , waitTime = @Time(value = 8, unit = TimeUnit.SECONDS), leaseTime = @Time(value = 5, unit = TimeUnit.SECONDS), exception = "刷新法大大 accessToken 出现并发")
     public AccessToken refreshAccessToken() {
-        AccessToken token = getAccessToken();
-        RBucket<AccessToken> bucket = redissonClient.getBucket(getFadadaConfig().getAccessToken().getName());
+        RBucket<AccessToken> bucket = redissonClient.getBucket(getFadadaConfig().getRefreshAccessToken().getAccessTokenCache().getName());
+        AccessToken token = bucket.get();
+        RefreshAccessTokenMetadata refreshAccessToken = getFadadaConfig().getRefreshAccessToken();
+        if (Objects.nonNull(token) && System.currentTimeMillis() - token.getCreationTime().getTime() > refreshAccessToken.getRefreshAccessTokenLeadTime().toMillis()) {
+            return token;
+        }
+        token = getAccessToken();
         bucket.set(token);
         bucket.expire(token.getExpiresTime().toDuration());
         return token;

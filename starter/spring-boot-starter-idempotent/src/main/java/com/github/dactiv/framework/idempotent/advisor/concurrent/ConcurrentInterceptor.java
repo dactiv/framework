@@ -428,4 +428,7 @@ public class ConcurrentInterceptor implements MethodInterceptor {
         return lock.tryLock();
     }
 
+    public RedissonClient getRedissonClient() {
+        return redissonClient;
+    }
 }

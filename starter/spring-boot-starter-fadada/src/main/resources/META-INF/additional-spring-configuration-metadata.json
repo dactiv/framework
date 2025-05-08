@@ -10,6 +10,11 @@
       "type": "java.lang.String",
       "description": "刷新访问 token cron 表达式，默认为每 30 分钟刷新一次",
       "defaultValue": "0 0/30 * * * ?"
+    },{
+      "name": "dactiv.fadada.enabled",
+      "type": "java.lang.Boolean",
+      "description": "是否启用法大大服务自动配置",
+      "defaultValue": true
     }
   ]
 }

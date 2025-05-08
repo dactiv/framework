@@ -6,12 +6,14 @@ import com.github.dactiv.framework.fadada.config.SignTaskConfig;
 import com.github.dactiv.framework.fadada.service.*;
 import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
+@ConditionalOnProperty(prefix = "dactiv.fadada.enabled", value = "enabled", matchIfMissing = true)
 @EnableConfigurationProperties({FadadaConfig.class, PersonAuthConfig.class, SignTaskConfig.class})
 public class FadadaAutoConfiguration {
 

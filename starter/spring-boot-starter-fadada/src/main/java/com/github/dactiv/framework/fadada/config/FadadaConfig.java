@@ -2,6 +2,7 @@ package com.github.dactiv.framework.fadada.config;
 
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.domain.metadata.CloudSecretMetadata;
+import com.github.dactiv.framework.commons.domain.metadata.RefreshAccessTokenMetadata;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -39,7 +40,7 @@ public class FadadaConfig {
 
     private String baseUrl;
 
-    private CacheProperties accessToken = CacheProperties.of("dactiv:fadada:access-token");
+    private RefreshAccessTokenMetadata refreshAccessToken = new RefreshAccessTokenMetadata(CacheProperties.of("dactiv:fadada:access-token"));
 
     private String redirectUrl;
 
@@ -82,12 +83,12 @@ public class FadadaConfig {
         this.baseUrl = baseUrl;
     }
 
-    public CacheProperties getAccessToken() {
-        return accessToken;
+    public RefreshAccessTokenMetadata getRefreshAccessToken() {
+        return refreshAccessToken;
     }
 
-    public void setAccessToken(CacheProperties accessToken) {
-        this.accessToken = accessToken;
+    public void setRefreshAccessToken(RefreshAccessTokenMetadata refreshAccessToken) {
+        this.refreshAccessToken = refreshAccessToken;
     }
 
     public String getRedirectUrl() {
