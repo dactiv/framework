@@ -1,19 +1,35 @@
 package com.github.dactiv.framework.fadada.config;
 
 import com.github.dactiv.framework.commons.CacheProperties;
-import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.domain.metadata.CloudSecretMetadata;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.UUID;
 
 @Component
 @ConfigurationProperties("dactiv.fadada")
 public class FadadaConfig {
+
+    public static final String DEFAULT_FASC_GRANT_TYPE_HEADER_NAME = "X-FASC-Grant-Type";
+
+    public static final String DEFAULT_FASC_APP_ID_HEADER_NAME = "X-FASC-App-Id";
+
+    public static final String DEFAULT_FASC_SIGN_TYPE_HEADER_NAME = "X-FASC-Sign-Type";
+
+    public static final String DEFAULT_FASC_NONCE_HEADER_NAME = "X-FASC-Nonce";
+
+    public static final String DEFAULT_FASC_API_SUBVERSION_HEADER_NAME = "X-FASC-Api-SubVersion";
+
+    public static final String DEFAULT_FASC_TIMESTAMP_HEADER_NAME = "X-FASC-Timestamp";
+
+    public static final String DEFAULT_FASC_SIGN_HEADER_NAME = "X-FASC-Sign";
+
+    public static final String DEFAULT_FASC_ACCESS_TOKEN_HEADER_NAME = "X-FASC-AccessToken";
+
+    public static final String DEFAULT_FASC_EVENT_HEADER_NAME = "X-FASC-Event";
+
+    public static final String DEFAULT_BIZ_CONTENT_HEADER_NAME = "bizContent";
 
     private CloudSecretMetadata secret = new CloudSecretMetadata();
 
@@ -97,18 +113,4 @@ public class FadadaConfig {
     public void setFaceAuthMode(String faceAuthMode) {
         this.faceAuthMode = faceAuthMode;
     }
-
-    public HttpHeaders createBasicParam() {
-
-        HttpHeaders handler = new HttpHeaders();
-
-        handler.add("X-FASC-App-Id", secret.getSecretId());
-        handler.add("X-FASC-Sign-Type", "HMAC-SHA256");
-        handler.add("X-FASC-Nonce", UUID.randomUUID().toString().replaceAll(Casts.NEGATIVE, StringUtils.EMPTY));
-        handler.add("X-FASC-Api-SubVersion", "5.1");
-
-        return handler;
-    }
-
-
 }

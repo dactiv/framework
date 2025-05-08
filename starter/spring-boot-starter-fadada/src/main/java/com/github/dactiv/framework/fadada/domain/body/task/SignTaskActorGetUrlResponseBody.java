@@ -1,6 +1,6 @@
 package com.github.dactiv.framework.fadada.domain.body.task;
 
-import com.github.dactiv.framework.fadada.domain.metadata.task.WeChatMiniProgramMetadata;
+import com.github.dactiv.framework.fadada.domain.metadata.task.WechatAppletMetadata;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -11,7 +11,7 @@ public class SignTaskActorGetUrlResponseBody implements Serializable {
 
     private String actorSignTaskUrl;
     private String actorSignTaskEmbedUrl;
-    private WeChatMiniProgramMetadata actorSignTaskMiniAppInfo;
+    private WechatAppletMetadata actorSignTaskMiniAppInfo;
 
     public SignTaskActorGetUrlResponseBody() {
 
@@ -33,11 +33,11 @@ public class SignTaskActorGetUrlResponseBody implements Serializable {
         this.actorSignTaskEmbedUrl = actorSignTaskEmbedUrl;
     }
 
-    public WeChatMiniProgramMetadata getActorSignTaskMiniAppInfo() {
+    public WechatAppletMetadata getActorSignTaskMiniAppInfo() {
         return actorSignTaskMiniAppInfo;
     }
 
-    public void setActorSignTaskMiniAppInfo(WeChatMiniProgramMetadata actorSignTaskMiniAppInfo) {
+    public void setActorSignTaskMiniAppInfo(WechatAppletMetadata actorSignTaskMiniAppInfo) {
         this.actorSignTaskMiniAppInfo = actorSignTaskMiniAppInfo;
     }
 }

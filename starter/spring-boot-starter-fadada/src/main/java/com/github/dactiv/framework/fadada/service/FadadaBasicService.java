@@ -16,6 +16,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -38,15 +39,40 @@ public class FadadaBasicService {
         this.restTemplate = restTemplate;
     }
 
+    public HttpHeaders createBasicParam() {
+
+        HttpHeaders handler = new HttpHeaders();
+
+        handler.add(FadadaConfig.DEFAULT_FASC_APP_ID_HEADER_NAME, fadadaConfig.getSecret().getSecretId());
+        handler.add(FadadaConfig.DEFAULT_FASC_SIGN_TYPE_HEADER_NAME, "HMAC-SHA256");
+        handler.add(FadadaConfig.DEFAULT_FASC_NONCE_HEADER_NAME, UUID.randomUUID().toString().replaceAll(Casts.NEGATIVE, StringUtils.EMPTY));
+        handler.add(FadadaConfig.DEFAULT_FASC_API_SUBVERSION_HEADER_NAME, "5.1");
+
+        return handler;
+    }
+
+    public boolean verifySignature(ServletServerHttpRequest request) {
+        Map<String, String> param = new LinkedHashMap<>();
+        param.put(FadadaConfig.DEFAULT_FASC_APP_ID_HEADER_NAME, request.getHeaders().getFirst(FadadaConfig.DEFAULT_FASC_APP_ID_HEADER_NAME));
+        param.put(FadadaConfig.DEFAULT_FASC_SIGN_TYPE_HEADER_NAME, request.getHeaders().getFirst(FadadaConfig.DEFAULT_FASC_APP_ID_HEADER_NAME));
+        param.put(FadadaConfig.DEFAULT_FASC_TIMESTAMP_HEADER_NAME, request.getHeaders().getFirst(FadadaConfig.DEFAULT_FASC_TIMESTAMP_HEADER_NAME));
+        param.put(FadadaConfig.DEFAULT_FASC_NONCE_HEADER_NAME, request.getHeaders().getFirst(FadadaConfig.DEFAULT_FASC_NONCE_HEADER_NAME));
+        param.put(FadadaConfig.DEFAULT_FASC_EVENT_HEADER_NAME, request.getHeaders().getFirst(FadadaConfig.DEFAULT_FASC_EVENT_HEADER_NAME));
+        param.put(FadadaConfig.DEFAULT_BIZ_CONTENT_HEADER_NAME, request.getServletRequest().getParameter(FadadaConfig.DEFAULT_BIZ_CONTENT_HEADER_NAME));
+
+        String sign = generateSignString(param, request.getHeaders().getFirst(FadadaConfig.DEFAULT_FASC_TIMESTAMP_HEADER_NAME));
+        return sign.equals(request.getHeaders().getFirst(FadadaConfig.DEFAULT_FASC_SIGN_HEADER_NAME));
+    }
+
     protected <T> T executeApi(String url, String accessToken, Map<String, Object> params, Class<T> responseType) {
         String bizContent = SystemException.convertSupplier(() -> Casts.getObjectMapper().writeValueAsString(params));
-        HttpHeaders headers = fadadaConfig.createBasicParam();
-        headers.add("X-FASC-AccessToken", accessToken);
-        headers.add("bizContent", bizContent);
+        HttpHeaders headers = createBasicParam();
+        headers.add(FadadaConfig.DEFAULT_FASC_ACCESS_TOKEN_HEADER_NAME, accessToken);
+        headers.add(FadadaConfig.DEFAULT_BIZ_CONTENT_HEADER_NAME, bizContent);
         sign(headers);
 
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("bizContent", bizContent);
+        body.add(FadadaConfig.DEFAULT_BIZ_CONTENT_HEADER_NAME, bizContent);
 
         ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
                 fadadaConfig.getBaseUrl() + url,
@@ -77,9 +103,9 @@ public class FadadaBasicService {
 
     protected void sign(HttpHeaders headers) {
         String timestamp = String.valueOf(System.currentTimeMillis());
-        headers.add("X-FASC-Timestamp", timestamp);
+        headers.add(FadadaConfig.DEFAULT_FASC_TIMESTAMP_HEADER_NAME, timestamp);
         String sign = generateSignString(headers, timestamp);
-        headers.add("X-FASC-Sign", sign);
+        headers.add(FadadaConfig.DEFAULT_FASC_SIGN_HEADER_NAME, sign);
     }
 
     public String generateSignString(HttpHeaders headers, String timestamp) {

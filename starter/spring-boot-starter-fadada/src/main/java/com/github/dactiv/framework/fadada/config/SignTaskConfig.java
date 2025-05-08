@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
 @Component
-@ConfigurationProperties("dactiv.fadada.auth.sign-task")
+@ConfigurationProperties("dactiv.fadada.sign-task")
 public class SignTaskConfig implements Serializable {
     @Serial
     private static final long serialVersionUID = 771180693570577131L;

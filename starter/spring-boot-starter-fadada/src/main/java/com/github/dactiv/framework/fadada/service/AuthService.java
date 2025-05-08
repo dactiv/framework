@@ -56,8 +56,8 @@ public class AuthService extends FadadaBasicService implements InitializingBean 
     }
 
     public AccessToken getAccessToken() {
-        HttpHeaders headers = getFadadaConfig().createBasicParam();
-        headers.add("X-FASC-Grant-Type", "client_credential");
+        HttpHeaders headers = createBasicParam();
+        headers.add(FadadaConfig.DEFAULT_FASC_GRANT_TYPE_HEADER_NAME, "client_credential");
         sign(headers);
         String url = "/service/get-access-token";
 

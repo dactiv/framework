@@ -3,7 +3,7 @@ package com.github.dactiv.framework.fadada.domain.metadata.task;
 import java.io.Serial;
 import java.io.Serializable;
 
-public class WeChatMiniProgramMetadata implements Serializable {
+public class WechatAppletMetadata implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 6555697068013624057L;
@@ -11,7 +11,7 @@ public class WeChatMiniProgramMetadata implements Serializable {
     private String wxOriginalId;
     private String path;
 
-    public WeChatMiniProgramMetadata() {
+    public WechatAppletMetadata() {
 
     }
 
