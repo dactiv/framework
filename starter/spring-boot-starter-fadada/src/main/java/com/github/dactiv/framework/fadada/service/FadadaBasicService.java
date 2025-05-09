@@ -51,10 +51,10 @@ public class FadadaBasicService {
         return handler;
     }
 
-    public boolean verifySignature(ServletServerHttpRequest request) {
+    public boolean verifyEventCallbackSignature(ServletServerHttpRequest request) {
         Map<String, String> param = new LinkedHashMap<>();
         param.put(FadadaConfig.DEFAULT_FASC_APP_ID_HEADER_NAME, request.getHeaders().getFirst(FadadaConfig.DEFAULT_FASC_APP_ID_HEADER_NAME));
-        param.put(FadadaConfig.DEFAULT_FASC_SIGN_TYPE_HEADER_NAME, request.getHeaders().getFirst(FadadaConfig.DEFAULT_FASC_APP_ID_HEADER_NAME));
+        param.put(FadadaConfig.DEFAULT_FASC_SIGN_TYPE_HEADER_NAME, request.getHeaders().getFirst(FadadaConfig.DEFAULT_FASC_SIGN_TYPE_HEADER_NAME));
         param.put(FadadaConfig.DEFAULT_FASC_TIMESTAMP_HEADER_NAME, request.getHeaders().getFirst(FadadaConfig.DEFAULT_FASC_TIMESTAMP_HEADER_NAME));
         param.put(FadadaConfig.DEFAULT_FASC_NONCE_HEADER_NAME, request.getHeaders().getFirst(FadadaConfig.DEFAULT_FASC_NONCE_HEADER_NAME));
         param.put(FadadaConfig.DEFAULT_FASC_EVENT_HEADER_NAME, request.getHeaders().getFirst(FadadaConfig.DEFAULT_FASC_EVENT_HEADER_NAME));
