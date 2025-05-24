@@ -20,6 +20,8 @@ public class CacheProperties implements Serializable {
      */
     public static final String DEFAULT_SEPARATOR = ":";
 
+    public static final String EXPIRES_TIME_FIELD_NAME = "expiresTime";
+
     /**
      * 缓存名称
      */

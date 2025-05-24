@@ -136,6 +136,7 @@
         <module>parent</module>
         <module>commons</module>
         <module>starter</module>
+        <module>starter/spring-boot-starter-netty-socketio-client</module>
     </modules>
 
 </project>

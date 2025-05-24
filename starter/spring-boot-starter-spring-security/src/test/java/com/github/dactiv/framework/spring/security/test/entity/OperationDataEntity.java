@@ -4,8 +4,13 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.github.dactiv.framework.mybatis.plus.baisc.support.IntegerVersionEntity;
 import com.github.dactiv.framework.security.audit.AuditPrincipal;
 
+import java.io.Serial;
+
 @TableName(value = "tb_operation_data", autoResultMap = true)
 public class OperationDataEntity extends IntegerVersionEntity<Integer> implements AuditPrincipal {
+
+    @Serial
+    private static final long serialVersionUID = 6475237876826796114L;
 
     private String name;
 
