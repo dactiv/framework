@@ -576,36 +576,4 @@ public class SocketClientTemplate implements DisposableBean {
     public void destroy() {
         taskExecutor.destroy();
     }
-
-    public DiscoveryClient getDiscoveryClient() {
-        return discoveryClient;
-    }
-
-    public void setDiscoveryClient(DiscoveryClient discoveryClient) {
-        this.discoveryClient = discoveryClient;
-    }
-
-    public RestTemplate getRestTemplate() {
-        return restTemplate;
-    }
-
-    public void setRestTemplate(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
-
-    public ThreadPoolTaskExecutor getTaskExecutor() {
-        return taskExecutor;
-    }
-
-    public void setTaskExecutor(ThreadPoolTaskExecutor taskExecutor) {
-        this.taskExecutor = taskExecutor;
-    }
-
-    public AuthenticationProperties getProperties() {
-        return properties;
-    }
-
-    public void setProperties(AuthenticationProperties properties) {
-        this.properties = properties;
-    }
 }
