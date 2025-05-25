@@ -20,7 +20,7 @@ public enum ConnectStatus implements NameValueEnum<Integer> {
     /**
      * 已链接
      */
-    Connect("已链接", 30);
+    Connected("已链接", 30);
 
     ConnectStatus(String name, int value) {
         this.name = name;
