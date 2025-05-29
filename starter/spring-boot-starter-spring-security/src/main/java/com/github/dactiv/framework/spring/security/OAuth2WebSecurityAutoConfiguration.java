@@ -21,6 +21,8 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import org.apache.commons.lang3.StringUtils;
+import org.redisson.api.RedissonClient;
+import org.redisson.spring.starter.RedissonAutoConfigurationV2;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -45,7 +47,7 @@ import java.util.stream.Collectors;
 @Configuration
 @AutoConfigureBefore(SpringSecurityAutoConfiguration.class)
 @EnableConfigurationProperties(AuthenticationProperties.class)
-@ConditionalOnClass({OAuth2AuthorizationServerConfigurer.class, SpringSecurityAutoConfiguration.class})
+@ConditionalOnClass(OAuth2AuthorizationServerConfigurer.class)
 @ConditionalOnProperty(prefix = "dactiv.authentication.spring.security.oauth2", value = "enabled", matchIfMissing = true)
 public class OAuth2WebSecurityAutoConfiguration {
 
@@ -120,8 +122,16 @@ public class OAuth2WebSecurityAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnClass(RedissonAutoConfigurationV2.class)
     @ConditionalOnMissingBean(OAuth2AuthorizationService.class)
-    public InMemoryOAuth2AuthorizationService inMemoryOAuth2AuthorizationService() {
+    public OAuth2AuthorizationService redissonOAuth2AuthorizationService(RedissonClient redissonClient,
+                                                                         OAuth2Properties oAuth2Properties) {
+        return new RedissonOAuth2AuthorizationService(redissonClient, oAuth2Properties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(OAuth2AuthorizationService.class)
+    public OAuth2AuthorizationService inMemoryOAuth2AuthorizationService() {
         return new InMemoryOAuth2AuthorizationService();
     }
 
@@ -132,7 +142,7 @@ public class OAuth2WebSecurityAutoConfiguration {
                                                                                            OidcUserInfoAuthenticationMapper oidcUserInfoAuthenticationMapper,
                                                                                            ObjectProvider<OAuth2AuthorizationConfigurerAdapter> oAuth2AuthorizationConfigurerAdapters,
                                                                                            ObjectProvider<ErrorResultResolver> resultResolvers,
-                                                                                           RedissonOAuth2AuthorizationService authenticationProvider,
+                                                                                           OAuth2AuthorizationService authenticationProvider,
                                                                                            TypeSecurityPrincipalManager typeSecurityPrincipalManager) {
         return new OAuth2WebSecurityConfigurerAfterAdapter(
                 jsonAuthenticationFailureHandler,

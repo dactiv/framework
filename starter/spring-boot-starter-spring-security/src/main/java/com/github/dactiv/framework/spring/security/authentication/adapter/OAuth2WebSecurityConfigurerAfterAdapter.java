@@ -1,7 +1,6 @@
 package com.github.dactiv.framework.spring.security.authentication.adapter;
 
 
-import com.github.dactiv.framework.spring.security.authentication.RedissonOAuth2AuthorizationService;
 import com.github.dactiv.framework.spring.security.authentication.RestResultAuthenticationEntryPoint;
 import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationFailureHandler;
 import com.github.dactiv.framework.spring.security.authentication.handler.JsonAuthenticationSuccessHandler;
@@ -16,6 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.*;
 import org.springframework.security.oauth2.server.authorization.oidc.authentication.OidcUserInfoAuthenticationToken;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
@@ -39,7 +39,7 @@ public class OAuth2WebSecurityConfigurerAfterAdapter implements WebSecurityConfi
 
     private final List<OAuth2AuthorizationConfigurerAdapter> oAuth2AuthorizationConfigurerAdapters;
 
-    private final RedissonOAuth2AuthorizationService authenticationProvider;
+    private final OAuth2AuthorizationService authenticationProvider;
 
     private final TypeSecurityPrincipalManager typeSecurityPrincipalManager;
 
@@ -48,7 +48,7 @@ public class OAuth2WebSecurityConfigurerAfterAdapter implements WebSecurityConfi
                                                    OidcUserInfoAuthenticationMapper oidcUserInfoAuthenticationMapper,
                                                    List<OAuth2AuthorizationConfigurerAdapter> oAuth2AuthorizationConfigurerAdapters,
                                                    List<ErrorResultResolver> resultResolvers,
-                                                   RedissonOAuth2AuthorizationService authenticationProvider,
+                                                   OAuth2AuthorizationService authenticationProvider,
                                                    TypeSecurityPrincipalManager typeSecurityPrincipalManager) {
         this.jsonAuthenticationFailureHandler = jsonAuthenticationFailureHandler;
         this.jsonAuthenticationSuccessHandler = jsonAuthenticationSuccessHandler;

@@ -46,7 +46,7 @@ public class SpringSecurityOauth2Test {
     @Test
     public void test() throws Exception {
         String authenticationCacheName = authenticationProperties.getAuthenticationCache().getName("test:test");
-        String authorizationCacheName = authenticationProperties.getAuthorizationCache().getName("test:1:test");
+        String authorizationCacheName = authenticationProperties.getAuthorizationCache().getName("test:1");
 
         redissonClient.getBucket(authenticationCacheName).delete();
         redissonClient.getBucket(authorizationCacheName).delete();
@@ -69,7 +69,7 @@ public class SpringSecurityOauth2Test {
         mockMvc
                 .perform(get("/actuator/auditevents"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"events\":[{\"principal\":\"test:1:test\",\"type\":\"AUTHENTICATION_SUCCESS\",\"data\":{\"details\":{\"remember\":false}}}]}"));
+                .andExpect(content().json("{\"events\":[{\"principal\":\"test:1\",\"type\":\"AUTHENTICATION_SUCCESS\",\"data\":{\"details\":{\"remember\":false}}}]}"));
 
         String codeJson = mockMvc
                 .perform(
@@ -123,12 +123,12 @@ public class SpringSecurityOauth2Test {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().json("{\"status\":200}"))
-                .andExpect(content().json("{\"data\":{\"type\":\"test\",\"principal\":{\"id\":\"1\",\"username\":\"test\",\"name\":\"1:test\"}}}"));
+                .andExpect(content().json("{\"data\":{\"type\":\"test\",\"principal\":{\"id\":\"1\",\"username\":\"test\",\"name\":\"test:1\"}}}"));
 
         mockMvc
                 .perform(get("/actuator/auditevents"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"events\":[{\"principal\":\"test:1:test\",\"type\":\"AUTHENTICATION_SUCCESS\",\"data\":{\"details\":{\"remember\":false}}},{\"principal\": \"test:1:test\",\"type\": \"AUTHENTICATION_SUCCESS\",\"data\": {\"details\": {\"requestDetails\": {\"jwt\": {\"subject\": \"test:1:test\",\"audience\": [\"test\"]},\"authorities\": [{\"authority\": \"SCOPE_openid\"}, {\"authority\": \"SCOPE_profile\"}]},\"metadata\": {},\"remember\": false}}}]}"));
+                .andExpect(content().json("{\"events\":[{\"principal\":\"test:1\",\"type\":\"AUTHENTICATION_SUCCESS\",\"data\":{\"details\":{\"remember\":false}}},{\"principal\": \"test:1\",\"type\": \"AUTHENTICATION_SUCCESS\",\"data\": {\"details\": {\"requestDetails\": {\"jwt\": {\"subject\": \"test:1\",\"audience\": [\"test\"]},\"authorities\": [{\"authority\": \"SCOPE_openid\"}, {\"authority\": \"SCOPE_profile\"}]},\"metadata\": {},\"remember\": false}}}]}"));
 
     }
 }
