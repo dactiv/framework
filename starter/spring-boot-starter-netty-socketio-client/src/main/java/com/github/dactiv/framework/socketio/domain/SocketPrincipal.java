@@ -1,11 +1,13 @@
 package com.github.dactiv.framework.socketio.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.socketio.enumerate.ConnectStatus;
 import com.github.dactiv.framework.spring.security.entity.support.MobileSecurityPrincipal;
 
 import java.io.Serial;
 import java.util.Date;
+import java.util.Map;
 
 public class SocketPrincipal extends MobileSecurityPrincipal {
 
@@ -44,6 +46,11 @@ public class SocketPrincipal extends MobileSecurityPrincipal {
      * 用户类型
      */
     private String type;
+
+    /**
+     * 元数据信息
+     */
+    private Map<String, Object> metadata;
 
     public SocketPrincipal() {
     }
@@ -94,5 +101,22 @@ public class SocketPrincipal extends MobileSecurityPrincipal {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Map<String, Object> getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Map<String, Object> metadata) {
+        this.metadata = metadata;
+    }
+
+    @Override
+    public String getName() {
+        return type + CacheProperties.DEFAULT_SEPARATOR + getId();
+    }
+
+    public String getFullName() {
+        return type + CacheProperties.DEFAULT_SEPARATOR + getId() + CacheProperties.DEFAULT_SEPARATOR + getUsername();
     }
 }

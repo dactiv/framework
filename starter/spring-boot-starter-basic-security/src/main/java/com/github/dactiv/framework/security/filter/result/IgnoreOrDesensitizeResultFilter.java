@@ -2,6 +2,7 @@ package com.github.dactiv.framework.security.filter.result;
 
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.security.WebProperties;
+import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,7 +28,7 @@ public class IgnoreOrDesensitizeResultFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, jakarta.servlet.FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String convert = request.getRequestURI().replace(AntPathMatcher.DEFAULT_PATH_SEPARATOR, Casts.UNDERSCORE);
             String target = Casts.castSnakeCaseToCamelCase(StringUtils.removeStart(convert, Casts.UNDERSCORE));

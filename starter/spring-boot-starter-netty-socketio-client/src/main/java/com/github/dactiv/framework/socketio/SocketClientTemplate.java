@@ -36,22 +36,32 @@ import java.util.stream.Collectors;
  * @author maurice.chen
  */
 public class SocketClientTemplate implements DisposableBean {
-    
+
     public static final Logger LOGGER = LoggerFactory.getLogger(SocketClientTemplate.class);
 
     private static final String DEFAULT_SERVER_SERVICE_ID = "authentication";
 
-    public static final String JOIN_ROOM_TYPE = "joinRoom";
+    public static final String JOIN_ROOM_BY_DEVICE_IDENTIFIES_TYPE = "joinRoomByDeviceIdentifies";
 
-    public static final String LEAVE_ROOM_TYPE = "leaveRoom";
+    public static final String LEAVE_ROOM_BY_DEVICE_IDENTIFIES_TYPE = "leaveRoomByDeviceIdentifies";
 
-    private DiscoveryClient discoveryClient;
+    public static final String JOIN_ROOM_BY_PRINCIPALS_TYPE = "joinRoomByPrincipals";
 
-    private RestTemplate restTemplate;
+    public static final String LEAVE_ROOM_BY_PRINCIPALS_TYPE = "leaveRoomByPrincipals";
 
-    private ThreadPoolTaskExecutor taskExecutor;
+    public static final String DEVICE_IDENTIFIES_FIELD_NAME = "deviceIdentifies";
 
-    private AuthenticationProperties properties;
+    public static final String PRINCIPALS_FIELD_NAME = "principals";
+
+    public static final String ROOMS_FIELD_NAME = "rooms";
+
+    private final DiscoveryClient discoveryClient;
+
+    private final RestTemplate restTemplate;
+
+    private final ThreadPoolTaskExecutor taskExecutor;
+
+    private final AuthenticationProperties properties;
 
     public SocketClientTemplate(DiscoveryClient discoveryClient, RestTemplate restTemplate, ThreadPoolTaskExecutor taskExecutor, AuthenticationProperties properties) {
         this.discoveryClient = discoveryClient;
@@ -65,7 +75,7 @@ public class SocketClientTemplate implements DisposableBean {
         if (Objects.nonNull(e)) {
             LOGGER.error("发送 socket 消息失败", e);
         } else if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("发送 socket 消息成功, 响应内容为:" + result);
+            LOGGER.debug("发送 socket 消息成功, 响应内容为:{}", result);
         }
 
     }
@@ -73,19 +83,18 @@ public class SocketClientTemplate implements DisposableBean {
     /**
      * 构造加入/离开房间的 Http 实体
      *
-     * @param deviceIdentifies 设备唯一识别集合
-     * @param rooms            房间集合
-     *
+     * @param object 唯一识别集合
+     * @param rooms  房间集合
      * @return Http 实体
      */
-    private HttpEntity<MultiValueMap<String, String>> createRoomHttpEntity(List<String> deviceIdentifies,
+    private HttpEntity<MultiValueMap<String, String>> createRoomHttpEntity(String objectFieldName,List<String> object,
                                                                            List<String> rooms) {
         HttpHeaders httpHeaders = FeignAuthenticationConfiguration.of(properties);
         httpHeaders.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
-        data.put("deviceIdentifies", deviceIdentifies);
-        data.put("rooms", rooms);
+        data.put(objectFieldName, object);
+        data.put(ROOMS_FIELD_NAME, rooms);
 
         return new HttpEntity<>(data, httpHeaders);
     }
@@ -95,12 +104,22 @@ public class SocketClientTemplate implements DisposableBean {
      *
      * @param deviceIdentifies 设备唯一是被
      * @param rooms            房间集合
-     *
      * @return 执行结果
      */
-    public List<Map<String, Object>> joinRoom(List<String> deviceIdentifies, List<String> rooms) {
-        HttpEntity<MultiValueMap<String, String>> entity = createRoomHttpEntity(deviceIdentifies, rooms);
-        return exchangeDiscoveryOperation(entity, HttpMethod.POST, JOIN_ROOM_TYPE);
+    public List<Map<String, Object>> joinRoomByDeviceIdentifies(List<String> deviceIdentifies, List<String> rooms) {
+        HttpEntity<MultiValueMap<String, String>> entity = createRoomHttpEntity(DEVICE_IDENTIFIES_FIELD_NAME, deviceIdentifies, rooms);
+        return exchangeDiscoveryOperation(entity, HttpMethod.POST, JOIN_ROOM_BY_DEVICE_IDENTIFIES_TYPE);
+    }
+
+    /**
+     * 异步加入房间
+     *
+     * @param deviceIdentifies 设备唯一是被
+     * @param rooms            房间集合
+     * @return 执行结果
+     */
+    public CompletableFuture<List<Map<String, Object>>> asyncJoinRoomByDeviceIdentifies(List<String> deviceIdentifies, List<String> rooms)  {
+        return taskExecutor.submitListenable(() -> joinRoomByDeviceIdentifies(deviceIdentifies, rooms)).completable();
     }
 
     /**
@@ -108,12 +127,68 @@ public class SocketClientTemplate implements DisposableBean {
      *
      * @param deviceIdentifies 设备唯一是被
      * @param rooms            房间集合
-     *
      * @return 执行结果
      */
-    public List<Map<String, Object>> leaveRoom(List<String> deviceIdentifies, List<String> rooms) {
-        HttpEntity<MultiValueMap<String, String>> entity = createRoomHttpEntity(deviceIdentifies, rooms);
-        return exchangeDiscoveryOperation(entity, HttpMethod.POST, LEAVE_ROOM_TYPE);
+    public List<Map<String, Object>> leaveRoomByDeviceIdentifies(List<String> deviceIdentifies, List<String> rooms) {
+        HttpEntity<MultiValueMap<String, String>> entity = createRoomHttpEntity(DEVICE_IDENTIFIES_FIELD_NAME, deviceIdentifies, rooms);
+        return exchangeDiscoveryOperation(entity, HttpMethod.POST, LEAVE_ROOM_BY_DEVICE_IDENTIFIES_TYPE);
+    }
+
+    /**
+     * 异步离开房间
+     *
+     * @param deviceIdentifies 设备唯一是被
+     * @param rooms            房间集合
+     * @return 执行结果
+     */
+    public CompletableFuture<List<Map<String, Object>>> asyncLeaveRoomByDeviceIdentifies(List<String> deviceIdentifies, List<String> rooms)  {
+        return taskExecutor.submitListenable(() -> leaveRoomByDeviceIdentifies(deviceIdentifies, rooms)).completable();
+    }
+
+    /**
+     * 加入房间
+     *
+     * @param principals 当前用户信息
+     * @param rooms      房间集合
+     * @return 执行结果
+     */
+    public List<Map<String, Object>> joinRoomByPrincipals(List<String> principals, List<String> rooms) {
+        HttpEntity<MultiValueMap<String, String>> entity = createRoomHttpEntity(PRINCIPALS_FIELD_NAME, principals, rooms);
+        return exchangeDiscoveryOperation(entity, HttpMethod.POST, JOIN_ROOM_BY_PRINCIPALS_TYPE);
+    }
+
+    /**
+     * 异步加入房间
+     *
+     * @param principals 当前用户信息
+     * @param rooms            房间集合
+     * @return 执行结果
+     */
+    public CompletableFuture<List<Map<String, Object>>> asyncJoinRoomByPrincipals(List<String> principals, List<String> rooms)  {
+        return taskExecutor.submitListenable(() -> joinRoomByPrincipals(principals, rooms)).completable();
+    }
+
+    /**
+     * 离开房间
+     *
+     * @param principals 当前用户信息
+     * @param rooms      房间集合
+     * @return 执行结果
+     */
+    public List<Map<String, Object>> leaveRoomByPrincipals(List<String> principals, List<String> rooms) {
+        HttpEntity<MultiValueMap<String, String>> entity = createRoomHttpEntity(PRINCIPALS_FIELD_NAME, principals, rooms);
+        return exchangeDiscoveryOperation(entity, HttpMethod.POST, LEAVE_ROOM_BY_PRINCIPALS_TYPE);
+    }
+
+    /**
+     * 异步离开房间
+     *
+     * @param principals 当前用户信息
+     * @param rooms            房间集合
+     * @return 执行结果
+     */
+    public CompletableFuture<List<Map<String, Object>>> asyncLeaveRoomByPrincipals(List<String> principals, List<String> rooms)  {
+        return taskExecutor.submitListenable(() -> leaveRoomByPrincipals(principals, rooms)).completable();
     }
 
     /**
@@ -122,7 +197,6 @@ public class SocketClientTemplate implements DisposableBean {
      * @param details 用户明细集合
      * @param rooms   房间集合
      * @param type    类型:"leaveRoom" -> 离开房间, "joinRoom" -> 加入房间
-     *
      * @return 执行结果
      */
     public List<Map<String, Object>> exchangeRoomOperation(List<SocketPrincipal> details,
@@ -150,7 +224,7 @@ public class SocketClientTemplate implements DisposableBean {
                     .map(MobileSecurityPrincipal::getDeviceIdentified)
                     .collect(Collectors.toList());
 
-            HttpEntity<MultiValueMap<String, String>> entity = createRoomHttpEntity(deviceIdentifies, rooms);
+            HttpEntity<MultiValueMap<String, String>> entity = createRoomHttpEntity(DEVICE_IDENTIFIES_FIELD_NAME, deviceIdentifies, rooms);
             String url = this.createUrl(serviceInstance.getUri().toString(), type);
             Map<String, Object> data = exchangeOperation(url, entity, HttpMethod.POST);
             result.add(data);
@@ -163,7 +237,6 @@ public class SocketClientTemplate implements DisposableBean {
      * 获取服务实例
      *
      * @param details socket 用户明细
-     *
      * @return 服务实例的可选择对象
      */
     private Optional<ServiceInstance> getServiceInstanceOptional(SocketPrincipal details) {
@@ -180,7 +253,6 @@ public class SocketClientTemplate implements DisposableBean {
      * 广播消息
      *
      * @param broadcastMessage 多播 socket 消息对象
-     *
      * @return {@link RestResult} 的 map 映射
      */
     public Map<String, Object> broadcast(BroadcastMessageMetadata<?> broadcastMessage) {
@@ -198,7 +270,6 @@ public class SocketClientTemplate implements DisposableBean {
      * 广播消息
      *
      * @param broadcastMessages 多播 socket 消息对象集合
-     *
      * @return {@link RestResult} 的 map 映射集合
      */
     public List<Map<String, Object>> broadcast(List<BroadcastMessageMetadata<?>> broadcastMessages) {
@@ -229,7 +300,6 @@ public class SocketClientTemplate implements DisposableBean {
      * 单播信息
      *
      * @param unicastMessage 单播 socket 消息对象
-     *
      * @return {@link RestResult} 的 map 映射
      */
     public Map<String, Object> unicast(UnicastMessageMetadata<?> unicastMessage) {
@@ -247,7 +317,6 @@ public class SocketClientTemplate implements DisposableBean {
      * 单播信息
      *
      * @param unicastMessages 单播 socket 消息对象集合
-     *
      * @return {@link RestResult} 的 map 映射集合
      */
     public List<Map<String, Object>> unicast(List<UnicastMessageMetadata<?>> unicastMessages) {
@@ -318,7 +387,6 @@ public class SocketClientTemplate implements DisposableBean {
      * 单播单数据循环单播 socket 消息
      *
      * @param multipleUnicastMessage 单数据循环单播 socket 消息
-     *
      * @return {@link RestResult} 的 map 映射
      */
     public Map<String, Object> multipleUnicast(MultipleUnicastMessageMetadata<?> multipleUnicastMessage) {
@@ -336,7 +404,6 @@ public class SocketClientTemplate implements DisposableBean {
      * 单播单数据循环单播 socket 消息
      *
      * @param multipleUnicastMessages 单数据循环单播 socket 消息集合
-     *
      * @return {@link RestResult} 的 map 映射集合
      */
     public List<Map<String, Object>> multipleUnicast(List<MultipleUnicastMessageMetadata<?>> multipleUnicastMessages) {
@@ -423,7 +490,6 @@ public class SocketClientTemplate implements DisposableBean {
      *
      * @param type   消息类型: multipleUnicast 单数据循环单播，unicast: 根据设备识别单播，broadcast: 广播
      * @param values socket 消息集合
-     *
      * @return {@link RestResult} 的 map 映射集合
      */
     private List<Map<String, Object>> postSocketMessage(String type, List<? extends AbstractSocketMessageMetadata<?>> values) {
@@ -439,7 +505,6 @@ public class SocketClientTemplate implements DisposableBean {
      *               broadcast: 广播,
      *               multipleUnicast: 同数据结果，单播多客户端
      * @param values socket 消息集合
-     *
      * @return {@link RestResult} 的 map 映射集合
      */
     private List<Map<String, Object>> postSocketMessage(String host, String type, List<? extends AbstractSocketMessageMetadata<?>> values) {
@@ -447,7 +512,8 @@ public class SocketClientTemplate implements DisposableBean {
         HttpHeaders httpHeaders = FeignAuthenticationConfiguration.of(properties);
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-        List<Map<String, Object>> data = Casts.convertValue(values, new TypeReference<>() {});
+        List<Map<String, Object>> data = Casts.convertValue(values, new TypeReference<>() {
+        });
 
         HttpEntity<List<Map<String, Object>>> entity = new HttpEntity<>(data, httpHeaders);
         List<Map<String, Object>> result = new LinkedList<>();
@@ -482,7 +548,6 @@ public class SocketClientTemplate implements DisposableBean {
      * @param entity http 实体
      * @param method 提交方式
      * @param name   执行后缀
-     *
      * @return 每个服务执行结果集合
      */
     private <T> List<T> exchangeDiscoveryOperation(HttpEntity<?> entity, HttpMethod method, String name) {
@@ -524,7 +589,6 @@ public class SocketClientTemplate implements DisposableBean {
      *
      * @param uri  服务地址 uri
      * @param name 接口名称
-     *
      * @return 完整 url 路径
      */
     private String createUrl(String uri, String name) {
@@ -555,7 +619,7 @@ public class SocketClientTemplate implements DisposableBean {
     /**
      * 异步发送 socket 结果集
      *
-     * @param result          socket 结果集
+     * @param result socket 结果集
      */
     public void asyncSendSocketResult(SocketResult result) {
 
