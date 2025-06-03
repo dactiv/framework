@@ -1,7 +1,7 @@
 package com.github.dactiv.framework.security.audit;
 
 /**
- * 审计当前是信息接口
+ * 审计当事人信息接口
  *
  * @author maurice.chen
  */
