@@ -2,11 +2,17 @@ package com.github.dactiv.framework.fasc.req.user;
 
 import com.github.dactiv.framework.fasc.bean.base.BaseReq;
 
+import java.io.Serial;
+
 /**
  * @author zhoufucheng
  * @date 2023/6/28 11:40
  */
 public class BankFourElementVerifyReq extends BaseReq {
+
+    @Serial
+    private static final long serialVersionUID = -8103354881779412016L;
+
     private String userName;
 
     private String userIdentNo;
@@ -14,6 +20,8 @@ public class BankFourElementVerifyReq extends BaseReq {
     private String bankAccountNo;
 
     private String mobile;
+
+    private String userIdentType;
 
     public String getUserName() {
         return userName;
@@ -45,5 +53,13 @@ public class BankFourElementVerifyReq extends BaseReq {
 
     public void setMobile(String mobile) {
         this.mobile = mobile;
+    }
+
+    public String getUserIdentType() {
+        return userIdentType;
+    }
+
+    public void setUserIdentType(String userIdentType) {
+        this.userIdentType = userIdentType;
     }
 }

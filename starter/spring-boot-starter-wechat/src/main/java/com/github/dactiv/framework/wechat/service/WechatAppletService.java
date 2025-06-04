@@ -15,9 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.util.LinkedMultiValueMap;
 
 import java.text.MessageFormat;
@@ -106,5 +104,32 @@ public class WechatAppletService extends WechatBasicService implements Initializ
         }
 
         return null;
+    }
+
+    /**
+     * 创建小程序二维码
+     *
+     * @param path 扫码进入的小程序页面路径，最大长度 128 字节，不能为空；对于小游戏，可以只传入 query 部分，来实现传参效果，如：传入 "?foo=bar"，即可在 wx.getLaunchOptionsSync 接口中的 query 参数获取到 {foo:"bar"}。scancode_time为系统保留参数，不允许配置。
+     * @param width 二维码的宽度，单位 px。最小 280px，最大 1280px;默认是430
+     */
+    public byte[] createAppletQrcode(String path, Integer width) {
+        AccessToken token = getAccessTokenIfCacheNull();
+        Map<String, Object> param = new LinkedHashMap<>();
+        param.put("path", path);
+        if (Objects.nonNull(width)) {
+            param.put("width", width);
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        ResponseEntity<byte[]> result = getRestTemplate().exchange(
+                "https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token=" + token.getToken(),
+                HttpMethod.POST,
+                new HttpEntity<>(param, headers),
+                new ParameterizedTypeReference<>() {
+                }
+        );
+
+        return result.getBody();
     }
 }

@@ -48,11 +48,11 @@
             <artifactId>spring-boot-starter-access-crypto</artifactId>
         </dependency>
 
-        <dependency>
+        <!--<dependency>
             <groupId>com.fadada.api</groupId>
             <artifactId>fasc-openapi-java-sdk</artifactId>
             <version>5.6.5.0418</version>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
