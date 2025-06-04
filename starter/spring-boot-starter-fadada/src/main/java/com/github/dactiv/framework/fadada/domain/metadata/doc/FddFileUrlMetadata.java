@@ -15,6 +15,12 @@ public class FddFileUrlMetadata implements Serializable {
     public FddFileUrlMetadata() {
     }
 
+    public FddFileUrlMetadata(String fileType, String fddFileUrl, String fileName) {
+        this.fileType = fileType;
+        this.fddFileUrl = fddFileUrl;
+        this.fileName = fileName;
+    }
+
     public String getFileType() {
         return this.fileType;
     }

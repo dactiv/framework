@@ -1,0 +1,43 @@
+dactiv:
+  fasc:
+    access-token:
+      secret-id: 80002872
+      secret-key: LXFPTXWDJHQF4HUPM0G4DSTPE7LYTE9I
+      cache:
+        name: 'dactiv:fasc:access-token'
+        time:
+          value: 10
+          unit: MINUTES
+    client-corp-id: 1903980686920245248
+    open-corp-id: 6cd4cc94e4a545e5a02c521fb174d15e
+    server-url: https://uat-api.fadada.com/api/v5
+
+spring:
+  main:
+    banner-mode: "off"
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: 20160826
+  cloud:
+    nacos:
+      discovery:
+        event:
+          enabled: true
+          instance-registered-subscribe: true
+        ip: ${NACOS_DISCOVERY_IP:}
+        server-addr: ${NACOS_HOST:localhost:8848}
+        username: ${NACOS_USERNAME:nacos}
+        password: ${NACOS_PASSWORD:Cxb@20160826}
+        group: ${NACOS_DISCOVERY_GROUP:NEIGHBORLY}
+        metadata:
+          version: ${info.version}
+          name: ${info.name}
+          artifact-id: ${info.artifact-id}
+          group-id: ${info.group-id}
+      config:
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
+        username: ${spring.cloud.nacos.discovery.username}
+        password: ${spring.cloud.nacos.discovery.password}
+        file-extension: yml

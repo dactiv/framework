@@ -1,55 +1,8 @@
-spring:
-  data:
-    redis:
-      host: localhost
-      port: 6379
-      password: 20160826
-  datasource:
-    url: jdbc:mysql://localhost:3306/neighborly_authentication?autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 20160826
-    type: com.zaxxer.hikari.HikariDataSource
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
-    # 开启发送失败返回
-    publisher-returns: true
-    # 开启发送确认
-    publisher-confirm-type: correlated
-    listener:
-      # 开启 ack
-      simple:
-        acknowledge-mode: manual
-        concurrency: 8
-        retry:
-          # 重试初始间隔时间
-          initial-interval: 2000
-          # 间隔时间乘子，间隔时间 * 乘子 = 下一次的间隔时间，最大不能超过设置的最大间隔时间
-          multiplier: 2
-          # 启用重试
-          enabled: true
-      # 开启 ack
-      direct:
-        acknowledge-mode: manual
-        retry:
-          # 重试初始间隔时间
-          initial-interval: 2000
-          # 间隔时间乘子，间隔时间 * 乘子 = 下一次的间隔时间，最大不能超过设置的最大间隔时间
-          multiplier: 2
-          # 启用重试
-          enabled: true
-    # 支持消息的确认与返回
-    template:
-      mandatory: true
-
 dactiv:
   fadada:
     access-token:
-      secret-id: wxcc4423580a91afd5
-      secret-key: bc8c9e33b24ec5d14234fdb5d29eafb3
+      secret-id: 80002872
+      secret-key: LXFPTXWDJHQF4HUPM0G4DSTPE7LYTE9I
     client-corp-id: 1903980686920245248
     open-corp-id: 6cd4cc94e4a545e5a02c521fb174d15e
     base-url: https://uat-api.fadada.com/api/v5
@@ -57,3 +10,10 @@ dactiv:
       person:
         redirect-url: http://localhost:5173/console/real/name/authentication/result/10
         unbind-account: true
+
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: 20160826
