@@ -1,7 +1,5 @@
 package com.github.dactiv.framework.fasc.event.auth.user;
 
-import java.util.List;
-
 /**
  * 个人用户授权事件
  */
@@ -15,7 +13,7 @@ public class UserAuthorizeDto {
 
     private String authFailedReason;
 
-    private List<String> authScope;
+    private String authScope;
 
     private String identProcessStatus;
 
@@ -58,11 +56,11 @@ public class UserAuthorizeDto {
         this.authFailedReason = authFailedReason;
     }
 
-    public List<String> getAuthScope() {
+    public String getAuthScope() {
         return authScope;
     }
 
-    public void setAuthScope(List<String> authScope) {
+    public void setAuthScope(String authScope) {
         this.authScope = authScope;
     }
 

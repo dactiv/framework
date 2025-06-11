@@ -3,14 +3,25 @@ package com.github.dactiv.framework.fasc.req.signtask;
 
 import com.github.dactiv.framework.fasc.bean.common.OpenId;
 
+import java.io.Serial;
 import java.util.List;
 
 public class GetSignTaskUrlReq extends SignTaskBaseReq {
+    @Serial
+    private static final long serialVersionUID = -3235959868192198879L;
+
     private OpenId initiator;
 
     private String redirectUrl;
 
     private List<String> nonEditableInfo;
+
+    public GetSignTaskUrlReq() {
+    }
+
+    public GetSignTaskUrlReq(String signTaskId) {
+        super(signTaskId);
+    }
 
     public OpenId getInitiator() {
         return initiator;

@@ -263,7 +263,7 @@ public class MybatisPlusOperationDataTraceResolver extends AbstractOperationData
 
     @Override
     protected List<OperationDataTraceRecord> createDeleteRecord(Delete delete, MappedStatement mappedStatement, Statement statement, Object parameter) throws Exception {
-        if (Casts.isPrimitive(parameter)) {
+        if (Casts.isPrimitive(parameter.getClass())) {
             OperationDataTraceRecord record = createBasicOperationDataTraceRecord(
                     OperationDataType.DELETE,
                     delete.getTable().getName(),

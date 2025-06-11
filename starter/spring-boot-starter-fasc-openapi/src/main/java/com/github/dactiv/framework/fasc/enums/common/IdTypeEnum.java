@@ -14,8 +14,8 @@ public enum IdTypeEnum {
     CORP("corp", "企业"),
     PERSON("person", "个人");
 
-    private String code;
-    private String remark;
+    private final String code;
+    private final String remark;
 
     IdTypeEnum(String code, String remark) {
         this.code = code;

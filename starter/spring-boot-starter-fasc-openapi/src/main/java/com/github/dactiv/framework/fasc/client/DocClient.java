@@ -1,5 +1,6 @@
 package com.github.dactiv.framework.fasc.client;
 
+import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.fasc.bean.base.BaseRes;
 import com.github.dactiv.framework.fasc.constants.OpenApiUrlConstants;
 import com.github.dactiv.framework.fasc.exception.ApiException;
@@ -47,7 +48,7 @@ public class DocClient {
         return openApiClient.invokeApi(req, OpenApiUrlConstants.OFD_FILE_MERGE, OfdFileMergeRes.class);
     }
 
-    public void upload(BufferedInputStream inputStream, String uploadUrl) throws Exception {
+    public RestResult<?> upload(BufferedInputStream inputStream, String uploadUrl) throws Exception {
 
         URL url = new URL(uploadUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -61,5 +62,7 @@ public class DocClient {
         }
         inputStream.close();
         bos.close();
+
+        return RestResult.of(connection.getResponseMessage(), connection.getResponseCode(), String.valueOf(connection.getResponseCode()));
     }
 }

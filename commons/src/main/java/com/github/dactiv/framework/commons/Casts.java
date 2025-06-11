@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.dactiv.framework.commons.annotation.Description;
 import com.github.dactiv.framework.commons.annotation.IgnoreField;
+import com.github.dactiv.framework.commons.domain.metadata.TreeDescriptionMetadata;
 import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.commons.jackson.serializer.DesensitizeSerializer;
 import com.jayway.jsonpath.Configuration;
@@ -17,10 +19,12 @@ import org.apache.commons.beanutils.Converter;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.objenesis.instantiator.util.ClassUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -29,6 +33,7 @@ import org.springframework.util.MultiValueMap;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -543,6 +548,123 @@ public abstract class Casts {
     }
 
     /**
+     * 转换为描述元数据集合
+     *
+     * @param descriptionClasses 描述类集合
+     *
+     * @return 描述元数据集合
+     */
+    public static List<TreeDescriptionMetadata> convertDescriptionMetadata(List<Class<?>> descriptionClasses) {
+        return descriptionClasses.stream().map(Casts::convertDescriptionMetadata).collect(Collectors.toList());
+    }
+
+    /**
+     * 转换为描述元数据
+     *
+     * @param descriptionClass 描述类
+     *
+     * @return 描述元数据
+     */
+    public static TreeDescriptionMetadata convertDescriptionMetadata(Class<?> descriptionClass) {
+
+        Description description = AnnotationUtils.findAnnotation(descriptionClass, Description.class);
+        if (Objects.isNull(description)) {
+            return null;
+        }
+
+        TreeDescriptionMetadata metadata = TreeDescriptionMetadata.of(
+                descriptionClass.getSimpleName(),
+                description.value()
+        );
+
+        List<Field> fields = ReflectionUtils.findFields(descriptionClass);
+        fields
+                .stream()
+                .map(Casts::convertDescriptionMetadata)
+                .filter(Objects::nonNull)
+                .peek(f -> f.setParentId(metadata.getId()))
+                .forEach(f -> metadata.getChildren().add(f));
+        List<Method> methods = MethodUtils.getMethodsListWithAnnotation(descriptionClass, Description.class);
+
+        methods
+                .stream()
+                .map(Casts::convertDescriptionMetadata)
+                .filter(Objects::nonNull)
+                .peek(f -> f.setParentId(metadata.getId()))
+                .forEach(f -> metadata.getChildren().add(f));
+        return metadata;
+
+    }
+
+    public static TreeDescriptionMetadata convertDescriptionMetadata(Method method) {
+        Description description = AnnotationUtils.findAnnotation(method, Description.class);
+
+        if (Objects.isNull(description)) {
+            return null;
+        }
+
+        Class<?> type = method.getReturnType();
+
+        TreeDescriptionMetadata metadata = TreeDescriptionMetadata.of(
+                method.getName() + Casts.LEFT_BRACKET + Casts.RIGHT_BRACKET,
+                description.value()
+        );
+
+        metadata.setType(type);
+
+        return metadata;
+    }
+
+    /**
+     * 转换为描述元数据
+     *
+     * @param field 字段
+     *
+     * @return 描述元数据集合
+     */
+    public static TreeDescriptionMetadata convertDescriptionMetadata(Field field) {
+
+        Description description = AnnotationUtils.findAnnotation(field, Description.class);
+
+        if (Objects.isNull(description)) {
+            description = AnnotationUtils.findAnnotation(field.getType(), Description.class);
+        }
+
+        if (Objects.isNull(description)) {
+            return null;
+        }
+
+        Class<?> type = field.getType();
+
+        TreeDescriptionMetadata metadata = TreeDescriptionMetadata.of(
+                field.getName(),
+                description.value()
+        );
+        metadata.setType(type);
+
+        if (isPrimitive(type)) {
+            return metadata;
+        }
+
+        Class<?> nextType = type;
+        if (Collection.class.isAssignableFrom(type)) {
+            nextType = ReflectionUtils.getGenericClass(field, 0);
+            if (nextType.isInterface()) {
+                return metadata;
+            }
+        }
+
+        List<Field> fields = ReflectionUtils.findFields(nextType);
+        fields
+                .stream()
+                .map(Casts::convertDescriptionMetadata).filter(Objects::nonNull)
+                .peek(f -> f.setParentId(metadata.getId()))
+                .forEach(f -> metadata.getChildren().add(f));
+
+        return metadata;
+    }
+
+    /**
      * 创建一个新的对象，并将 source 属性内容拷贝到创建的对象中
      *
      * @param source           原数据
@@ -594,15 +716,16 @@ public abstract class Casts {
         return fields;
     }
 
-    public static boolean isPrimitive(Object value) {
-        return (value instanceof Boolean ||
-                value instanceof Byte ||
-                value instanceof Character ||
-                value instanceof Short ||
-                value instanceof Integer ||
-                value instanceof Long ||
-                value instanceof Float ||
-                value instanceof Double);
+    public static boolean isPrimitive(Class<?> value) {
+        return (Boolean.class.isAssignableFrom(value) ||
+                Byte.class.isAssignableFrom(value) ||
+                Character.class.isAssignableFrom(value) ||
+                Short.class.isAssignableFrom(value) ||
+                Integer.class.isAssignableFrom(value) ||
+                Long.class.isAssignableFrom(value) ||
+                Float.class.isAssignableFrom(value) ||
+                Double.class.isAssignableFrom(value)) ||
+                String.class.isAssignableFrom(value);
     }
 
     /**
@@ -719,7 +842,7 @@ public abstract class Casts {
                 Configuration pathConfig = Configuration.builder()
                         .options(Option.SUPPRESS_EXCEPTIONS, Option.AS_PATH_LIST)
                         .build();
-                List<String> paths = JsonPath.using(pathConfig).parse(source).read(property);
+                List<String> paths = JsonPath.using(pathConfig).parse(documentContext.jsonString()).read(property);
                 if(CollectionUtils.isEmpty(paths)) {
                     continue;
                 }

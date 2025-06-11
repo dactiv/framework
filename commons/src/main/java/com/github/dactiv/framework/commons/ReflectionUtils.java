@@ -4,10 +4,7 @@ import com.github.dactiv.framework.commons.exception.SystemException;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.*;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 反射工具类
@@ -29,7 +26,7 @@ public class ReflectionUtils {
 
         List<Field> result = new LinkedList<>(Arrays.asList(fields));
 
-        if (!targetClass.getName().equals(Object.class.getName())) {
+        if (!targetClass.getName().equals(Object.class.getName()) && Objects.nonNull(targetClass.getSuperclass())) {
             result.addAll(findFields(targetClass.getSuperclass()));
         }
 
@@ -38,12 +35,13 @@ public class ReflectionUtils {
 
     /**
      * 查找对象中的字段
-     *
+     * @deprecated 使用 {@link org.springframework.util.ReflectionUtils#findField(Class, String)} 替换
      * @param o    对象
      * @param name 字段名称
      *
      * @return 字段信息
      */
+    @Deprecated
     public static Field findFiled(Object o, String name) {
         return org.springframework.util.ReflectionUtils.findField(o.getClass(), name);
     }
@@ -58,7 +56,6 @@ public class ReflectionUtils {
      */
     public static Object getFieldValue(Object o, Field field) {
         field.setAccessible(true);
-
         return org.springframework.util.ReflectionUtils.getField(field, o);
     }
 
@@ -192,6 +189,18 @@ public class ReflectionUtils {
      */
     public static <T> Class<T> getGenericClass(Object target, int index) {
         return getGenericClass(target.getClass(), index);
+    }
+
+
+    public static <T> Class<T> getGenericClass(Field field, int index) {
+        Type fieldType = field.getGenericType();
+
+        if (!ParameterizedType.class.isAssignableFrom(fieldType.getClass())) {
+            return Casts.cast(field.getType());
+        }
+
+        ParameterizedType pt = Casts.cast(fieldType);
+        return Casts.cast(pt.getActualTypeArguments()[index]);
     }
 
     /**
