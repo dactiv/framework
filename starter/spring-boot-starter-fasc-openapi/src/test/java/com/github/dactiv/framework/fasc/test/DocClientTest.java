@@ -2,20 +2,24 @@ package com.github.dactiv.framework.fasc.test;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.dactiv.framework.commons.Casts;
+import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.fasc.bean.base.BaseRes;
 import com.github.dactiv.framework.fasc.bean.common.Actor;
 import com.github.dactiv.framework.fasc.bean.common.Field;
 import com.github.dactiv.framework.fasc.bean.common.FieldPosition;
 import com.github.dactiv.framework.fasc.bean.common.OpenId;
+import com.github.dactiv.framework.fasc.client.CorpClient;
 import com.github.dactiv.framework.fasc.client.DocClient;
 import com.github.dactiv.framework.fasc.client.SignTaskClient;
 import com.github.dactiv.framework.fasc.config.FascConfig;
 import com.github.dactiv.framework.fasc.enums.common.IdTypeEnum;
 import com.github.dactiv.framework.fasc.enums.doc.FileTypeEnum;
+import com.github.dactiv.framework.fasc.req.corp.GetCorpReq;
 import com.github.dactiv.framework.fasc.req.doc.FddFileUrl;
 import com.github.dactiv.framework.fasc.req.doc.FileProcessReq;
 import com.github.dactiv.framework.fasc.req.doc.GetUploadUrlReq;
 import com.github.dactiv.framework.fasc.req.signtask.*;
+import com.github.dactiv.framework.fasc.res.corp.CorpRes;
 import com.github.dactiv.framework.fasc.res.doc.FileProcessRes;
 import com.github.dactiv.framework.fasc.res.doc.GetUploadUrlRes;
 import com.github.dactiv.framework.fasc.res.signtask.CreateSignTaskRes;
@@ -39,7 +43,17 @@ public class DocClientTest {
     private SignTaskClient signTaskClient;
 
     @Autowired
+    private CorpClient corpClient;
+
+    @Autowired
     private FascConfig config;
+
+    @Test
+    public void test() {
+        GetCorpReq req = new GetCorpReq();
+        req.setClientCorpId("61");
+        BaseRes<CorpRes> corpRes = SystemException.convertSupplier(() -> corpClient.get(req));
+    }
 
     @Test
     public void testGenerateSignTask() throws Exception {

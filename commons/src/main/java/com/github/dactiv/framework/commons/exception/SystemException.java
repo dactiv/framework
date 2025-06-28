@@ -1,7 +1,10 @@
 package com.github.dactiv.framework.commons.exception;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.Serial;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -12,6 +15,11 @@ import java.util.function.Supplier;
  * @author maurice
  */
 public class SystemException extends RuntimeException {
+
+    public final static Logger LOGGER = LoggerFactory.getLogger(SystemException.class);
+
+    @Serial
+    private static final long serialVersionUID = 1464832006579973342L;
 
     /**
      * 系统异常
@@ -71,6 +79,7 @@ public class SystemException extends RuntimeException {
             runnable.run();
         } catch (Exception e) {
             if(Objects.isNull(function)) {
+                LOGGER.warn("convertRunnable 执行时出现错误，返回 null 值", e);
                 return ;
             }
             throw function.apply(e);
@@ -88,6 +97,7 @@ public class SystemException extends RuntimeException {
             runnable.run();
         } catch (Exception e) {
             if(Objects.isNull(message)) {
+                LOGGER.warn("convertRunnable 执行时出现错误，返回 null 值", e);
                 return ;
             }
             if (StringUtils.isEmpty(message)) {
@@ -104,6 +114,7 @@ public class SystemException extends RuntimeException {
             return supplier.get();
         } catch (Exception e) {
             if(Objects.isNull(function)) {
+                LOGGER.warn("convertSupplier 执行时出现错误，返回 null 值", e);
                 return null;
             }
             RuntimeException runtimeException = function.apply(e);
@@ -120,12 +131,13 @@ public class SystemException extends RuntimeException {
             return supplier.get();
         } catch (Exception e) {
             if(Objects.isNull(message)) {
+                LOGGER.warn("convertSupplier 执行时出现错误，返回 null 值", e);
                 return null;
-            }
-            if (StringUtils.isEmpty(message)) {
+            } else if  (StringUtils.isEmpty(message)) {
                 throw new SystemException(e);
+            } else {
+                throw new SystemException(message, e);
             }
-            throw new SystemException(message, e);
         }
     }
 

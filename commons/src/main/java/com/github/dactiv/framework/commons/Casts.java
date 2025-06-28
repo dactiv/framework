@@ -674,13 +674,15 @@ public abstract class Casts {
      */
     public static <T> T of(Object source, Class<T> targetClass, String... ignoreProperties) {
 
-        /*if (Objects.isNull(source)) {
-            return null;
-        }*/
+        T result = null;
 
-        T result = ClassUtils.newInstance(targetClass);
+        if (Objects.nonNull(targetClass)) {
+            result = ClassUtils.newInstance(targetClass);
+        }
 
-        BeanUtils.copyProperties(source, result, ignoreProperties);
+        if (Objects.nonNull(source)) {
+            BeanUtils.copyProperties(source, result, ignoreProperties);
+        }
 
         return result;
     }
@@ -826,13 +828,13 @@ public abstract class Casts {
     }
 
     public static Map<String, Object> ignoreObjectFieldToMap(Object source, List<String> properties) {
-        DocumentContext documentContext = createDocumentContext(source);
+        DocumentContext documentContext = createDocumentContext(source, Option.DEFAULT_PATH_LEAF_TO_NULL);
         properties.forEach(documentContext::delete);
         return documentContext.json();
     }
 
     public static Map<String, Object> desensitizeObjectFieldToMap(Object source, List<String> properties) {
-        DocumentContext documentContext = createDocumentContext(source);
+        DocumentContext documentContext = createDocumentContext(source, Option.ALWAYS_RETURN_LIST);
         for (String property : properties) {
             Object value = documentContext.read(property);
             if (Objects.isNull(value)) {
@@ -846,10 +848,12 @@ public abstract class Casts {
                 if(CollectionUtils.isEmpty(paths)) {
                     continue;
                 }
-                JSONArray nonNullArray = new JSONArray(paths.size());
-                array.stream().filter(Objects::nonNull).forEach(nonNullArray::add);
-                for (int i = 0; i < nonNullArray.size(); i++) {
-                    String desensitizeValue = Objects.toString(array.get(i), StringUtils.EMPTY);
+                for (int i = 0; i < array.size(); i++) {
+                    Object item = array.get(i);
+                    if (Objects.isNull(item)) {
+                        continue;
+                    }
+                    String desensitizeValue = Objects.toString(item, StringUtils.EMPTY);
                     documentContext.set(paths.get(i),DesensitizeSerializer.desensitize(desensitizeValue));
                 }
             } else {
@@ -859,12 +863,12 @@ public abstract class Casts {
         return documentContext.json();
     }
 
-    private static DocumentContext createDocumentContext(Object source) {
+    private static DocumentContext createDocumentContext(Object source, Option option) {
         JsonNode rootNode = objectMapper.valueToTree(source);
         JsonNode filteredNode = rootNode.deepCopy();
 
         Configuration conf = Configuration.builder()
-                .options(Option.SUPPRESS_EXCEPTIONS, Option.DEFAULT_PATH_LEAF_TO_NULL)
+                .options(Option.SUPPRESS_EXCEPTIONS, option)
                 .build();
 
         return JsonPath.using(conf).parse(filteredNode.toString());

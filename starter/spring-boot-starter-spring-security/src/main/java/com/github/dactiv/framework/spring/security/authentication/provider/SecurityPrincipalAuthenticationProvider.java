@@ -11,6 +11,8 @@ import com.github.dactiv.framework.spring.security.authentication.token.RequestA
 import com.github.dactiv.framework.spring.security.entity.AuditAuthenticationDetails;
 import com.github.dactiv.framework.spring.security.exception.CodeAuthenticationServiceException;
 import io.micrometer.common.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -31,6 +33,8 @@ import java.util.Objects;
  * @author maurice.chen
  */
 public class SecurityPrincipalAuthenticationProvider implements AuthenticationManager, AuthenticationProvider, MessageSourceAware {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(SecurityPrincipalAuthenticationProvider.class);
 
     /**
      * 国际化信息
@@ -66,6 +70,9 @@ public class SecurityPrincipalAuthenticationProvider implements AuthenticationMa
             SecurityPrincipal userDetails = doPrincipalAuthenticate(authenticationToken);
             return createSuccessAuthentication(userDetails, authenticationToken);
         } catch (Exception e) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("执行登录失败", e);
+            }
             if (e instanceof AuthenticationException) {
                 throw e;
             }

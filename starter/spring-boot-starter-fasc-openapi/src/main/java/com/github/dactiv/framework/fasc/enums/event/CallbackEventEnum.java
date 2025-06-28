@@ -4,8 +4,10 @@ import java.util.Objects;
 
 /**
  * @author Fadada
+ * @deprecated 使用 {@link CallbackEventTypeEnum} 替换此类
  * 2021/10/21 15:37:11
  */
+@Deprecated
 public enum CallbackEventEnum {
     /**
      * 回调事件枚举

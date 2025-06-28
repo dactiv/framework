@@ -145,7 +145,7 @@ public class RestResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             result.getMetadata().put(RestResult.DEFAULT_URL_NAME, url);
             return IgnoreOrDesensitizeResultHolder.convert(result);
         } else {
-            return body;
+            return IgnoreOrDesensitizeResultHolder.convert(body);
         }
 
     }

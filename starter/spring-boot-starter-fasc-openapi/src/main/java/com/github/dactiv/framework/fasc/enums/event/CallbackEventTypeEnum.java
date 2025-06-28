@@ -1,6 +1,6 @@
 package com.github.dactiv.framework.fasc.enums.event;
 
-public enum CallbackEventV2 {
+public enum CallbackEventTypeEnum {
 
     SIGN_TASK_ACTOR_SIGNED("sign-task-signed", "签署任务签署方签署事件"),
     SIGN_TASK_SIGN_FAILED("sign-task-sign-failed", "签署任务参与方签署失败事件"),
@@ -119,7 +119,7 @@ public enum CallbackEventV2 {
         this.valueInFact = valueInFact;
     }
 
-    CallbackEventV2(String value, String valueInFact) {
+    CallbackEventTypeEnum(String value, String valueInFact) {
         this.value = value;
         this.valueInFact = valueInFact;
     }

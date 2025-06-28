@@ -163,6 +163,7 @@ public class OpenApiClient implements InitializingBean {
         }
         BaseRes<T> baseRes = config.getJsonStrategy().toJavaBean(httpInfoRes.getBody(), new ParameterizedTypeBaseRes(clzz));
         baseRes.setHttpStatusCode(httpInfoRes.getHttpStatusCode());
+        SystemException.isTrue(config.getSuccessCodeValue().equals(baseRes.getCode()), baseRes.getMsg());
         return baseRes;
     }
 

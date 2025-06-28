@@ -1,8 +1,13 @@
 package com.github.dactiv.framework.fasc.utils.crypt;
 
 import com.github.dactiv.framework.commons.Casts;
+import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.crypto.algorithm.SimpleByteSource;
+import com.github.dactiv.framework.fasc.config.FascConfig;
+import com.github.dactiv.framework.fasc.constants.RequestConstants;
 import com.github.dactiv.framework.fasc.utils.string.StringUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.server.ServletServerHttpRequest;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -81,6 +86,26 @@ public class FddCryptUtil {
             }
         }
         return stringBuilder.toString();
+    }
+
+    public static void verifyEventSign(ServletServerHttpRequest request, FascConfig fascConfig) {
+        String requestSign = request.getHeaders().getFirst(RequestConstants.SIGN);
+        SystemException.isTrue(StringUtils.isNotEmpty(requestSign), "[法大大]: 签名数据不能为空");
+        String timestamp = request.getHeaders().getFirst(RequestConstants.TIMESTAMP);
+        SystemException.isTrue(StringUtils.isNotEmpty(timestamp), "[法大大]: 签名数时间戳不能为空");
+
+
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put(RequestConstants.APP_ID, request.getHeaders().getFirst(RequestConstants.APP_ID));
+        paramMap.put(RequestConstants.SIGN_TYPE, request.getHeaders().getFirst(RequestConstants.SIGN_TYPE));
+        paramMap.put(RequestConstants.TIMESTAMP, timestamp);
+        paramMap.put(RequestConstants.NONCE,request.getHeaders().getFirst(RequestConstants.NONCE));
+        paramMap.put(RequestConstants.EVENT,request.getHeaders().getFirst(RequestConstants.EVENT));
+        paramMap.put(RequestConstants.DATA_KEY, request.getServletRequest().getParameter(RequestConstants.DATA_KEY));
+
+        String signString =  FddCryptUtil.sortParameters(paramMap);;
+        String sign = SystemException.convertSupplier(() -> FddCryptUtil.sign(signString, timestamp, fascConfig.getAccessToken().getSecretKey()));
+        SystemException.isTrue(StringUtils.equals(sign, requestSign),"[法大大]: 验签不通过");
     }
 
 }

@@ -27,6 +27,7 @@ public class CreateSignTaskBaseReq extends BaseReq {
     private String businessId;
     private String transReferenceId;
     private String fileFormat;
+    private String callbackUrl;
 
     public String getInitiatorEntityId() {
         return initiatorEntityId;
@@ -178,5 +179,13 @@ public class CreateSignTaskBaseReq extends BaseReq {
 
     public void setFileFormat(String fileFormat) {
         this.fileFormat = fileFormat;
+    }
+
+    public String getCallbackUrl() {
+        return callbackUrl;
+    }
+
+    public void setCallbackUrl(String callbackUrl) {
+        this.callbackUrl = callbackUrl;
     }
 }

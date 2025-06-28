@@ -38,6 +38,8 @@ public class FascConfig {
      */
     private HttpConfig httpConfig;
 
+    private String successCodeValue = "100000";
+
     public FascConfig() {
     }
 
@@ -111,5 +113,13 @@ public class FascConfig {
 
     public void setFaceAuthMode(String faceAuthMode) {
         this.faceAuthMode = faceAuthMode;
+    }
+
+    public String getSuccessCodeValue() {
+        return successCodeValue;
+    }
+
+    public void setSuccessCodeValue(String successCodeValue) {
+        this.successCodeValue = successCodeValue;
     }
 }

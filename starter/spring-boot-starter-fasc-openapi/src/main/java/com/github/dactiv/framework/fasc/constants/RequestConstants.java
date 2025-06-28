@@ -15,6 +15,8 @@ public class RequestConstants {
      * 企业控制台创建应用后得到的应用ID
      */
     public static final String APP_ID = "X-FASC-App-Id";
+
+    public static final String EVENT = "X-FASC-Event";
     /**
      * FASC.openApi子版本号。如当前版本为：5.1
      */
@@ -78,4 +80,7 @@ public class RequestConstants {
 
     public static final String EUI_TIMESTAMP = "timestamp";
     public static final String EUI_SIGNATURE = "signature";
+
+    public static final String CALLBACK_OPEN_CORP_ID = "openCorpId";
+    public static final String CALLBACK_CLIENT_CORP_ID = "clientCorpId";
 }
