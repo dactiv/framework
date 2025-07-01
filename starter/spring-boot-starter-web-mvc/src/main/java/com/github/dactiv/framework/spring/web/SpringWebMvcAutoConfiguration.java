@@ -143,9 +143,7 @@ public class SpringWebMvcAutoConfiguration {
     }
 
     @Bean
-    public ObjectMapper filterResultObjectMapper(Jackson2ObjectMapperBuilder builder,
-                                                 JacksonProperties jacksonProperties,
-                                                 SpringWebMvcProperties properties) {
+    public ObjectMapper filterResultObjectMapper(Jackson2ObjectMapperBuilder builder, JacksonProperties jacksonProperties) {
 
         ObjectMapper objectMapper = builder.createXmlMapper(false).build();
 
@@ -161,6 +159,7 @@ public class SpringWebMvcAutoConfiguration {
 
         Map<SerializationFeature, Boolean> map = jacksonProperties.getSerialization();
         Boolean isWriteDatesAsTimestamps = map.get(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
         if (Objects.nonNull(isWriteDatesAsTimestamps) && isWriteDatesAsTimestamps) {
             module.addSerializer(LocalDate.class, new LocalDateTimestampSerializer(jacksonProperties));
             module.addSerializer(LocalDateTime.class, new LocalDateTimeTimestampSerializer(jacksonProperties));
@@ -168,10 +167,7 @@ public class SpringWebMvcAutoConfiguration {
         }
 
         objectMapper.registerModule(module);
-
-        if (properties.isUseFilterResultObjectMapperToCastsClass()) {
-            Casts.setObjectMapper(objectMapper);
-        }
+        Casts.setObjectMapper(objectMapper);
 
         return objectMapper;
     }

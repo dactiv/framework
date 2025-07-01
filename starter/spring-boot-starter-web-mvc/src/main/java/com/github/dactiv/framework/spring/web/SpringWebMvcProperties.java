@@ -37,7 +37,9 @@ public class SpringWebMvcProperties {
 
     /**
      * 是否使用 filter result 的 ObjectMapper 设置到 Casts工具类中, 默认为 true
+     * @deprecated 不在使用该配置
      */
+    @Deprecated
     private boolean useFilterResultObjectMapperToCastsClass = true;
 
     /**
@@ -117,18 +119,20 @@ public class SpringWebMvcProperties {
 
     /**
      * 是否使用 filter result 的 ObjectMapper设置到 Casts工具类中
-     *
+     * @deprecated 不在使用该方法
      * @return true 是，否则 false
      */
+    @Deprecated
     public boolean isUseFilterResultObjectMapperToCastsClass() {
         return useFilterResultObjectMapperToCastsClass;
     }
 
     /**
      * 设置是否使用 filter result 的 ObjectMapper设置到 Casts工具类中
-     *
+     * @deprecated 不在使用该方法
      * @param useFilterResultObjectMapperToCastsClass true 是，否则 false
      */
+    @Deprecated
     public void setUseFilterResultObjectMapperToCastsClass(boolean useFilterResultObjectMapperToCastsClass) {
         this.useFilterResultObjectMapperToCastsClass = useFilterResultObjectMapperToCastsClass;
     }

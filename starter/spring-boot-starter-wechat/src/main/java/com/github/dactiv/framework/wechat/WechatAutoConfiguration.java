@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @AutoConfigureAfter(IdempotentAutoConfiguration.class)
-@ConditionalOnProperty(prefix = "dactiv.wechat.enabled", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.wechat", value = "enabled", matchIfMissing = true)
 @EnableConfigurationProperties({AppletConfig.class, WechatConfig.class, OfficialConfig.class})
 public class WechatAutoConfiguration {
 
