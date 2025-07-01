@@ -136,8 +136,6 @@
         <module>parent</module>
         <module>commons</module>
         <module>starter</module>
-        <module>starter/spring-boot-starter-netty-socketio-client</module>
-        <module>starter/spring-boot-starter-fasc-openapi</module>
     </modules>
 
 </project>

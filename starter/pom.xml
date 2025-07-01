@@ -30,8 +30,10 @@
         <module>spring-boot-starter-spring-security</module>
         <module>spring-boot-starter-captcha</module>
         <module>spring-boot-starter-alibaba-canal</module>
-        <module>spring-boot-starter-fadada</module>
         <module>spring-boot-starter-wechat</module>
+        <module>spring-boot-starter-netty-socketio-client</module>
+        <module>spring-boot-starter-fasc-openapi</module>
+        <module>spring-boot-starter-citic</module>
     </modules>
 
 </project>

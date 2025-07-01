@@ -6,9 +6,9 @@
   ],
   "properties": [
     {
-      "name": "dactiv.fasc.enabled",
+      "name": "dactiv.citic.enabled",
       "type": "java.lang.Boolean",
-      "description": "enabled fasc support .",
+      "description": "enabled citic support .",
       "defaultValue": true
     }
   ]
