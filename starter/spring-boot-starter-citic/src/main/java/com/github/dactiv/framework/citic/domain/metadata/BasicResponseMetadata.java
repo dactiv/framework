@@ -5,7 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import java.io.Serial;
 import java.io.Serializable;
 
-public class CiticBasicResponseMetadata implements Serializable {
+public class BasicResponseMetadata implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 7720848186082816691L;
@@ -22,10 +22,8 @@ public class CiticBasicResponseMetadata implements Serializable {
     private String transId;
     @JacksonXmlProperty(localName = "SIGN_INFO")
     private String sign;//签名
-    @JacksonXmlProperty(localName = "IS_NEED_CHECK")
-    private String check;//是否需要审核
 
-    public CiticBasicResponseMetadata() {
+    public BasicResponseMetadata() {
     }
 
     public String getCode() {
@@ -76,11 +74,4 @@ public class CiticBasicResponseMetadata implements Serializable {
         this.sign = sign;
     }
 
-    public String getCheck() {
-        return check;
-    }
-
-    public void setCheck(String check) {
-        this.check = check;
-    }
 }

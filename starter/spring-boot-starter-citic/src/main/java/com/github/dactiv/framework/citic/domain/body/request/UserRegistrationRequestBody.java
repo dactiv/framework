@@ -1,7 +1,7 @@
-package com.github.dactiv.framework.citic.domain.body;
+package com.github.dactiv.framework.citic.domain.body.request;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.github.dactiv.framework.citic.domain.metadata.CiticBasicRequestMetadata;
+import com.github.dactiv.framework.citic.domain.metadata.BasicRequestMetadata;
 import jakarta.validation.constraints.NotNull;
 
 import java.io.Serial;
@@ -11,7 +11,7 @@ import java.io.Serial;
  *
  * @author maurice.chen
  */
-public class CiticUserRegistrationRequestBody extends CiticBasicRequestMetadata {
+public class UserRegistrationRequestBody extends BasicRequestMetadata {
 
     @Serial
     private static final long serialVersionUID = 2972344656839463605L;
@@ -48,7 +48,7 @@ public class CiticUserRegistrationRequestBody extends CiticBasicRequestMetadata 
     @JacksonXmlProperty(localName = "USER_ADD")
     private String address; // 用户地址
 
-    public CiticUserRegistrationRequestBody() {
+    public UserRegistrationRequestBody() {
     }
 
     public String getMerchantUserId() {

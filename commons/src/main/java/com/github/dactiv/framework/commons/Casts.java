@@ -35,8 +35,10 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -892,4 +894,31 @@ public abstract class Casts {
         parts[2] = String.valueOf(revision);
         return String.join(DOT, parts);
     }
+
+    /**
+     * 字符串转整型
+     *
+     * @param string 字符串
+     *
+     * @return 整型
+     */
+    public static BigInteger stringToNumber(String string) {
+        byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
+        return new BigInteger(1, bytes); // 保持正数表示
+    }
+
+    /**
+     * 整型转字符串
+     *
+     * @param number 整形术
+     *
+     * @return 字符串
+     */
+    public static String numberToString(BigInteger number) {
+        byte[] bytes = number.toByteArray();
+        // 处理可能的符号字节
+        int start = (bytes.length > 0 && bytes[0] == 0) ? 1 : 0;
+        return new String(bytes, start, bytes.length - start, StandardCharsets.UTF_8);
+    }
+
 }

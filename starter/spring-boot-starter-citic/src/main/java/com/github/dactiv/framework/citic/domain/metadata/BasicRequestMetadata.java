@@ -14,7 +14,7 @@ import java.util.Date;
  * @author mauric.chen
  */
 @JacksonXmlRootElement(localName = "ROOT")
-public class CiticBasicRequestMetadata implements Serializable {
+public class BasicRequestMetadata implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -827083928397470593L;
@@ -52,7 +52,7 @@ public class CiticBasicRequestMetadata implements Serializable {
     @JacksonXmlProperty(localName = "REQ_RESERVED")
     private String reqReserved; // 发起方保留域
 
-    public CiticBasicRequestMetadata() {
+    public BasicRequestMetadata() {
     }
 
     public String getSign() {

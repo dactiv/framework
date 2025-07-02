@@ -7,10 +7,14 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dactiv.framework.citic.config.CiticProperties;
 import com.github.dactiv.framework.citic.domain.CiticApiResult;
-import com.github.dactiv.framework.citic.domain.body.CiticUserRegistrationRequestBody;
-import com.github.dactiv.framework.citic.domain.body.CiticUserRegistrationResponseBody;
-import com.github.dactiv.framework.citic.domain.metadata.CiticBasicRequestMetadata;
-import com.github.dactiv.framework.citic.domain.metadata.CiticBasicResponseMetadata;
+import com.github.dactiv.framework.citic.domain.body.request.BankCardRequestBody;
+import com.github.dactiv.framework.citic.domain.body.request.SearchUserStatusRequestBody;
+import com.github.dactiv.framework.citic.domain.body.request.UserRegistrationRequestBody;
+import com.github.dactiv.framework.citic.domain.body.response.SearchUserStatusResponseBody;
+import com.github.dactiv.framework.citic.domain.body.response.UserRegistrationResponseBody;
+import com.github.dactiv.framework.citic.domain.body.response.VoidResponseBody;
+import com.github.dactiv.framework.citic.domain.metadata.BasicRequestMetadata;
+import com.github.dactiv.framework.citic.domain.metadata.BasicResponseMetadata;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.exception.ErrorCodeException;
 import com.github.dactiv.framework.commons.exception.SystemException;
@@ -46,14 +50,24 @@ public class CiticService {
         this.mappingJackson2XmlHttpMessageConverter = mappingJackson2XmlHttpMessageConverter;
     }
 
-    public CiticUserRegistrationResponseBody userRegistration(CiticUserRegistrationRequestBody body) {
+    public UserRegistrationResponseBody userRegistration(UserRegistrationRequestBody body) {
         body.setTransCode("21000001");
-        return executeApi(body, CiticUserRegistrationResponseBody.class);
+        return executeApi(body, UserRegistrationResponseBody.class);
     }
 
-    public <T extends CiticBasicRequestMetadata, R extends CiticBasicResponseMetadata> R executeApi(T body, Class<R> responseType) {
+    public SearchUserStatusResponseBody searchUserStatus(SearchUserStatusRequestBody body) {
+        body.setTransCode("22000001");
+        return executeApi(body, SearchUserStatusResponseBody.class);
+    }
+
+    public VoidResponseBody bankCard(BankCardRequestBody body) {
+        body.setTransCode("21000024");
+        return executeApi(body, VoidResponseBody.class);
+    }
+
+    public <T extends BasicRequestMetadata, R extends BasicResponseMetadata> R executeApi(T body, Class<R> responseType) {
         body.setMerchantId(citicConfig.getMerchantId());
-        body.setReqSn(citicConfig.getMerchantId() + CiticBasicRequestMetadata.getRequestSsnValue() + RandomStringUtils.secure().nextAlphanumeric(citicConfig.getRandomRequestSsnNumber()));
+        body.setReqSn(citicConfig.getMerchantId() + BasicRequestMetadata.getRequestSsnValue() + RandomStringUtils.secure().nextAlphanumeric(citicConfig.getRandomRequestSsnNumber()));
         sign(body);
 
         HttpHeaders headers = getHttpHeaders(body);
@@ -96,25 +110,25 @@ public class CiticService {
         return data;
     }
 
-    private <T extends CiticBasicRequestMetadata> HttpHeaders getHttpHeaders(T body) {
+    private <T extends BasicRequestMetadata> HttpHeaders getHttpHeaders(T body) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add(CiticBasicRequestMetadata.MERCHANT_NO_HEADER_NAME, body.getMerchantId());
-        headers.add(CiticBasicRequestMetadata.TRAN_CODE_HEADER_NAME, body.getTransCode());
-        headers.add(CiticBasicRequestMetadata.SERIAL_NO_HEADER_NAME, CiticBasicRequestMetadata.getTransTimestampValue() + body.getTransCode());
-        headers.add(CiticBasicRequestMetadata.TRAN_TIMESTAMP_HEADER_NAME, CiticBasicRequestMetadata.getTransTimestampValue());
-        headers.add(CiticBasicRequestMetadata.VERSION_HEADER_NAME, citicConfig.getApiVersionValue());
+        headers.add(BasicRequestMetadata.MERCHANT_NO_HEADER_NAME, body.getMerchantId());
+        headers.add(BasicRequestMetadata.TRAN_CODE_HEADER_NAME, body.getTransCode());
+        headers.add(BasicRequestMetadata.SERIAL_NO_HEADER_NAME, BasicRequestMetadata.getTransTimestampValue() + body.getTransCode());
+        headers.add(BasicRequestMetadata.TRAN_TIMESTAMP_HEADER_NAME, BasicRequestMetadata.getTransTimestampValue());
+        headers.add(BasicRequestMetadata.VERSION_HEADER_NAME, citicConfig.getApiVersionValue());
 
         headers.setContentType(new MediaType(MediaType.APPLICATION_XML, StandardCharsets.UTF_8));
         return headers;
     }
 
-    public boolean verifySign(CiticBasicResponseMetadata body) throws Exception {
+    public boolean verifySign(BasicResponseMetadata body) throws Exception {
         String sign = body.getSign();
         String signString = getSignString(body);
         return verifySign(signString.getBytes(StandardCharsets.UTF_8), sign);
     }
 
-    private void sign(CiticBasicRequestMetadata body) {
+    private void sign(BasicRequestMetadata body) {
         String signString = getSignString(body);
         String sign = SystemException.convertSupplier(() ->
                 sign(

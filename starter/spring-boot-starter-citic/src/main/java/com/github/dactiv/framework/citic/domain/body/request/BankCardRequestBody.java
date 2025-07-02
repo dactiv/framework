@@ -1,7 +1,7 @@
-package com.github.dactiv.framework.citic.domain.body;
+package com.github.dactiv.framework.citic.domain.body.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.dactiv.framework.citic.domain.metadata.CiticBasicRequestMetadata;
+import com.github.dactiv.framework.citic.domain.metadata.BasicRequestMetadata;
 
 import java.io.Serial;
 
@@ -10,7 +10,7 @@ import java.io.Serial;
  *
  * @author maurice.chen
  */
-public class CiticBankCardRequestBody extends CiticBasicRequestMetadata {
+public class BankCardRequestBody extends BasicRequestMetadata {
 
     @Serial
     private static final long serialVersionUID = 5019015045775860966L;
@@ -99,7 +99,7 @@ public class CiticBankCardRequestBody extends CiticBasicRequestMetadata {
     @JsonProperty("VERI_AMT")
     private String transactionVerifiedAtm;
 
-    public CiticBankCardRequestBody() {
+    public BankCardRequestBody() {
     }
 
     public String getUserId() {
