@@ -22,4 +22,7 @@ public interface ValueEnum<V> {
      */
     V getValue();
 
+    default <E extends Enum<? extends ValueEnum<V>>> E ofEnum(Object value) {
+        return null;
+    }
 }

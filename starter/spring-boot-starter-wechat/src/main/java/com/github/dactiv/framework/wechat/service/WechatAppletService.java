@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.util.LinkedMultiValueMap;
 
 import java.text.MessageFormat;
 import java.util.LinkedHashMap;
@@ -63,12 +62,17 @@ public class WechatAppletService extends WechatBasicService implements Initializ
      */
     public PhoneInfoMetadata getPhoneNumber(String code) {
         AccessToken token = getAccessTokenIfCacheNull();
+
         Map<String, String> body = new LinkedHashMap<>();
         body.put("code", code);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
         ResponseEntity<Map<String, Object>> result = getRestTemplate().exchange(
                 "https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=" + token.getToken(),
                 HttpMethod.POST,
-                new HttpEntity<>(body, new LinkedMultiValueMap<>()),
+                new HttpEntity<>(body, headers),
                 new ParameterizedTypeReference<>() {
                 }
         );

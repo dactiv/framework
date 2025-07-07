@@ -97,7 +97,7 @@ public class CiticService {
         CiticApiResult<R> result = SystemException.convertSupplier(() -> objectMapper.readValue(response.getBody(), type));
 
         R data =  result.getData();
-        SystemException.isTrue(StringUtils.isNotEmpty(data.getSign()), "[中信银行 E 管家]:" + result.getMessage());
+        SystemException.isTrue(StringUtils.isNotEmpty(data.getSign()), "[中信银行 E 管家]:" + Objects.toString(data.getMessage(), result.getMessage()));
 
         Boolean verifyResult = SystemException.convertSupplier(
                 () -> verifySign(data),

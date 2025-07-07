@@ -1,6 +1,8 @@
 package com.github.dactiv.framework.commons.enumerate.support;
 
+import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.enumerate.NameValueEnum;
+import com.github.dactiv.framework.commons.enumerate.ValueEnum;
 import org.apache.commons.lang3.BooleanUtils;
 
 /**
@@ -46,6 +48,11 @@ public enum YesOrNo implements NameValueEnum<Integer> {
     }
 
     @Override
+    public <E extends Enum<? extends ValueEnum<Integer>>> E ofEnum(Object value) {
+        return Casts.cast(BooleanUtils.toBoolean(value.toString()) ? Yes : No);
+    }
+
+    @Override
     public String getName() {
         return name;
     }
@@ -62,5 +69,7 @@ public enum YesOrNo implements NameValueEnum<Integer> {
     public static YesOrNo ofBoolean(boolean value) {
         return value ? Yes : No;
     }
+
+
 }
 

@@ -10,9 +10,9 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>spring-boot-starter-citic</artifactId>
-    <name>spring-boot-starter-citic</name>
-    <description>citic e butler framework</description>
+    <artifactId>spring-boot-starter-allin-pay</artifactId>
+    <name>spring-boot-starter-allin-pay</name>
+    <description>allin-pay support jar</description>
     <packaging>jar</packaging>
 
     <properties>
@@ -20,6 +20,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
 
     <dependencies>
         <dependency>
@@ -31,45 +32,6 @@
             <groupId>com.github.dactiv.framework</groupId>
             <artifactId>spring-boot-starter-access-crypto</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcprov-jdk15to18</artifactId>
-            <version>1.81</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.bouncycastle</groupId>
-            <artifactId>bcpkix-jdk15to18</artifactId>
-            <version>1.81</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.citic</groupId>
-            <artifactId>cryppkg</artifactId>
-            <scope>system</scope>
-            <version>1.0.0</version>
-            <systemPath>${project.basedir}/lib/cryppkg-1.12.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>cfca</groupId>
-            <artifactId>cfca-sadk</artifactId>
-            <scope>system</scope>
-            <version>1.0.0</version>
-            <systemPath>${project.basedir}/lib/SADK-CITICBANK-3.0.0.2-1.0.0.jar</systemPath>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.httpcomponents.client5</groupId>
-            <artifactId>httpclient5</artifactId>
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -117,4 +79,5 @@
 
         </plugins>
     </build>
+
 </project>

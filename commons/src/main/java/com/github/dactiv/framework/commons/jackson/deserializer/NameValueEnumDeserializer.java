@@ -53,6 +53,13 @@ public class NameValueEnumDeserializer<T extends NameValueEnum> extends JsonDese
                     .findFirst();
         }
 
+        if (optional.isEmpty()) {
+            optional = valueEnums
+                    .stream()
+                    .filter(v -> Objects.nonNull(v.ofEnum(nodeValue)))
+                    .findFirst();
+        }
+
         NameValueEnum result = optional
                 .orElseThrow(() -> new SystemException("在类型 [" + targetType + "] 枚举里找不到值为 [" + nodeValue + "] 的类型"));
 

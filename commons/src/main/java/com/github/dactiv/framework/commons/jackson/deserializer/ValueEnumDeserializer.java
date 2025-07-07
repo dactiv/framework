@@ -10,6 +10,7 @@ import com.github.dactiv.framework.commons.exception.SystemException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -44,6 +45,13 @@ public class ValueEnumDeserializer<T extends ValueEnum> extends JsonDeserializer
             optional = valueEnums
                     .stream()
                     .filter(v -> v.toString().equals(nodeValue))
+                    .findFirst();
+        }
+
+        if (optional.isEmpty()) {
+            optional = valueEnums
+                    .stream()
+                    .filter(v -> Objects.nonNull(v.ofEnum(nodeValue)))
                     .findFirst();
         }
 
