@@ -148,6 +148,8 @@ public class CiticService {
                 .entrySet()
                 .stream()
                 .filter(e -> !citicConfig.getIgnoreSignProperties().contains(e.getKey()))
+                .filter(e -> Objects.nonNull(e.getValue()))
+                .filter(e -> StringUtils.isNotEmpty(e.getValue().toString()))
                 .forEach(e -> values.add(e.getValue().toString()));
 
         StringBuilder signString = new StringBuilder();

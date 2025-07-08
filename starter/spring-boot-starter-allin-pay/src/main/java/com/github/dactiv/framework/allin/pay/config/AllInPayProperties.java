@@ -8,6 +8,14 @@ public class AllInPayProperties {
 
     public static final String UNIFIED_PAY_API = "/api/access/payInterface/unifiedPay";
 
+    public static final String QUERY_UNIFIED_PAY_API = "/api/access/payInterface/findOrderInfo";
+
+    public static final String REFUND_API = "/api/access/payInterface/refund";
+
+    public static final String BATCH_REFUND_API = "/api/access/payInterface/batchRefund";
+
+    public static final String PAYMENT_IN_QR_CODE_API = "/api/access/payInterface/usePaymentCode";
+
     private CloudSecretMetadata secret = new CloudSecretMetadata();
 
     private String baseUrl = "https://interfacetest.allinpaygx.com";

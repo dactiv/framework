@@ -1,18 +1,18 @@
-package com.github.dactiv.framework.allin.pay.domain.body;
+package com.github.dactiv.framework.allin.pay.domain.metadata;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.github.dactiv.framework.allin.pay.domain.metadata.BasicRequestMetadata;
 import com.github.dactiv.framework.allin.pay.service.AllInPayService;
 
 import java.io.Serial;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class UnifiedRequestBody extends BasicRequestMetadata {
+public class BasicOrderRequestMetadata extends BasicRequestMetadata{
 
     @Serial
-    private static final long serialVersionUID = 2672681383541187192L;
+    private static final long serialVersionUID = 1867322369882303765L;
 
     private String storeNo;
 
@@ -28,28 +28,21 @@ public class UnifiedRequestBody extends BasicRequestMetadata {
 
     private String orderName;
 
-    private String acct;
-
-    private String payType;
-
     @JsonFormat(pattern = AllInPayService.DATE_TIME_FORMAT)
     private Date validTime;
 
-    private String subAppid;
-
     private String remark;
+
+    private List<Map<String, Object>> goods = new LinkedList<>();
+
+    private String fqnum;
 
     private String asinfo;
 
     private String groupNo;
 
-    private List<Map<String, Object>> goods;
-
-    private String chnlstoreid;
-
-    private String goodsTag;
-
-    private String fqnum;
+    public BasicOrderRequestMetadata() {
+    }
 
     public String getStoreNo() {
         return storeNo;
@@ -107,22 +100,6 @@ public class UnifiedRequestBody extends BasicRequestMetadata {
         this.orderName = orderName;
     }
 
-    public String getAcct() {
-        return acct;
-    }
-
-    public void setAcct(String acct) {
-        this.acct = acct;
-    }
-
-    public String getPayType() {
-        return payType;
-    }
-
-    public void setPayType(String payType) {
-        this.payType = payType;
-    }
-
     public Date getValidTime() {
         return validTime;
     }
@@ -131,20 +108,28 @@ public class UnifiedRequestBody extends BasicRequestMetadata {
         this.validTime = validTime;
     }
 
-    public String getSubAppid() {
-        return subAppid;
-    }
-
-    public void setSubAppid(String subAppid) {
-        this.subAppid = subAppid;
-    }
-
     public String getRemark() {
         return remark;
     }
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public List<Map<String, Object>> getGoods() {
+        return goods;
+    }
+
+    public void setGoods(List<Map<String, Object>> goods) {
+        this.goods = goods;
+    }
+
+    public String getFqnum() {
+        return fqnum;
+    }
+
+    public void setFqnum(String fqnum) {
+        this.fqnum = fqnum;
     }
 
     public String getAsinfo() {
@@ -161,37 +146,5 @@ public class UnifiedRequestBody extends BasicRequestMetadata {
 
     public void setGroupNo(String groupNo) {
         this.groupNo = groupNo;
-    }
-
-    public List<Map<String, Object>> getGoods() {
-        return goods;
-    }
-
-    public void setGoods(List<Map<String, Object>> goods) {
-        this.goods = goods;
-    }
-
-    public String getChnlstoreid() {
-        return chnlstoreid;
-    }
-
-    public void setChnlstoreid(String chnlstoreid) {
-        this.chnlstoreid = chnlstoreid;
-    }
-
-    public String getGoodsTag() {
-        return goodsTag;
-    }
-
-    public void setGoodsTag(String goodsTag) {
-        this.goodsTag = goodsTag;
-    }
-
-    public String getFqnum() {
-        return fqnum;
-    }
-
-    public void setFqnum(String fqnum) {
-        this.fqnum = fqnum;
     }
 }
