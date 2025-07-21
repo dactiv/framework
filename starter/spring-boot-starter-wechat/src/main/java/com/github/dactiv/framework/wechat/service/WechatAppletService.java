@@ -46,7 +46,7 @@ public class WechatAppletService extends WechatBasicService implements Initializ
             AccessToken accessToken = refreshAccessToken();
             LOGGER.info("[微信小程序] 当前 token 为: {}, 在: {} 后超时", accessToken.getToken(), accessToken.getExpiresInDateTime());
         } catch (Exception e) {
-            LOGGER.error("获取微信访问 token 出错", e);
+            LOGGER.error("[微信小程序] 获取访问 token 失败", e);
         }
     }
 

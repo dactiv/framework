@@ -268,8 +268,12 @@ public class OpenApiClient implements InitializingBean {
     @Async
     @Override
     public void afterPropertiesSet() {
-        AccessToken accessToken = getAccessTokenIfNullRefresh();
-        log.info("[法大大] 当前 token 为: {}, 在: {} 后超时", accessToken.getToken(), accessToken.getExpiresInDateTime());
+        try {
+            AccessToken accessToken = getAccessTokenIfNullRefresh();
+            log.info("[法大大] 当前 token 为: {}, 在: {} 后超时", accessToken.getToken(), accessToken.getExpiresInDateTime());
+        } catch (Exception e) {
+            log.error("[法大大] 获取访问 token 失败", e);
+        }
     }
 
     public AccessToken getAccessTokenIfNullRefresh() {

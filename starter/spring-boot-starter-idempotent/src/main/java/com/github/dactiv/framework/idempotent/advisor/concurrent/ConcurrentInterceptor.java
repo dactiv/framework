@@ -103,7 +103,7 @@ public class ConcurrentInterceptor implements MethodInterceptor {
         try {
             return invocation.proceed();
         } catch (Throwable e) {
-            throw new SystemException(e.getMessage());
+            throw new SystemException(e);
         }
     }
 
@@ -422,7 +422,7 @@ public class ConcurrentInterceptor implements MethodInterceptor {
                 return lock.tryLock(waitTime.getValue(), waitTime.getUnit());
             }
         } catch (Exception e) {
-            throw new SystemException("并发获取锁时出现异常", e);
+            throw new SystemException(e);
         }
 
         return lock.tryLock();
