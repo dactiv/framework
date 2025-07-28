@@ -1,7 +1,9 @@
 package com.github.dactiv.framework.allin.pay.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.dactiv.framework.allin.pay.config.AllInPayProperties;
-import com.github.dactiv.framework.allin.pay.domain.body.*;
+import com.github.dactiv.framework.allin.pay.domain.body.request.*;
+import com.github.dactiv.framework.allin.pay.domain.body.response.SettleBillResponseBody;
 import com.github.dactiv.framework.allin.pay.domain.metadata.BasicRequestMetadata;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.exception.ErrorCodeException;
@@ -19,6 +21,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
@@ -26,7 +29,13 @@ import java.util.TreeMap;
 @Service
 public class AllInPayService {
 
-    public static final String DATE_TIME_FORMAT = "yyyyMMddHHmmss";
+    public static final String DATE_FORMAT = "yyyyMMdd";
+
+    public static final String TIME_FORMAT = "HHmmss";
+
+    public static final String DATE_TIME_FORMAT = DATE_FORMAT + TIME_FORMAT;
+
+    public static final String TRX_LIST_KEY = "trxlist";
 
     public static final Logger LOGGER = LoggerFactory.getLogger(AllInPayService.class);
 
@@ -77,6 +86,24 @@ public class AllInPayService {
     public Map<String, Object> paymentInQrCode(UsePaymentCodeRequestBody body) {
         String param = getQueryParam(body);
         return exchange(allInPayConfig.getBaseUrl() + AllInPayProperties.PAYMENT_IN_QR_CODE_API + Casts.QUESTION_MARK + param, HttpMethod.GET, new HttpEntity<>(null,null));
+    }
+
+    public List<SettleBillResponseBody> getSettleBill(SettleBillRequestBody body) {
+
+        String param = getQueryParam(body);
+
+        Map<String, Object> result = exchange(
+                allInPayConfig.getBaseUrl() + AllInPayProperties.SETTLE_BILL_API + Casts.QUESTION_MARK + param,
+                HttpMethod.GET,
+                new HttpEntity<>(null,null)
+        );
+
+        return SystemException.convertSupplier(() -> Casts.getObjectMapper().readValue(result.get(TRX_LIST_KEY).toString(), new TypeReference<>() {}));
+    }
+
+    public Map<String, Object> getFileUrl(GetFileUrlRequestBody body) {
+        String param = getQueryParam(body);
+        return exchange(allInPayConfig.getBaseUrl() + AllInPayProperties.FILE_URL_API + Casts.QUESTION_MARK + param, HttpMethod.GET, new HttpEntity<>(null,null));
     }
 
     public String getQueryParam(BasicRequestMetadata metadata) {

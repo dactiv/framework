@@ -1,4 +1,4 @@
-package com.github.dactiv.framework.allin.pay.domain.body;
+package com.github.dactiv.framework.allin.pay.domain.body.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.dactiv.framework.allin.pay.domain.metadata.BasicVersionOrderRequestMetadata;

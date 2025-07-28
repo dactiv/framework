@@ -3,6 +3,9 @@ package com.github.dactiv.framework.allin.pay.domain.metadata;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * @author maurice.chen
+ */
 public class BasicRequestMetadata implements Serializable {
 
     @Serial

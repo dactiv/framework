@@ -1,4 +1,4 @@
-package com.github.dactiv.framework.allin.pay.domain.body;
+package com.github.dactiv.framework.allin.pay.domain.body.request;
 
 import com.github.dactiv.framework.allin.pay.domain.metadata.BasicVersionRequestMetadata;
 

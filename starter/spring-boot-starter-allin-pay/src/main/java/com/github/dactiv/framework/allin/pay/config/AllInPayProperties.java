@@ -16,6 +16,10 @@ public class AllInPayProperties {
 
     public static final String PAYMENT_IN_QR_CODE_API = "/api/access/payInterface/usePaymentCode";
 
+    public static final String SETTLE_BILL_API = "/api/access/payInterface/getSettleBill";
+
+    public static final String FILE_URL_API = "/api/access/accountStatement/getFileUrl";
+
     private CloudSecretMetadata secret = new CloudSecretMetadata();
 
     private String baseUrl = "https://interfacetest.allinpaygx.com";
