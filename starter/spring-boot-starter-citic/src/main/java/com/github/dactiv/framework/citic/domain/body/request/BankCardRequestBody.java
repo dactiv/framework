@@ -2,6 +2,7 @@ package com.github.dactiv.framework.citic.domain.body.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.dactiv.framework.citic.domain.metadata.BasicRequestMetadata;
+import jakarta.validation.constraints.NotNull;
 
 import java.io.Serial;
 
@@ -18,12 +19,14 @@ public class BankCardRequestBody extends BasicRequestMetadata {
     /**
      * 用户编号
      */
+    @NotNull
     @JsonProperty("USER_ID")
     private String userId;
 
     /**
      * 绑卡类型: 1-绑定 2-解绑
      */
+    @NotNull
     @JsonProperty("OP_TYPE")
     private String operateType;
 
@@ -36,36 +39,42 @@ public class BankCardRequestBody extends BasicRequestMetadata {
     /**
      * 账户名称
      */
+    @NotNull
     @JsonProperty("ACCT_NM")
     private String accountName;
 
     /**
      * 银行账号，绑定银行卡的卡号
      */
+    @NotNull
     @JsonProperty("PAN")
     private String cardNumber;
 
     /**
      * 绑定个人卡类型： 01-个人身份证 22-户口簿 23-外国护照 25-军人军官证 26-军人士兵证 27-武警军官证 28-港澳居民往来内地通行证（香港） 29-台湾居民往来大陆通行证 30-临时居民身份证 31-外国人永久居留证 32-中国护照 33-武警士兵证 34-港澳居民往来内地通行证（澳门） 35-边民出入境通行证 36-台湾居民旅行证 绑定企业卡： 02-组织机构代码 03-统一社会信用代码 04-民办非企业登记证书 05-社会团体法人登记证书 06-事业单位法人登记证 07-营业执照号码
      */
+    @NotNull
     @JsonProperty("USER_ID_TYPE")
     private String userIdCardType;
 
     /**
      * 用户证件号码
      */
+    @NotNull
     @JsonProperty("BANK_CARD_NO")
     private String useridCardNumber;
 
     /**
      * 账户类型:	若用户类型是个体工商户，需上送以下账户类型且必填 1-中信个人账户 2-中信企业账户 3-他行个人账户 4-他行企业账户 个人用户绑定存折时，账户类型需上送以下账户类型，且必填。 账户类型为存折时，证件类型只支持身份证。 如不上送正确存折类型，可能会导致绑卡或提现失败。 存折提现只能通过智能提现接口，提现通道只支持人行二代。 5-中信个人存折（必填） 6-他行个人存折（必填）
      */
+    @NotNull
     @JsonProperty("ACCT_TYPE")
     private String accountType;
 
     /**
      * 银行预留手机号, 绑定且用户类型为个人时必填，解绑时非必填，可以不用和注册时使用的手机号一致，银联鉴权以绑卡接口上送的手机号为准
      */
+    @NotNull
     @JsonProperty("BANK_PHONE")
     private String verifiedBankMobile;
 

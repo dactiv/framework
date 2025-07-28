@@ -22,6 +22,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ *
+ * @author maurice.chen
+ */
 public class WechatAppletService extends WechatBasicService implements InitializingBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WechatAppletService.class);
@@ -119,6 +123,10 @@ public class WechatAppletService extends WechatBasicService implements Initializ
         AccessToken token = getAccessTokenIfCacheNull();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("[创建小程序二维码]:提交参数信息为:{}", param);
+        }
 
         ResponseEntity<byte[]> result = getRestTemplate().exchange(
                 "https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=" + token.getToken(),

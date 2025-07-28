@@ -83,11 +83,15 @@ public class ConsoleApiMinioAsyncClient extends MinioAsyncClient implements Init
                 minioProperties.getAccessKeyBodyName(), minioProperties.getAccessKey(),
                 minioProperties.getSecretKeyBodyName(), minioProperties.getSecretKey()
         );
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(param, httpHeaders);
         ResponseEntity<Map<String, Object>> result = restTemplate.exchange(
                 minioProperties.getConsoleApiAddress(LOGIN_CONSOLE_API_NAME),
                 HttpMethod.POST,
-                new HttpEntity<>(param),
-                new ParameterizedTypeReference<>() { });
+                entity,
+                new ParameterizedTypeReference<>() { }
+        );
 
         Assert.isTrue(
                 result.getStatusCode().is2xxSuccessful(),

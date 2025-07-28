@@ -4,6 +4,9 @@ import com.github.dactiv.framework.citic.domain.metadata.BasicResponseMetadata;
 
 import java.io.Serial;
 
+/**
+ * @author maurice.chen
+ */
 public class VoidResponseBody extends BasicResponseMetadata {
 
     @Serial

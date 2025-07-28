@@ -16,37 +16,81 @@ public class UserRegistrationRequestBody extends BasicRequestMetadata {
     @Serial
     private static final long serialVersionUID = 2972344656839463605L;
 
+    /**
+     * 商户端用户编号
+     */
     @NotNull
     @JacksonXmlProperty(localName = "MCHNT_USER_ID")
-    private String merchantUserId; // 商户端用户编号
+    private String merchantUserId;
 
+    /**
+     * 用户类型
+     */
     @NotNull
     @JacksonXmlProperty(localName = "USER_TYPE")
-    private String userType; // 用户类型
+    private String userType;
 
+    /**
+     * 用户姓名
+     */
     @NotNull
     @JacksonXmlProperty(localName = "USER_NM")
-    private String userRealName; // 用户姓名
+    private String userRealName;
 
+    /**
+     * 用户角色
+     */
     @NotNull
     @JacksonXmlProperty(localName = "USER_ROLE")
-    private String userRole; // 用户角色
+    private String userRole;
+
+    /**
+     * 签约类型
+     */
     @JacksonXmlProperty(localName = "SIGN_TYPE")
-    private String signType = "00"; // 签约类型
+    private String signType = "00";
+
+    /**
+     * 证件类型
+     */
     @JacksonXmlProperty(localName = "USER_ID_TYPE")
-    private String userIdCardType; // 证件类型
+    private String userIdCardType;
+
+    /**
+     * 证件号码
+     */
     @JacksonXmlProperty(localName = "USER_ID_NO")
-    private String userIdNumber; // 证件号码
+    private String userIdNumber;
+
+    /**
+     * 用户手机号
+     */
     @JacksonXmlProperty(localName = "USER_PHONE")
-    private String userPhoneNumber; // 用户手机号
+    private String userPhoneNumber;
+
+    /**
+     * 企业法人姓名
+     */
     @JacksonXmlProperty(localName = "CORP_NM")
-    private String legalPersonName; // 企业法人姓名
+    private String legalPersonName;
+
+    /**
+     * 企业法人身份证号码
+     */
     @JacksonXmlProperty(localName = "CORP_ID_NO")
-    private String legalPersonIdNumber; // 企业法人身份证号码
+    private String legalPersonIdNumber;
+
+    /**
+     * 企业法人证件类型
+     */
     @JacksonXmlProperty(localName = "CORP_ID_TYPE")
-    private String legalPersonIdCardType; // 企业法人证件类型
+    private String legalPersonIdCardType;
+
+    /**
+     * 用户地址
+     */
     @JacksonXmlProperty(localName = "USER_ADD")
-    private String address; // 用户地址
+    private String address;
 
     public UserRegistrationRequestBody() {
     }

@@ -46,11 +46,17 @@ public class BasicRequestMetadata implements Serializable {
     @JacksonXmlProperty(localName = "REQ_SSN")
     private String reqSn;
 
+    /**
+     * 商户编号
+     */
     @JacksonXmlProperty(localName = "MCHNT_ID")
-    private String merchantId; // 商户编号
+    private String merchantId;
 
+    /**
+     * 发起方保留域
+     */
     @JacksonXmlProperty(localName = "REQ_RESERVED")
-    private String reqReserved; // 发起方保留域
+    private String reqReserved;
 
     public BasicRequestMetadata() {
     }

@@ -7,12 +7,8 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dactiv.framework.citic.config.CiticProperties;
 import com.github.dactiv.framework.citic.domain.CiticApiResult;
-import com.github.dactiv.framework.citic.domain.body.request.BankCardRequestBody;
-import com.github.dactiv.framework.citic.domain.body.request.SearchUserStatusRequestBody;
-import com.github.dactiv.framework.citic.domain.body.request.UserRegistrationRequestBody;
-import com.github.dactiv.framework.citic.domain.body.response.SearchUserStatusResponseBody;
-import com.github.dactiv.framework.citic.domain.body.response.UserRegistrationResponseBody;
-import com.github.dactiv.framework.citic.domain.body.response.VoidResponseBody;
+import com.github.dactiv.framework.citic.domain.body.request.*;
+import com.github.dactiv.framework.citic.domain.body.response.*;
 import com.github.dactiv.framework.citic.domain.metadata.BasicRequestMetadata;
 import com.github.dactiv.framework.citic.domain.metadata.BasicResponseMetadata;
 import com.github.dactiv.framework.commons.Casts;
@@ -55,14 +51,29 @@ public class CiticService {
         return executeApi(body, UserRegistrationResponseBody.class);
     }
 
-    public SearchUserStatusResponseBody searchUserStatus(SearchUserStatusRequestBody body) {
+    public SearchUserStatusResponseBody searchUserStatus(BasicUserIdRequestBody body) {
         body.setTransCode("22000001");
         return executeApi(body, SearchUserStatusResponseBody.class);
     }
 
-    public VoidResponseBody bankCard(BankCardRequestBody body) {
+    public VoidResponseBody bankCardOperation(BankCardRequestBody body) {
         body.setTransCode("21000024");
         return executeApi(body, VoidResponseBody.class);
+    }
+
+    public VoidResponseBody setDefaultBankCard(DefaultBankCardRequestBody body) {
+        body.setTransCode("21000025");
+        return executeApi(body, VoidResponseBody.class);
+    }
+
+    public WithdrawalResponseBody withdrawal(WithdrawalRequestBody body) {
+        body.setTransCode("21000025");
+        return executeApi(body, WithdrawalResponseBody.class);
+    }
+
+    public SearchBalanceResponseBody searchBalance(SearchBalanceRequestBody body) {
+        body.setTransCode("22000006");
+        return executeApi(body, SearchBalanceResponseBody.class);
     }
 
     public <T extends BasicRequestMetadata, R extends BasicResponseMetadata> R executeApi(T body, Class<R> responseType) {

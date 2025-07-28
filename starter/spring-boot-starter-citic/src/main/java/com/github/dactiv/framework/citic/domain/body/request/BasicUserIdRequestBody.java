@@ -6,7 +6,10 @@ import jakarta.validation.constraints.NotNull;
 
 import java.io.Serial;
 
-public class SearchUserStatusRequestBody extends BasicRequestMetadata {
+/**
+ * @author maurice.chen
+ */
+public class BasicUserIdRequestBody extends BasicRequestMetadata {
 
     @Serial
     private static final long serialVersionUID = -7816076399964435909L;
@@ -14,4 +17,15 @@ public class SearchUserStatusRequestBody extends BasicRequestMetadata {
     @NotNull
     @JacksonXmlProperty(localName = "USER_ID")
     private String userId;
+
+    public BasicUserIdRequestBody() {
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 }

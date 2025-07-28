@@ -16,8 +16,11 @@ public class UserRegistrationResponseBody extends BasicResponseMetadata {
     @JacksonXmlProperty(localName = "USER_ID")
     private String userId;
 
+    /**
+     * 是否需要审核
+     */
     @JacksonXmlProperty(localName = "IS_NEED_CHECK")
-    private String check;//是否需要审核
+    private String check;
 
     public UserRegistrationResponseBody() {
     }
