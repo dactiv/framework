@@ -31,24 +31,6 @@ public class BasicResponseMetadata implements Serializable {
     @JacksonXmlProperty(localName = "REQ_SSN")
     private String requestSsn;
 
-    /**
-     * 动态密码句柄
-     */
-    @JacksonXmlProperty(localName = "PWDID")
-    private String passwordId;
-
-    /**
-     * 交易标识
-     */
-    @JacksonXmlProperty(localName = "TRANS_ID")
-    private String transactionId;
-
-    /**
-     * 签名
-     */
-    @JacksonXmlProperty(localName = "SIGN_INFO")
-    private String sign;
-
     public BasicResponseMetadata() {
     }
 
@@ -74,30 +56,6 @@ public class BasicResponseMetadata implements Serializable {
 
     public void setRequestSsn(String requestSsn) {
         this.requestSsn = requestSsn;
-    }
-
-    public String getPasswordId() {
-        return passwordId;
-    }
-
-    public void setPasswordId(String passwordId) {
-        this.passwordId = passwordId;
-    }
-
-    public String getTransactionId() {
-        return transactionId;
-    }
-
-    public void setTransactionId(String transactionId) {
-        this.transactionId = transactionId;
-    }
-
-    public String getSign() {
-        return sign;
-    }
-
-    public void setSign(String sign) {
-        this.sign = sign;
     }
 
 }

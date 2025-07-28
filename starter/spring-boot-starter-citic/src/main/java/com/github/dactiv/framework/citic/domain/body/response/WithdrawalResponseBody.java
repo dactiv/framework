@@ -1,7 +1,7 @@
 package com.github.dactiv.framework.citic.domain.body.response;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.github.dactiv.framework.citic.domain.metadata.BasicResponseMetadata;
+import com.github.dactiv.framework.citic.domain.metadata.SimpleResponseMetadata;
 
 import java.io.Serial;
 import java.time.LocalDate;
@@ -10,7 +10,7 @@ import java.time.LocalTime;
 /**
  * @author maurice.chen
  */
-public class WithdrawalResponseBody extends BasicResponseMetadata {
+public class WithdrawalResponseBody extends SimpleResponseMetadata {
 
     @Serial
     private static final long serialVersionUID = -1630520203254214558L;

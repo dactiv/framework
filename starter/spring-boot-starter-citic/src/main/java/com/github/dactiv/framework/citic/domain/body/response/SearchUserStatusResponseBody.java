@@ -1,14 +1,14 @@
 package com.github.dactiv.framework.citic.domain.body.response;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.github.dactiv.framework.citic.domain.metadata.BasicResponseMetadata;
+import com.github.dactiv.framework.citic.domain.metadata.SignResponseMetadata;
 
 import java.io.Serial;
 
 /**
  * @author maurice.chen
  */
-public class SearchUserStatusResponseBody extends BasicResponseMetadata {
+public class SearchUserStatusResponseBody extends SignResponseMetadata {
 
     @Serial
     private static final long serialVersionUID = 1402600926033955985L;
@@ -42,4 +42,55 @@ public class SearchUserStatusResponseBody extends BasicResponseMetadata {
      */
     @JacksonXmlProperty(localName = "USER_ST")
     private String userStatus;
+
+    public SearchUserStatusResponseBody() {
+    }
+
+    public String getCheckFailReason() {
+        return checkFailReason;
+    }
+
+    public void setCheckFailReason(String checkFailReason) {
+        this.checkFailReason = checkFailReason;
+    }
+
+    public String getUserCheckStatus() {
+        return userCheckStatus;
+    }
+
+    public void setUserCheckStatus(String userCheckStatus) {
+        this.userCheckStatus = userCheckStatus;
+    }
+
+    public String getMerchantId() {
+        return merchantId;
+    }
+
+    public void setMerchantId(String merchantId) {
+        this.merchantId = merchantId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    public String getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(String userStatus) {
+        this.userStatus = userStatus;
+    }
 }

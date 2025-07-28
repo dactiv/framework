@@ -1,11 +1,14 @@
 package com.github.dactiv.framework.citic.domain.body.response;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.github.dactiv.framework.citic.domain.metadata.BasicResponseMetadata;
+import com.github.dactiv.framework.citic.domain.metadata.SimpleResponseMetadata;
 
 import java.io.Serial;
 
-public class UserRegistrationResponseBody extends BasicResponseMetadata {
+/**
+ * @author maurice.chen
+ */
+public class UserRegistrationResponseBody extends SimpleResponseMetadata {
 
     @Serial
     private static final long serialVersionUID = -9185644851678554525L;

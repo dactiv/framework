@@ -11,6 +11,8 @@ import com.github.dactiv.framework.citic.domain.body.request.*;
 import com.github.dactiv.framework.citic.domain.body.response.*;
 import com.github.dactiv.framework.citic.domain.metadata.BasicRequestMetadata;
 import com.github.dactiv.framework.citic.domain.metadata.BasicResponseMetadata;
+import com.github.dactiv.framework.citic.domain.metadata.SignResponseMetadata;
+import com.github.dactiv.framework.citic.domain.metadata.SimpleResponseMetadata;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.exception.ErrorCodeException;
 import com.github.dactiv.framework.commons.exception.SystemException;
@@ -56,14 +58,14 @@ public class CiticService {
         return executeApi(body, SearchUserStatusResponseBody.class);
     }
 
-    public VoidResponseBody bankCardOperation(BankCardRequestBody body) {
+    public SimpleResponseMetadata bankCardOperation(BankCardRequestBody body) {
         body.setTransCode("21000024");
-        return executeApi(body, VoidResponseBody.class);
+        return executeApi(body, SimpleResponseMetadata.class);
     }
 
-    public VoidResponseBody setDefaultBankCard(DefaultBankCardRequestBody body) {
+    public SignResponseMetadata setDefaultBankCard(DefaultBankCardRequestBody body) {
         body.setTransCode("21000025");
-        return executeApi(body, VoidResponseBody.class);
+        return executeApi(body, SignResponseMetadata.class);
     }
 
     public WithdrawalResponseBody withdrawal(WithdrawalRequestBody body) {
@@ -74,6 +76,11 @@ public class CiticService {
     public SearchBalanceResponseBody searchBalance(SearchBalanceRequestBody body) {
         body.setTransCode("22000006");
         return executeApi(body, SearchBalanceResponseBody.class);
+    }
+
+    public UploadFileResponseBody uploadFile(UploadFileRequestBody body) {
+        body.setTransCode("21000031");
+        return executeApi(body, UploadFileResponseBody.class);
     }
 
     public <T extends BasicRequestMetadata, R extends BasicResponseMetadata> R executeApi(T body, Class<R> responseType) {
@@ -108,13 +115,14 @@ public class CiticService {
         CiticApiResult<R> result = SystemException.convertSupplier(() -> objectMapper.readValue(response.getBody(), type));
 
         R data =  result.getData();
-        SystemException.isTrue(StringUtils.isNotEmpty(data.getSign()), "[中信银行 E 管家]:" + Objects.toString(data.getMessage(), result.getMessage()));
-
-        Boolean verifyResult = SystemException.convertSupplier(
-                () -> verifySign(data),
-                (e) -> new SystemException("[中信银行 E 管家]:验签出现异常", e)
-        );
-        SystemException.isTrue(Objects.nonNull(verifyResult) && verifyResult, "[中信银行 E 管家]:响应数据验签不通过");
+        if(data instanceof SignResponseMetadata signResponseMetadata) {
+            SystemException.isTrue(StringUtils.isNotEmpty(signResponseMetadata.getSign()), "[中信银行 E 管家]:" + Objects.toString(data.getMessage(), result.getMessage()));
+            Boolean verifyResult = SystemException.convertSupplier(
+                    () -> verifySign(signResponseMetadata),
+                    (e) -> new SystemException("[中信银行 E 管家]:验签出现异常", e)
+            );
+            SystemException.isTrue(Objects.nonNull(verifyResult) && verifyResult, "[中信银行 E 管家]:响应数据验签不通过");
+        }
 
         SystemException.isTrue(citicConfig.getApiSuccessCodeValue().equals(data.getCode()), () -> new ErrorCodeException("[中信银行 E 管家]: 执行接口 [" + body.getTransCode() + "] 错误, " + data.getMessage(), data.getCode()));
 
@@ -133,7 +141,7 @@ public class CiticService {
         return headers;
     }
 
-    public boolean verifySign(BasicResponseMetadata body) throws Exception {
+    public boolean verifySign(SignResponseMetadata body) throws Exception {
         String sign = body.getSign();
         String signString = getSignString(body);
         return verifySign(signString.getBytes(StandardCharsets.UTF_8), sign);

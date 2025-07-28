@@ -1,7 +1,7 @@
 package com.github.dactiv.framework.citic.domain.body.response;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.github.dactiv.framework.citic.domain.metadata.BasicResponseMetadata;
+import com.github.dactiv.framework.citic.domain.metadata.SignResponseMetadata;
 
 import java.io.Serial;
 import java.math.BigDecimal;
@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 /**
  * @author maurice.chen
  */
-public class SearchBalanceResponseBody extends BasicResponseMetadata {
+public class SearchBalanceResponseBody extends SignResponseMetadata {
     @Serial
     private static final long serialVersionUID = -6875845534669079424L;
 
