@@ -32,9 +32,18 @@ import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.*;
 
+/**
+ * @author maurice.chen
+ */
 public class CiticService {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CiticService.class);
+
+    public static final String DATE_FORMAT = "yyyyMMdd";
+
+    public static final String TIME_FORMAT = "HHmmss";
+
+    public static final String DATE_TIME_FORMAT = DATE_FORMAT + TIME_FORMAT;
 
     private final RestTemplate restTemplate;
 
@@ -81,6 +90,21 @@ public class CiticService {
     public UploadFileResponseBody uploadFile(UploadFileRequestBody body) {
         body.setTransCode("21000031");
         return executeApi(body, UploadFileResponseBody.class);
+    }
+
+    public UserSsnResponseBody readTimePayment(RealTimePaymentRequestBody body) {
+        body.setTransCode("21000050");
+        return executeApi(body, UserSsnResponseBody.class);
+    }
+
+    public UserSsnResponseBody readTimeRefund(RealTimeRefundRequestBody body) {
+        body.setTransCode("21000051");
+        return executeApi(body, UserSsnResponseBody.class);
+    }
+
+    public SearchUploadFileStatusResponseBody searchUploadFileStatus(SearchUploadFileStatusRequestBody body) {
+        body.setTransCode("21000032");
+        return executeApi(body, SearchUploadFileStatusResponseBody.class);
     }
 
     public <T extends BasicRequestMetadata, R extends BasicResponseMetadata> R executeApi(T body, Class<R> responseType) {

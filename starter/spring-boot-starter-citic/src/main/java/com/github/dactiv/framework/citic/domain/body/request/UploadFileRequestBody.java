@@ -14,6 +14,12 @@ public class UploadFileRequestBody extends BasicRequestMetadata {
     @Serial
     private static final long serialVersionUID = -1642224608640621105L;
 
+    public static final String DEFAULT_FILE_SUFFIX = ".ZIP";
+
+    public static final String DEFAULT_SPLIT_SIMPLE = "\u0003";
+
+    public static final String DEFAULT_SERIAL_NUMBER = "01";
+
     @NotNull
     @JacksonXmlProperty(localName = "FILE_TYPE")
     private String fileType;
@@ -28,7 +34,7 @@ public class UploadFileRequestBody extends BasicRequestMetadata {
 
     @NotNull
     @JacksonXmlProperty(localName = "TRANS_TYPE")
-    private String transactionType;
+    private String transportType;
 
     @NotNull
     @JacksonXmlProperty(localName = "FILE_CONTENT")
@@ -61,12 +67,12 @@ public class UploadFileRequestBody extends BasicRequestMetadata {
         this.filename = filename;
     }
 
-    public String getTransactionType() {
-        return transactionType;
+    public String getTransportType() {
+        return transportType;
     }
 
-    public void setTransactionType(String transactionType) {
-        this.transactionType = transactionType;
+    public void setTransportType(String transportType) {
+        this.transportType = transportType;
     }
 
     public String getFileContent() {

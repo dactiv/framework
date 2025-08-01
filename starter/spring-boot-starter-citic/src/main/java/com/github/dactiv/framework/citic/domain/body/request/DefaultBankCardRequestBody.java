@@ -1,5 +1,7 @@
 package com.github.dactiv.framework.citic.domain.body.request;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
 import java.io.Serial;
 
 /**
@@ -11,8 +13,10 @@ public class DefaultBankCardRequestBody extends BasicUserIdRequestBody {
     @Serial
     private static final long serialVersionUID = 4784529697370822363L;
 
+    @JacksonXmlProperty(localName = "SETTLE_ACCT")
     private String accountName;
 
+    @JacksonXmlProperty(localName = "SETTLE_ACCT_NM")
     private String accountNumber;
 
     public DefaultBankCardRequestBody() {

@@ -11,6 +11,8 @@ import java.io.Serial;
  */
 public class BasicUserIdRequestBody extends BasicRequestMetadata {
 
+    public static final String USER_ID_FIELD = "userId";
+
     @Serial
     private static final long serialVersionUID = -7816076399964435909L;
 

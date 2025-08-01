@@ -25,7 +25,7 @@ public class CiticProperties {
 
     private String sslTrustStoreKeyPath;
 
-    private List<String> ignoreSignProperties = List.of("sign");
+    private List<String> ignoreSignProperties = List.of("sign", "fileContent");
 
     private String apiVersionValue = "v1.0";
 

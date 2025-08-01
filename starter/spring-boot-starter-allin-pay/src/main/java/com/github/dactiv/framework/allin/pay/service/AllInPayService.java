@@ -37,6 +37,8 @@ public class AllInPayService {
 
     public static final String TRX_LIST_KEY = "trxlist";
 
+    public static final String ORDER_NUMBER_KEY = "orderNo";
+
     public static final Logger LOGGER = LoggerFactory.getLogger(AllInPayService.class);
 
     private final AllInPayProperties allInPayConfig;
