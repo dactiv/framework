@@ -4,7 +4,7 @@ import com.github.dactiv.framework.allin.pay.domain.metadata.BasicVersionRequest
 
 import java.io.Serial;
 
-public class QueryUnifiedPayRequestBody extends BasicVersionRequestMetadata {
+public class QueryOrderRequestBody extends BasicVersionRequestMetadata {
     @Serial
     private static final long serialVersionUID = -1950483859711218175L;
 
@@ -16,7 +16,7 @@ public class QueryUnifiedPayRequestBody extends BasicVersionRequestMetadata {
 
     private String trxid;
 
-    public QueryUnifiedPayRequestBody() {
+    public QueryOrderRequestBody() {
     }
 
     public String getMerchantOrderNo() {

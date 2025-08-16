@@ -1,7 +1,7 @@
 package com.github.dactiv.framework.citic.domain.body.response;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.github.dactiv.framework.citic.domain.metadata.SignResponseMetadata;
+import com.github.dactiv.framework.citic.domain.metadata.BasicResponseMetadata;
 
 import java.io.Serial;
 import java.math.BigDecimal;
@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 /**
  * @author maurice.chen
  */
-public class SearchBalanceResponseBody extends SignResponseMetadata {
+public class SearchUserBalanceResponseBody extends BasicResponseMetadata {
     @Serial
     private static final long serialVersionUID = -6875845534669079424L;
 
@@ -22,7 +22,7 @@ public class SearchBalanceResponseBody extends SignResponseMetadata {
     /**
      * 可用余额, 单位（元），可用余额包含当前可提现金额 + 待转可提现金额两部分
      */
-    @JacksonXmlProperty(localName = "PRE_AMOUNT")
+    @JacksonXmlProperty(localName = "AVL_AMOUNT")
     private BigDecimal availableAmount;
 
     /**
@@ -34,10 +34,10 @@ public class SearchBalanceResponseBody extends SignResponseMetadata {
     /**
      * 可提现金额	, 单位（元），可提现金额为当前可用于支付、退款、提现等交易的金额
      */
-    @JacksonXmlProperty(localName = "PLFM_SPLS_OVDF_AMT")
-    private BigDecimal platformOverdraftAmount;
+    //@JacksonXmlProperty(localName = "PLFM_SPLS_OVDF_AMT")
+    //private BigDecimal platformOverdraftAmount;
 
-    public SearchBalanceResponseBody() {
+    public SearchUserBalanceResponseBody() {
     }
 
     public BigDecimal getLastDayAmount() {
@@ -64,11 +64,11 @@ public class SearchBalanceResponseBody extends SignResponseMetadata {
         this.amount = amount;
     }
 
-    public BigDecimal getPlatformOverdraftAmount() {
+    /*public BigDecimal getPlatformOverdraftAmount() {
         return platformOverdraftAmount;
     }
 
     public void setPlatformOverdraftAmount(BigDecimal platformOverdraftAmount) {
         this.platformOverdraftAmount = platformOverdraftAmount;
-    }
+    }*/
 }

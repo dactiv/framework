@@ -8,16 +8,16 @@ import java.io.Serial;
 /**
  * @author maurice.chen
  */
-public class SearchBalanceRequestBody extends BasicUserIdRequestBody {
+public class SearchUserBalanceRequestBody extends BasicUserIdRequestBody {
 
     @Serial
     private static final long serialVersionUID = 7044344529517279182L;
 
     @NotNull
     @JacksonXmlProperty(localName = "REGISTER_ATTR")
-    private String type;
+    private String type = "14";
 
-    public SearchBalanceRequestBody() {
+    public SearchUserBalanceRequestBody() {
     }
 
     public String getType() {

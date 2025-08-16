@@ -96,13 +96,17 @@ public class SystemException extends RuntimeException {
         try {
             runnable.run();
         } catch (Exception e) {
-            if(Objects.isNull(message)) {
+            if (Objects.isNull(message)) {
                 LOGGER.warn("convertRunnable 执行时出现错误，返回 null 值", e);
                 return ;
             }
-            if (StringUtils.isEmpty(message)) {
+
+            if (e instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            } else if (StringUtils.isEmpty(message)) {
                 throw new SystemException(e);
             }
+
             throw new SystemException(message, e);
         }
     }
@@ -113,14 +117,16 @@ public class SystemException extends RuntimeException {
         try {
             return supplier.get();
         } catch (Exception e) {
-            if(Objects.isNull(function)) {
+            if (Objects.isNull(function)) {
                 LOGGER.warn("convertSupplier 执行时出现错误，返回 null 值", e);
                 return null;
             }
+
             RuntimeException runtimeException = function.apply(e);
             if (Objects.isNull(runtimeException)) {
                 return null;
             }
+
             throw runtimeException;
         }
     }
@@ -130,10 +136,14 @@ public class SystemException extends RuntimeException {
         try {
             return supplier.get();
         } catch (Exception e) {
-            if(Objects.isNull(message)) {
+            if (Objects.isNull(message)) {
                 LOGGER.warn("convertSupplier 执行时出现错误，返回 null 值", e);
                 return null;
-            } else if  (StringUtils.isEmpty(message)) {
+            }
+
+            if (e instanceof RuntimeException runtimeException) {
+                throw runtimeException;
+            } else if (StringUtils.isEmpty(message)) {
                 throw new SystemException(e);
             } else {
                 throw new SystemException(message, e);

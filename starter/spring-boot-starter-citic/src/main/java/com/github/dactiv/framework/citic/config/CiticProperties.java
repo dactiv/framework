@@ -11,6 +11,8 @@ public class CiticProperties {
 
     private String baseUrl;
 
+    private String fileUploadUrl;
+
     private String signPassword;
 
     private String jksPassword;
@@ -32,6 +34,17 @@ public class CiticProperties {
     private Integer randomRequestSsnNumber = 8;
 
     private String apiSuccessCodeValue = "00000";
+
+    public CiticProperties() {
+    }
+
+    public String getFileUploadUrl() {
+        return fileUploadUrl;
+    }
+
+    public void setFileUploadUrl(String fileUploadUrl) {
+        this.fileUploadUrl = fileUploadUrl;
+    }
 
     public String getMerchantId() {
         return merchantId;

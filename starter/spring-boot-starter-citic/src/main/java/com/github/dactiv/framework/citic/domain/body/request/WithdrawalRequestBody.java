@@ -5,8 +5,6 @@ import jakarta.validation.constraints.NotNull;
 
 import java.io.Serial;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 /**
  * @author maurice.chen
@@ -26,11 +24,11 @@ public class WithdrawalRequestBody extends BasicUserIdRequestBody {
 
     @NotNull
     @JacksonXmlProperty(localName = "TRANS_DT")
-    private LocalDate transactionDate;
+    private String transactionDate;
 
     @NotNull
     @JacksonXmlProperty(localName = "TRANS_TM")
-    private LocalTime transactionTime;
+    private String transactionTime;
 
     @NotNull
     @JacksonXmlProperty(localName = "FEE_TYPE")
@@ -42,6 +40,12 @@ public class WithdrawalRequestBody extends BasicUserIdRequestBody {
 
     @JacksonXmlProperty(localName = "MEMO")
     private String remark;
+
+    @JacksonXmlProperty(localName = "WITH_ACCOUNT")
+    private String bankAccount;
+
+    @JacksonXmlProperty(localName = "WITH_ACCNAME")
+    private String bankName;
 
     public WithdrawalRequestBody() {
     }
@@ -62,19 +66,19 @@ public class WithdrawalRequestBody extends BasicUserIdRequestBody {
         this.businessId = businessId;
     }
 
-    public LocalDate getTransactionDate() {
+    public String getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(LocalDate transactionDate) {
+    public void setTransactionDate(String transactionDate) {
         this.transactionDate = transactionDate;
     }
 
-    public LocalTime getTransactionTime() {
+    public String getTransactionTime() {
         return transactionTime;
     }
 
-    public void setTransactionTime(LocalTime transactionTime) {
+    public void setTransactionTime(String transactionTime) {
         this.transactionTime = transactionTime;
     }
 
@@ -100,5 +104,21 @@ public class WithdrawalRequestBody extends BasicUserIdRequestBody {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public String getBankAccount() {
+        return bankAccount;
+    }
+
+    public void setBankAccount(String bankAccount) {
+        this.bankAccount = bankAccount;
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
+
+    public void setBankName(String bankName) {
+        this.bankName = bankName;
     }
 }

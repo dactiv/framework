@@ -13,7 +13,7 @@ public class UploadFileResponseBody extends SignResponseMetadata {
     private static final long serialVersionUID = -568217927575175415L;
 
     @JacksonXmlProperty(localName = "FILE_NAME")
-    private String fileName;
+    private String filename;
 
     @JacksonXmlProperty(localName = "ENCRYPTION_FLAG")
     private String encryption;
@@ -27,12 +27,12 @@ public class UploadFileResponseBody extends SignResponseMetadata {
     public UploadFileResponseBody() {
     }
 
-    public String getFileName() {
-        return fileName;
+    public String getFilename() {
+        return filename;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
     public String getEncryption() {

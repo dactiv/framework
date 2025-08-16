@@ -69,9 +69,9 @@ public class AllInPayService {
         return exchange(allInPayConfig.getBaseUrl() + AllInPayProperties.UNIFIED_PAY_API + Casts.QUESTION_MARK + param, HttpMethod.GET, new HttpEntity<>(null,null));
     }
 
-    public Map<String, Object> queryUnifiedPay(QueryUnifiedPayRequestBody body) {
+    public Map<String, Object> queryOrder(QueryOrderRequestBody body) {
         String param = getQueryParam(body);
-        return exchange(allInPayConfig.getBaseUrl() + AllInPayProperties.QUERY_UNIFIED_PAY_API + Casts.QUESTION_MARK + param, HttpMethod.GET, new HttpEntity<>(null,null));
+        return exchange(allInPayConfig.getBaseUrl() + AllInPayProperties.QUERY_ORDER_API + Casts.QUESTION_MARK + param, HttpMethod.GET, new HttpEntity<>(null,null));
     }
 
     public Map<String, Object> refund(RefundRequestBody body) {
@@ -113,7 +113,7 @@ public class AllInPayService {
         metadata.setSign(sign(metadata));
         Map<String, Object> map = Casts.convertValue(metadata, Casts.MAP_TYPE_REFERENCE);
         MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
-        map.forEach((k,v) -> data.add(k,v.toString()));
+        map.entrySet().stream().filter(e -> Objects.nonNull(e.getValue())).forEach(e -> data.add(e.getKey(), e.getValue().toString()));
 
         return Casts.castRequestBodyMapToString(data);
     }

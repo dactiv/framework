@@ -2,6 +2,7 @@ package com.github.dactiv.framework.citic.domain.body.request;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.github.dactiv.framework.citic.domain.metadata.BasicRequestMetadata;
+import com.github.dactiv.framework.citic.enumerate.RealTimePaymentPlatformFundTypeEnum;
 
 import java.io.Serial;
 import java.math.BigDecimal;
@@ -54,13 +55,13 @@ public class RealTimePaymentRequestBody extends BasicRequestMetadata {
      * 平台商户自有资金交易类型
      */
     @JacksonXmlProperty(localName = "P_SELF_FLAG")
-    private String platformFundType;
+    private String platformFundType = RealTimePaymentPlatformFundTypeEnum.NO_ACCOUNT_MOVEMENT.getValue();
 
     /**
      * 平台商户自有资金交易金额
      */
     @JacksonXmlProperty(localName = "P_SELF_AMT")
-    private BigDecimal platformAmount;
+    private BigDecimal platformAmount = BigDecimal.ZERO;
 
     /**
      * 商户业务订单号

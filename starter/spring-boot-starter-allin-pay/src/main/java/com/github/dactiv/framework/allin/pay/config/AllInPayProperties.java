@@ -8,7 +8,7 @@ public class AllInPayProperties {
 
     public static final String UNIFIED_PAY_API = "/api/access/payInterface/unifiedPay";
 
-    public static final String QUERY_UNIFIED_PAY_API = "/api/access/payInterface/findOrderInfo";
+    public static final String QUERY_ORDER_API = "/api/access/payInterface/findOrderInfo";
 
     public static final String REFUND_API = "/api/access/payInterface/refund";
 

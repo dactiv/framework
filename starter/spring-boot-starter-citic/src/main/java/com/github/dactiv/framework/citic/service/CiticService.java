@@ -59,73 +59,88 @@ public class CiticService {
 
     public UserRegistrationResponseBody userRegistration(UserRegistrationRequestBody body) {
         body.setTransCode("21000001");
-        return executeApi(body, UserRegistrationResponseBody.class);
+        return executeApi(citicConfig.getBaseUrl(), body, UserRegistrationResponseBody.class);
     }
 
     public SearchUserStatusResponseBody searchUserStatus(BasicUserIdRequestBody body) {
         body.setTransCode("22000001");
-        return executeApi(body, SearchUserStatusResponseBody.class);
+        return executeApi(citicConfig.getBaseUrl(), body, SearchUserStatusResponseBody.class);
     }
 
     public SimpleResponseMetadata bankCardOperation(BankCardRequestBody body) {
         body.setTransCode("21000024");
-        return executeApi(body, SimpleResponseMetadata.class);
+        return executeApi(citicConfig.getBaseUrl(), body, SimpleResponseMetadata.class);
+    }
+
+    public QueryBankCardResponseBody queryBankCard(QueryBankCardRequestBody body) {
+        body.setTransCode("21000037");
+        return executeApi(citicConfig.getBaseUrl(), body, QueryBankCardResponseBody.class);
     }
 
     public SignResponseMetadata setDefaultBankCard(DefaultBankCardRequestBody body) {
         body.setTransCode("21000025");
-        return executeApi(body, SignResponseMetadata.class);
+        return executeApi(citicConfig.getBaseUrl(), body, SignResponseMetadata.class);
     }
 
     public WithdrawalResponseBody withdrawal(WithdrawalRequestBody body) {
-        body.setTransCode("21000025");
-        return executeApi(body, WithdrawalResponseBody.class);
+        body.setTransCode("21000014");
+        return executeApi(citicConfig.getBaseUrl(), body, WithdrawalResponseBody.class);
     }
 
-    public SearchBalanceResponseBody searchBalance(SearchBalanceRequestBody body) {
+    public SearchUserBalanceResponseBody searchUserBalance(SearchUserBalanceRequestBody body) {
         body.setTransCode("22000006");
-        return executeApi(body, SearchBalanceResponseBody.class);
+        return executeApi(citicConfig.getBaseUrl(), body, SearchUserBalanceResponseBody.class);
     }
 
     public UploadFileResponseBody uploadFile(UploadFileRequestBody body) {
         body.setTransCode("21000031");
-        return executeApi(body, UploadFileResponseBody.class);
+        return executeApi(citicConfig.getFileUploadUrl(), body, UploadFileResponseBody.class);
     }
 
     public UserSsnResponseBody readTimePayment(RealTimePaymentRequestBody body) {
         body.setTransCode("21000050");
-        return executeApi(body, UserSsnResponseBody.class);
+        return executeApi(citicConfig.getBaseUrl(), body, UserSsnResponseBody.class);
     }
 
     public UserSsnResponseBody readTimeRefund(RealTimeRefundRequestBody body) {
         body.setTransCode("21000051");
-        return executeApi(body, UserSsnResponseBody.class);
+        return executeApi(citicConfig.getBaseUrl(), body, UserSsnResponseBody.class);
     }
 
     public SearchUploadFileStatusResponseBody searchUploadFileStatus(SearchUploadFileStatusRequestBody body) {
         body.setTransCode("21000032");
-        return executeApi(body, SearchUploadFileStatusResponseBody.class);
+        return executeApi(citicConfig.getBaseUrl(), body, SearchUploadFileStatusResponseBody.class);
     }
 
-    public <T extends BasicRequestMetadata, R extends BasicResponseMetadata> R executeApi(T body, Class<R> responseType) {
+    public UserTransactionDetailsPageResponseBody userTransactionDetails(UserTransactionDetailsPageRequestBody body) {
+        body.setTransCode("21000029");
+        return executeApi(citicConfig.getBaseUrl(), body, UserTransactionDetailsPageResponseBody.class);
+    }
+
+    public <T extends BasicRequestMetadata, R extends BasicResponseMetadata> R executeApi(String url, T body, Class<R> responseType) {
         body.setMerchantId(citicConfig.getMerchantId());
         body.setReqSn(citicConfig.getMerchantId() + BasicRequestMetadata.getRequestSsnValue() + RandomStringUtils.secure().nextAlphanumeric(citicConfig.getRandomRequestSsnNumber()));
         sign(body);
 
+        ObjectMapper objectMapper = mappingJackson2XmlHttpMessageConverter.getObjectMapper();
+
         HttpHeaders headers = getHttpHeaders(body);
 
-        HttpEntity<T> entity = new HttpEntity<>(body, headers);
-        ObjectMapper objectMapper = mappingJackson2XmlHttpMessageConverter.getObjectMapper();
+        byte[] requestBody = SystemException.convertSupplier(() -> objectMapper.writeValueAsBytes(body));
+        headers.setContentLength(requestBody.length);
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(
-                    "[中信银行 E 管家]:开始请求 {} 接口, 请求体为:{}",
+                    "[中信银行 E 管家]:开始请求 {} 接口, 请求体为:{}, 请求头为:{}",
                     body.getTransCode(),
-                    SystemException.convertSupplier(() -> objectMapper.writeValueAsString(body))
+                    new String(requestBody),
+                    headers
             );
         }
 
+        HttpEntity<byte[]> entity = new HttpEntity<>(requestBody, headers);
+
         long startTime = System.currentTimeMillis();
-        ResponseEntity<byte[]> response = restTemplate.exchange(citicConfig.getBaseUrl(), HttpMethod.POST, entity, new ParameterizedTypeReference<>() {});
+        ResponseEntity<byte[]> response = restTemplate.exchange(url, HttpMethod.POST, entity, new ParameterizedTypeReference<>() {});
         long endTime = System.currentTimeMillis();
 
         if (LOGGER.isDebugEnabled()) {
@@ -139,7 +154,7 @@ public class CiticService {
         CiticApiResult<R> result = SystemException.convertSupplier(() -> objectMapper.readValue(response.getBody(), type));
 
         R data =  result.getData();
-        if(data instanceof SignResponseMetadata signResponseMetadata) {
+        if (data instanceof SignResponseMetadata signResponseMetadata) {
             SystemException.isTrue(StringUtils.isNotEmpty(signResponseMetadata.getSign()), "[中信银行 E 管家]:" + Objects.toString(data.getMessage(), result.getMessage()));
             Boolean verifyResult = SystemException.convertSupplier(
                     () -> verifySign(signResponseMetadata),
@@ -160,7 +175,6 @@ public class CiticService {
         headers.add(BasicRequestMetadata.SERIAL_NO_HEADER_NAME, BasicRequestMetadata.getTransTimestampValue() + body.getTransCode());
         headers.add(BasicRequestMetadata.TRAN_TIMESTAMP_HEADER_NAME, BasicRequestMetadata.getTransTimestampValue());
         headers.add(BasicRequestMetadata.VERSION_HEADER_NAME, citicConfig.getApiVersionValue());
-
         headers.setContentType(new MediaType(MediaType.APPLICATION_XML, StandardCharsets.UTF_8));
         return headers;
     }

@@ -14,10 +14,10 @@ public class SearchUploadFileStatusResponseBody extends BasicResponseMetadata {
     private static final long serialVersionUID = 5312541707426453155L;
 
     @JacksonXmlProperty(localName = "RESULT_CODE")
-    private String code;
+    private String searchCode;
 
     @JacksonXmlProperty(localName = "RESULT_MSG")
-    private String message;
+    private String searchMessage;
 
     @JacksonXmlProperty(localName = "FILE_ST")
     private String status;
@@ -25,24 +25,20 @@ public class SearchUploadFileStatusResponseBody extends BasicResponseMetadata {
     public SearchUploadFileStatusResponseBody() {
     }
 
-    @Override
-    public String getCode() {
-        return code;
+    public String getSearchCode() {
+        return searchCode;
     }
 
-    @Override
-    public void setCode(String code) {
-        this.code = code;
+    public void setSearchCode(String searchCode) {
+        this.searchCode = searchCode;
     }
 
-    @Override
-    public String getMessage() {
-        return message;
+    public String getSearchMessage() {
+        return searchMessage;
     }
 
-    @Override
-    public void setMessage(String message) {
-        this.message = message;
+    public void setSearchMessage(String searchMessage) {
+        this.searchMessage = searchMessage;
     }
 
     public String getStatus() {

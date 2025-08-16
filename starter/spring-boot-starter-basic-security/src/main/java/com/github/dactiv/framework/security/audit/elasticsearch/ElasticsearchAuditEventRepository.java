@@ -86,7 +86,7 @@ public class ElasticsearchAuditEventRepository extends AbstractExtendAuditEventR
             elasticsearchOperations.index(indexQuery, indexCoordinates);
 
         } catch (Exception e) {
-            LOGGER.warn("新增 elasticsearch {} 审计事件出现异常", event.getPrincipal(), e);
+            LOGGER.warn("新增 elasticsearch {} 审计事件出现异常:{}", event.getPrincipal(), e.getMessage());
         }
 
     }
