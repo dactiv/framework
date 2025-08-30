@@ -13,10 +13,10 @@ public class DefaultBankCardRequestBody extends BasicUserIdRequestBody {
     @Serial
     private static final long serialVersionUID = 4784529697370822363L;
 
-    @JacksonXmlProperty(localName = "SETTLE_ACCT")
+    @JacksonXmlProperty(localName = "SETTLE_ACCT_NM")
     private String accountName;
 
-    @JacksonXmlProperty(localName = "SETTLE_ACCT_NM")
+    @JacksonXmlProperty(localName = "SETTLE_ACCT")
     private String accountNumber;
 
     public DefaultBankCardRequestBody() {

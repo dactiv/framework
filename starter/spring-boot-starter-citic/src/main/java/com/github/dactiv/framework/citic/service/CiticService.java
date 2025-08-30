@@ -9,10 +9,7 @@ import com.github.dactiv.framework.citic.config.CiticProperties;
 import com.github.dactiv.framework.citic.domain.CiticApiResult;
 import com.github.dactiv.framework.citic.domain.body.request.*;
 import com.github.dactiv.framework.citic.domain.body.response.*;
-import com.github.dactiv.framework.citic.domain.metadata.BasicRequestMetadata;
-import com.github.dactiv.framework.citic.domain.metadata.BasicResponseMetadata;
-import com.github.dactiv.framework.citic.domain.metadata.SignResponseMetadata;
-import com.github.dactiv.framework.citic.domain.metadata.SimpleResponseMetadata;
+import com.github.dactiv.framework.citic.domain.metadata.*;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.exception.ErrorCodeException;
 import com.github.dactiv.framework.commons.exception.SystemException;
@@ -62,6 +59,21 @@ public class CiticService {
         return executeApi(citicConfig.getBaseUrl(), body, UserRegistrationResponseBody.class);
     }
 
+    public DownloadFileResponseBody downloadFile(DownloadFileRequestBody body) {
+        body.setTransCode("21000007");
+        return executeApi(citicConfig.getBaseUrl(), body, DownloadFileResponseBody.class);
+    }
+
+    public FileSignResponseMetadata queryElectronicReceipt(ElectronicReceiptRequestBody body) {
+        body.setTransCode("21000011");
+        return executeApi(citicConfig.getFileUploadUrl(), body, FileSignResponseMetadata.class);
+    }
+
+    public UpdateUserResponseBody updateUser(UpdateUserRequestBody body) {
+        body.setTransCode("21000003");
+        return executeApi(citicConfig.getBaseUrl(), body, UpdateUserResponseBody.class);
+    }
+
     public SearchUserStatusResponseBody searchUserStatus(BasicUserIdRequestBody body) {
         body.setTransCode("22000001");
         return executeApi(citicConfig.getBaseUrl(), body, SearchUserStatusResponseBody.class);
@@ -92,6 +104,11 @@ public class CiticService {
         return executeApi(citicConfig.getBaseUrl(), body, SearchUserBalanceResponseBody.class);
     }
 
+    public SearchMerchantBalanceResponseBody searchMerchantBalance(SearchMerchantBalanceRequestBody body) {
+        body.setTransCode("21000035");
+        return executeApi(citicConfig.getBaseUrl(), body, SearchMerchantBalanceResponseBody.class);
+    }
+
     public UploadFileResponseBody uploadFile(UploadFileRequestBody body) {
         body.setTransCode("21000031");
         return executeApi(citicConfig.getFileUploadUrl(), body, UploadFileResponseBody.class);
@@ -117,7 +134,12 @@ public class CiticService {
         return executeApi(citicConfig.getBaseUrl(), body, UserTransactionDetailsPageResponseBody.class);
     }
 
-    public <T extends BasicRequestMetadata, R extends BasicResponseMetadata> R executeApi(String url, T body, Class<R> responseType) {
+    public MerchantTransactionDetailsPageResponseBody merchantTransactionDetails(MerchantTransactionDetailsPageRequestBody body) {
+        body.setTransCode("21000039");
+        return executeApi(citicConfig.getBaseUrl(), body, MerchantTransactionDetailsPageResponseBody.class);
+    }
+
+    public <T extends BasicMerchantMetadata, R extends BasicResponseMetadata> R executeApi(String url, T body, Class<R> responseType) {
         body.setMerchantId(citicConfig.getMerchantId());
         body.setReqSn(citicConfig.getMerchantId() + BasicRequestMetadata.getRequestSsnValue() + RandomStringUtils.secure().nextAlphanumeric(citicConfig.getRandomRequestSsnNumber()));
         sign(body);
@@ -168,7 +190,7 @@ public class CiticService {
         return data;
     }
 
-    private <T extends BasicRequestMetadata> HttpHeaders getHttpHeaders(T body) {
+    private <T extends BasicMerchantMetadata> HttpHeaders getHttpHeaders(T body) {
         HttpHeaders headers = new HttpHeaders();
         headers.add(BasicRequestMetadata.MERCHANT_NO_HEADER_NAME, body.getMerchantId());
         headers.add(BasicRequestMetadata.TRAN_CODE_HEADER_NAME, body.getTransCode());
@@ -185,7 +207,7 @@ public class CiticService {
         return verifySign(signString.getBytes(StandardCharsets.UTF_8), sign);
     }
 
-    private void sign(BasicRequestMetadata body) {
+    private void sign(BasicMerchantMetadata body) {
         String signString = getSignString(body);
         String sign = SystemException.convertSupplier(() ->
                 sign(

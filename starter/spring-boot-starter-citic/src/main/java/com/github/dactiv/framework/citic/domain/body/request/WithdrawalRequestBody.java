@@ -45,7 +45,7 @@ public class WithdrawalRequestBody extends BasicUserIdRequestBody {
     private String bankAccount;
 
     @JacksonXmlProperty(localName = "WITH_ACCNAME")
-    private String bankName;
+    private String accountName;
 
     public WithdrawalRequestBody() {
     }
@@ -114,11 +114,11 @@ public class WithdrawalRequestBody extends BasicUserIdRequestBody {
         this.bankAccount = bankAccount;
     }
 
-    public String getBankName() {
-        return bankName;
+    public String getAccountName() {
+        return accountName;
     }
 
-    public void setBankName(String bankName) {
-        this.bankName = bankName;
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
     }
 }

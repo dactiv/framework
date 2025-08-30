@@ -4,7 +4,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.io.Serial;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -13,8 +12,8 @@ import java.util.Date;
  *
  * @author mauric.chen
  */
-@JacksonXmlRootElement(localName = "ROOT")
-public class BasicRequestMetadata implements Serializable {
+
+public class BasicRequestMetadata extends BasicMerchantMetadata {
 
     @Serial
     private static final long serialVersionUID = -827083928397470593L;
@@ -37,21 +36,6 @@ public class BasicRequestMetadata implements Serializable {
 
     public static final SimpleDateFormat REQ_SSN_FORMAT_FORMAT = new SimpleDateFormat(REQ_SSN_FORMAT);
 
-    @JacksonXmlProperty(localName = "SIGN_INFO")
-    private String sign;
-
-    @JacksonXmlProperty(localName = "TRANS_CODE")
-    private String transCode;
-
-    @JacksonXmlProperty(localName = "REQ_SSN")
-    private String reqSn;
-
-    /**
-     * 商户编号
-     */
-    @JacksonXmlProperty(localName = "MCHNT_ID")
-    private String merchantId;
-
     /**
      * 发起方保留域
      */
@@ -59,38 +43,6 @@ public class BasicRequestMetadata implements Serializable {
     private String reqReserved;
 
     public BasicRequestMetadata() {
-    }
-
-    public String getSign() {
-        return sign;
-    }
-
-    public void setSign(String sign) {
-        this.sign = sign;
-    }
-
-    public String getTransCode() {
-        return transCode;
-    }
-
-    public void setTransCode(String transCode) {
-        this.transCode = transCode;
-    }
-
-    public String getReqSn() {
-        return reqSn;
-    }
-
-    public void setReqSn(String reqSn) {
-        this.reqSn = reqSn;
-    }
-
-    public String getMerchantId() {
-        return merchantId;
-    }
-
-    public void setMerchantId(String merchantId) {
-        this.merchantId = merchantId;
     }
 
     public String getReqReserved() {

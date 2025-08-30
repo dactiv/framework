@@ -1,14 +1,14 @@
 package com.github.dactiv.framework.citic.domain.body.response;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.github.dactiv.framework.citic.domain.metadata.SignResponseMetadata;
+import com.github.dactiv.framework.citic.domain.metadata.BasicResponseMetadata;
 
 import java.io.Serial;
 
 /**
  * @author maurice.chen
  */
-public class SearchUserStatusResponseBody extends SignResponseMetadata {
+public class SearchUserStatusResponseBody extends BasicResponseMetadata {
 
     @Serial
     private static final long serialVersionUID = 1402600926033955985L;

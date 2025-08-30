@@ -20,9 +20,7 @@ import com.github.dactiv.framework.spring.web.argument.GenericsListHandlerMethod
 import com.github.dactiv.framework.spring.web.device.DeviceResolverRequestFilter;
 import com.github.dactiv.framework.spring.web.endpoint.EnumerateEndpoint;
 import com.github.dactiv.framework.spring.web.interceptor.CustomClientHttpRequestInterceptor;
-import com.github.dactiv.framework.spring.web.jackson.LocalDateTimeTimestampSerializer;
-import com.github.dactiv.framework.spring.web.jackson.LocalDateTimestampSerializer;
-import com.github.dactiv.framework.spring.web.jackson.LocalTimeSecondOfDaySerializer;
+import com.github.dactiv.framework.spring.web.jackson.*;
 import com.github.dactiv.framework.spring.web.result.RestResponseBodyAdvice;
 import com.github.dactiv.framework.spring.web.result.RestResultErrorAttributes;
 import com.github.dactiv.framework.spring.web.result.error.ErrorResultResolver;
@@ -51,9 +49,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -164,6 +160,8 @@ public class SpringWebMvcAutoConfiguration {
             module.addSerializer(LocalDate.class, new LocalDateTimestampSerializer(jacksonProperties));
             module.addSerializer(LocalDateTime.class, new LocalDateTimeTimestampSerializer(jacksonProperties));
             module.addSerializer(LocalTime.class, new LocalTimeSecondOfDaySerializer());
+            module.addSerializer(Year.class, new YearSerializer());
+            module.addSerializer(Instant.class, new InstantSerializer());
         }
 
         objectMapper.registerModule(module);

@@ -15,10 +15,10 @@ public class WithdrawalResponseBody extends SimpleResponseMetadata {
     @Serial
     private static final long serialVersionUID = -1630520203254214558L;
 
-    @JacksonXmlProperty(localName = "TRANS_DT")
+    @JacksonXmlProperty(localName = "USER_TRANS_DT")
     private LocalDate transactionDate;
 
-    @JacksonXmlProperty(localName = "TRANS_TM")
+    @JacksonXmlProperty(localName = "USER_TRANS_TM")
     private LocalTime transactionTime;
 
     @JacksonXmlProperty(localName = "USER_SSN")

@@ -2,9 +2,12 @@ package com.github.dactiv.framework.commons.id;
 
 
 import java.io.Serial;
+import java.util.Objects;
 
 /**
  * 主键实体
+ *
+ * @author maurice.chen
  *
  * @param <T> 主键类型
  */
@@ -43,6 +46,7 @@ public class IdEntity<T> implements BasicIdentification<T> {
      *
      * @return 主键 id
      */
+    @Override
     public T getId() {
         return id;
     }
@@ -52,6 +56,7 @@ public class IdEntity<T> implements BasicIdentification<T> {
      *
      * @param id 主键 id
      */
+    @Override
     public void setId(T id) {
         this.id = id;
     }
@@ -63,5 +68,19 @@ public class IdEntity<T> implements BasicIdentification<T> {
      */
     public static <T> IdEntity<T> of(T id) {
         return new IdEntity<>(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        IdEntity<?> idEntity = (IdEntity<?>) o;
+        return Objects.equals(id, idEntity.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }
