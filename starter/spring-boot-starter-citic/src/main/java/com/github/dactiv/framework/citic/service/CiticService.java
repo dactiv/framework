@@ -84,6 +84,12 @@ public class CiticService {
         return executeApi(citicConfig.getBaseUrl(), body, SimpleResponseMetadata.class);
     }
 
+    public QueryUserTransactionStatusResponseBody queryUserTransactionStatus(QueryUserTransactionStatusRequestBody body) {
+        body.setTransCode("21000010");
+        return executeApi(citicConfig.getBaseUrl(), body, QueryUserTransactionStatusResponseBody.class);
+
+    }
+
     public QueryBankCardResponseBody queryBankCard(QueryBankCardRequestBody body) {
         body.setTransCode("21000037");
         return executeApi(citicConfig.getBaseUrl(), body, QueryBankCardResponseBody.class);

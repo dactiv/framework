@@ -15,7 +15,7 @@ public class UserSsnResponseBody extends SignResponseMetadata {
     private static final long serialVersionUID = 2986414111112016574L;
 
     @JacksonXmlProperty(localName = "USER_SSN")
-    private String userSsn;
+    private String userTransactionSsn;
 
     /**
      * 交易日期
@@ -32,12 +32,12 @@ public class UserSsnResponseBody extends SignResponseMetadata {
     public UserSsnResponseBody() {
     }
 
-    public String getUserSsn() {
-        return userSsn;
+    public String getUserTransactionSsn() {
+        return userTransactionSsn;
     }
 
-    public void setUserSsn(String userSsn) {
-        this.userSsn = userSsn;
+    public void setUserTransactionSsn(String userTransactionSsn) {
+        this.userTransactionSsn = userTransactionSsn;
     }
 
     public String getUserTransactionDate() {
