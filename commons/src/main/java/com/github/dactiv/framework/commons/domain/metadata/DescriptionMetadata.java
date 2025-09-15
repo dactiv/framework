@@ -23,6 +23,10 @@ public class DescriptionMetadata implements BasicIdentification<String> {
 
     private Map<String, Object> metadata;
 
+    private String source;
+
+    private int sort;
+
     public DescriptionMetadata() {
     }
 
@@ -58,5 +62,21 @@ public class DescriptionMetadata implements BasicIdentification<String> {
     @Override
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

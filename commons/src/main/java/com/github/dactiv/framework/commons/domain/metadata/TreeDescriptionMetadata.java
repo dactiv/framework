@@ -11,6 +11,8 @@ import java.util.List;
 
 /**
  * 树形描述元数据信息
+ *
+ * @author maurice.chen
  */
 public class TreeDescriptionMetadata extends DescriptionMetadata implements Tree<String, TreeDescriptionMetadata> {
 

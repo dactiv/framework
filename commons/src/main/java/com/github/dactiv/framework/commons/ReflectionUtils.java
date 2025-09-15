@@ -41,7 +41,6 @@ public class ReflectionUtils {
      *
      * @return 字段信息
      */
-    @Deprecated
     public static Field findFiled(Object o, String name) {
         return org.springframework.util.ReflectionUtils.findField(o.getClass(), name);
     }

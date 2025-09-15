@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.dactiv.framework.commons.annotation.Description;
 import com.github.dactiv.framework.commons.annotation.IgnoreField;
+import com.github.dactiv.framework.commons.domain.metadata.DescriptionMetadata;
 import com.github.dactiv.framework.commons.domain.metadata.TreeDescriptionMetadata;
 import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.commons.jackson.serializer.DesensitizeSerializer;
@@ -578,22 +579,28 @@ public abstract class Casts {
                 descriptionClass.getSimpleName(),
                 description.value()
         );
+        metadata.setSort(description.sort());
+        metadata.setType(descriptionClass);
+        metadata.setSource(Class.class.getName());
 
-        List<Field> fields = ReflectionUtils.findFields(descriptionClass);
-        fields
+        List<TreeDescriptionMetadata> children = new LinkedList<>();
+
+        ReflectionUtils.findFields(descriptionClass)
                 .stream()
                 .map(Casts::convertDescriptionMetadata)
                 .filter(Objects::nonNull)
                 .peek(f -> f.setParentId(metadata.getId()))
-                .forEach(f -> metadata.getChildren().add(f));
-        List<Method> methods = MethodUtils.getMethodsListWithAnnotation(descriptionClass, Description.class);
+                .forEach(children::add);
 
-        methods
+        MethodUtils.getMethodsListWithAnnotation(descriptionClass, Description.class)
                 .stream()
                 .map(Casts::convertDescriptionMetadata)
                 .filter(Objects::nonNull)
                 .peek(f -> f.setParentId(metadata.getId()))
-                .forEach(f -> metadata.getChildren().add(f));
+                .forEach(children::add);
+
+        metadata.setChildren(children.stream().sorted(Comparator.comparing(DescriptionMetadata::getSort)).collect(Collectors.toCollection(LinkedList::new)));
+
         return metadata;
 
     }
@@ -612,7 +619,9 @@ public abstract class Casts {
                 description.value()
         );
 
+        metadata.setSort(description.sort());
         metadata.setType(type);
+        metadata.setSource(Method.class.getName());
 
         return metadata;
     }
@@ -642,7 +651,9 @@ public abstract class Casts {
                 field.getName(),
                 description.value()
         );
+        metadata.setSort(description.sort());
         metadata.setType(type);
+        metadata.setSource(Field.class.getName());
 
         if (isPrimitive(type)) {
             return metadata;
@@ -659,7 +670,8 @@ public abstract class Casts {
         List<Field> fields = ReflectionUtils.findFields(nextType);
         fields
                 .stream()
-                .map(Casts::convertDescriptionMetadata).filter(Objects::nonNull)
+                .map(Casts::convertDescriptionMetadata)
+                .filter(Objects::nonNull)
                 .peek(f -> f.setParentId(metadata.getId()))
                 .forEach(f -> metadata.getChildren().add(f));
 
@@ -880,11 +892,12 @@ public abstract class Casts {
         String[] parts = version.split(VERSION_SPLIT_REGEX);
         int revision = Integer.parseInt(parts[2]) + 1;
 
-        // 修订号进位逻辑
-        if (revision >= 100) { // 假设修订号上限为99
+        // 修订号进位逻辑, 假设修订号上限为99
+        if (revision >= 100) {
             revision = 0;
             int minor = Integer.parseInt(parts[1]) + 1;
-            if (minor >= 10) { // 次版本号上限为9
+            // 次版本号上限为9
+            if (minor >= 10) {
                 minor = 0;
                 int major = Integer.parseInt(parts[0]) + 1;
                 return major + DOT + minor + DOT + BigDecimal.ZERO;
@@ -904,7 +917,8 @@ public abstract class Casts {
      */
     public static BigInteger stringToNumber(String string) {
         byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
-        return new BigInteger(1, bytes); // 保持正数表示
+        // 保持正数表示
+        return new BigInteger(1, bytes);
     }
 
     /**

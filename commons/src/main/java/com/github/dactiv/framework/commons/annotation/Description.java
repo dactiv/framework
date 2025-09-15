@@ -19,4 +19,10 @@ public @interface Description {
      * @return 泛型类型 class
      */
     String value();
+
+    /**
+     * 顺序值
+     * @return 顺序值
+     */
+    int sort() default Integer.MAX_VALUE;
 }
