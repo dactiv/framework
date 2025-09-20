@@ -61,7 +61,12 @@ public class CiticService {
 
     public DownloadFileResponseBody downloadFile(DownloadFileRequestBody body) {
         body.setTransCode("21000007");
-        return executeApi(citicConfig.getBaseUrl(), body, DownloadFileResponseBody.class);
+        return executeApi(citicConfig.getFileUploadUrl(), body, DownloadFileResponseBody.class);
+    }
+
+    public UserSsnResponseBody platformPayment(PlatformPaymentRequestBody body) {
+        body.setTransCode("21000047");
+        return executeApi(citicConfig.getBaseUrl(), body, UserSsnResponseBody.class);
     }
 
     public FileSignResponseMetadata queryElectronicReceipt(ElectronicReceiptRequestBody body) {
@@ -171,15 +176,17 @@ public class CiticService {
         ResponseEntity<byte[]> response = restTemplate.exchange(url, HttpMethod.POST, entity, new ParameterizedTypeReference<>() {});
         long endTime = System.currentTimeMillis();
 
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(
-                    "[中信银行 E 管家]:请求 {} 接口结束, 用时:{} 毫秒, 响应结果为:{}",
-                    body.getTransCode(), (endTime - startTime),
-                    SystemException.convertSupplier(() -> new String(Objects.requireNonNull(response.getBody()), StandardCharsets.UTF_8))
-            );
-        }
         JavaType type = objectMapper.getTypeFactory().constructParametricType(CiticApiResult.class, responseType);
         CiticApiResult<R> result = SystemException.convertSupplier(() -> objectMapper.readValue(response.getBody(), type));
+
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(
+                    "[中信银行 E 管家]:请求 {} 接口结束, 用时:{} 毫秒, 响应结果为:{}, 序列化结果为:{}",
+                    body.getTransCode(), (endTime - startTime),
+                    SystemException.convertSupplier(() -> new String(Objects.requireNonNull(response.getBody()), StandardCharsets.UTF_8)),
+                    SystemException.convertSupplier(() -> Casts.getObjectMapper().writeValueAsString(result))
+            );
+        }
 
         R data =  result.getData();
         if (data instanceof SignResponseMetadata signResponseMetadata) {
@@ -292,4 +299,7 @@ public class CiticService {
         return PKCS7Signature.verifyDetachedSignature(msg, Base64.decode(sign.getBytes()), senderPubKey);
     }
 
+    public CiticProperties getCiticConfig() {
+        return citicConfig;
+    }
 }

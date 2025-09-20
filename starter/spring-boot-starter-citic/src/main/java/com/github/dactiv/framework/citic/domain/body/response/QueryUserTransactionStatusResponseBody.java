@@ -1,17 +1,18 @@
 package com.github.dactiv.framework.citic.domain.body.response;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.github.dactiv.framework.citic.domain.metadata.SignResponseMetadata;
+import com.github.dactiv.framework.citic.domain.metadata.BasicResponseMetadata;
 
 import java.io.Serial;
 
 /**
  * @author maurice.chen
  */
-public class QueryUserTransactionStatusResponseBody extends SignResponseMetadata {
+public class QueryUserTransactionStatusResponseBody extends BasicResponseMetadata {
     @Serial
     private static final long serialVersionUID = 8160413411681937898L;
 
+    @JacksonXmlProperty(localName = "STATE")
     private String status;
 
     @JacksonXmlProperty(localName = "TRANS_DATE")
@@ -24,10 +25,10 @@ public class QueryUserTransactionStatusResponseBody extends SignResponseMetadata
     private String userTransactionSsn;
 
     @JacksonXmlProperty(localName = "RESULT_CODE")
-    private String code;
+    private String resultCode;
 
     @JacksonXmlProperty(localName = "RESULT_MSG")
-    private String message;
+    private String resultMessage;
 
     public QueryUserTransactionStatusResponseBody() {
     }
@@ -64,23 +65,19 @@ public class QueryUserTransactionStatusResponseBody extends SignResponseMetadata
         this.userTransactionSsn = userTransactionSsn;
     }
 
-    @Override
-    public String getCode() {
-        return code;
+    public String getResultCode() {
+        return resultCode;
     }
 
-    @Override
-    public void setCode(String code) {
-        this.code = code;
+    public void setResultCode(String resultCode) {
+        this.resultCode = resultCode;
     }
 
-    @Override
-    public String getMessage() {
-        return message;
+    public String getResultMessage() {
+        return resultMessage;
     }
 
-    @Override
-    public void setMessage(String message) {
-        this.message = message;
+    public void setResultMessage(String resultMessage) {
+        this.resultMessage = resultMessage;
     }
 }

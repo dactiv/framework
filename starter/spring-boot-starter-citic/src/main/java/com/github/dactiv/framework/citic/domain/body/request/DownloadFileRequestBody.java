@@ -2,6 +2,7 @@ package com.github.dactiv.framework.citic.domain.body.request;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.github.dactiv.framework.citic.domain.metadata.BasicRequestMetadata;
+import com.github.dactiv.framework.citic.enumerate.UploadFileTransportTypeEnum;
 
 import java.io.Serial;
 
@@ -23,7 +24,7 @@ public class DownloadFileRequestBody extends BasicRequestMetadata {
     private String settleDate;
 
     @JacksonXmlProperty(localName = "TRANS_TYPE")
-    private String transactionType;
+    private String transmissionType = UploadFileTransportTypeEnum.MSG.toString();
 
     public DownloadFileRequestBody() {
     }
@@ -52,11 +53,11 @@ public class DownloadFileRequestBody extends BasicRequestMetadata {
         this.settleDate = settleDate;
     }
 
-    public String getTransactionType() {
-        return transactionType;
+    public String getTransmissionType() {
+        return transmissionType;
     }
 
-    public void setTransactionType(String transactionType) {
-        this.transactionType = transactionType;
+    public void setTransmissionType(String transmissionType) {
+        this.transmissionType = transmissionType;
     }
 }
