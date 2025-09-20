@@ -47,18 +47,18 @@
         </repository>
     </repositories>
 
-    <distributionManagement>
+    <!--<distributionManagement>
         <repository>
-            <id>sonatype</id>
+            <id>central</id>
             <name>Nexus Release Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+            <url>https://central.sonatype.com/service/local/staging/deploy/maven2</url>
         </repository>
         <snapshotRepository>
-            <id>sonatype</id>
+            <id>central</id>
             <name>Nexus Snapshot Repository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://central.sonatype.com/content/repositories/snapshots</url>
         </snapshotRepository>
-    </distributionManagement>
+    </distributionManagement>-->
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -255,13 +255,24 @@
     <build>
 
         <finalName>${project.name}</finalName>
-
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
             </resource>
         </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.8.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                </configuration>
+            </plugin>
+        </plugins>
 
         <pluginManagement>
             <plugins>
@@ -328,7 +339,7 @@
                     </configuration>
                 </plugin>
 
-                <plugin>
+                <!--<plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>3.1.3</version>
@@ -341,7 +352,7 @@
                             </goals>
                         </execution>
                     </executions>
-                </plugin>
+                </plugin>-->
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -391,6 +402,17 @@
                         <useReleaseProfile>false</useReleaseProfile>
                         <localCheckout>true</localCheckout>
                         <pushChanges>false</pushChanges>
+                    </configuration>
+                </plugin>
+
+
+                <plugin>
+                    <groupId>org.sonatype.central</groupId>
+                    <artifactId>central-publishing-maven-plugin</artifactId>
+                    <version>0.8.0</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <publishingServerId>central</publishingServerId>
                     </configuration>
                 </plugin>
 

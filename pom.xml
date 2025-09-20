@@ -52,7 +52,20 @@
         </repository>
     </repositories>
 
-    <distributionManagement>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.8.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <!--<distributionManagement>
         <repository>
             <id>sonatype</id>
             <name>Nexus Release Repository</name>
@@ -61,9 +74,9 @@
         <snapshotRepository>
             <id>sonatype</id>
             <name>Nexus Snapshot Repository</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://central.sonatype.com/content/repositories/snapshots</url>
         </snapshotRepository>
-    </distributionManagement>
+    </distributionManagement>-->
 
     <profiles>
         <profile>

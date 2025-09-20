@@ -98,10 +98,10 @@
                 <artifactId>maven-resources-plugin</artifactId>
             </plugin>
 
-            <plugin>
+            <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
-            </plugin>
+            </plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
