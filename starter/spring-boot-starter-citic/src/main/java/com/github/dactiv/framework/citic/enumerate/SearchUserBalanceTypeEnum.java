@@ -2,10 +2,13 @@ package com.github.dactiv.framework.citic.enumerate;
 
 import com.github.dactiv.framework.commons.enumerate.NameValueEnum;
 
+import java.util.List;
+
 public enum SearchUserBalanceTypeEnum implements NameValueEnum<String> {
 
     // 公共登记簿标识
     PUBLIC_REGISTER("00", "公共计息收费登记簿"),
+    PUBLIC_ADJUSTMENT("01", "公共调账登记簿"),
     OWN_FUNDS_REGISTER("12", "自有资金登记簿"),
     GUARANTEE_REGISTER("13", "担保登记簿"),
     SETTLEMENT_FEE_REGISTER("17", "待结算手续费登记簿"),
@@ -39,4 +42,8 @@ public enum SearchUserBalanceTypeEnum implements NameValueEnum<String> {
     public String getName() {
         return name;
     }
+
+    public static final List<SearchUserBalanceTypeEnum> MERCHANT_INNER_TYPES = List.of(PUBLIC_ADJUSTMENT, OWN_FUNDS_REGISTER, GUARANTEE_REGISTER, SETTLEMENT_FEE_REGISTER);
+
+    public static final List<SearchUserBalanceTypeEnum> MERCHANT_TYPES = List.of(TRANSACTION_ACCOUNT, PUBLIC_ADJUSTMENT, OWN_FUNDS_REGISTER, GUARANTEE_REGISTER, SETTLEMENT_FEE_REGISTER);
 }

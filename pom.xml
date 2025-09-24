@@ -52,7 +52,7 @@
         </repository>
     </repositories>
 
-    <build>
+    <!--<build>
         <plugins>
             <plugin>
                 <groupId>org.sonatype.central</groupId>
@@ -64,19 +64,15 @@
                 </configuration>
             </plugin>
         </plugins>
-    </build>
-    <!--<distributionManagement>
-        <repository>
-            <id>sonatype</id>
-            <name>Nexus Release Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-        </repository>
+    </build>-->
+
+    <distributionManagement>
         <snapshotRepository>
-            <id>sonatype</id>
-            <name>Nexus Snapshot Repository</name>
-            <url>https://central.sonatype.com/content/repositories/snapshots</url>
+            <id>central</id>
+            <name>central Snapshot Repository</name>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
         </snapshotRepository>
-    </distributionManagement>-->
+    </distributionManagement>
 
     <profiles>
         <profile>

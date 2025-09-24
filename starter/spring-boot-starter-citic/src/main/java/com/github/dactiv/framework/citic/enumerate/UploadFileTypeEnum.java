@@ -73,6 +73,11 @@ public enum UploadFileTypeEnum implements NameValueEnum<String> {
      */
     PLATFORM_MERCHANT_ORDER_DETAILS_V2("616", "平台商户业务订单明细文件(V2)"),
 
+    /**
+     * 平台商户业务订单明细文件(V2)结果
+     */
+    PLATFORM_MERCHANT_ORDER_DETAILS_V2_RESULT("830", "平台商户业务订单明细文件(V2)结果"),
+
     ;
 
     UploadFileTypeEnum(String value, String name) {

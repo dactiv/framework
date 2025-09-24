@@ -47,18 +47,13 @@
         </repository>
     </repositories>
 
-    <!--<distributionManagement>
-        <repository>
-            <id>central</id>
-            <name>Nexus Release Repository</name>
-            <url>https://central.sonatype.com/service/local/staging/deploy/maven2</url>
-        </repository>
+    <distributionManagement>
         <snapshotRepository>
             <id>central</id>
-            <name>Nexus Snapshot Repository</name>
-            <url>https://central.sonatype.com/content/repositories/snapshots</url>
+            <name>central Snapshot Repository</name>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
         </snapshotRepository>
-    </distributionManagement>-->
+    </distributionManagement>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -262,7 +257,7 @@
             </resource>
         </resources>
 
-        <plugins>
+        <!--<plugins>
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
@@ -272,7 +267,7 @@
                     <publishingServerId>central</publishingServerId>
                 </configuration>
             </plugin>
-        </plugins>
+        </plugins>-->
 
         <pluginManagement>
             <plugins>

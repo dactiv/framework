@@ -11,6 +11,8 @@ import com.github.dactiv.framework.citic.domain.body.request.*;
 import com.github.dactiv.framework.citic.domain.body.response.*;
 import com.github.dactiv.framework.citic.domain.metadata.*;
 import com.github.dactiv.framework.commons.Casts;
+import com.github.dactiv.framework.commons.ReflectionUtils;
+import com.github.dactiv.framework.commons.domain.metadata.TreeDescriptionMetadata;
 import com.github.dactiv.framework.commons.exception.ErrorCodeException;
 import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.crypto.algorithm.Base64;
@@ -21,13 +23,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter;
+import org.springframework.objenesis.instantiator.util.ClassUtils;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * @author maurice.chen
@@ -302,4 +308,44 @@ public class CiticService {
     public CiticProperties getCiticConfig() {
         return citicConfig;
     }
+
+    public <T> List<T> convertBase64FileToEntity(String base64File, Class<T> targetClass) throws Exception {
+        List<T> result = new LinkedList<>();
+        TreeDescriptionMetadata metadata = Objects.requireNonNull(Casts.convertDescriptionMetadata(targetClass), "针对 " + targetClass + "找不到 @Description 注解");
+        List<TreeDescriptionMetadata> fieldDesciptionList = Casts.cast(metadata.getChildren());
+
+        byte[] s = Base64.decode(base64File);
+        ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(s));
+        ZipEntry entry;
+
+        while ((entry = zis.getNextEntry()) != null) {
+            if (entry.isDirectory()) {
+                continue;
+            }
+
+            byte[] contentBytes = zis.readAllBytes();
+            String content = new String(contentBytes, StandardCharsets.UTF_8);
+            String[] data = StringUtils.split(content, StringUtils.LF);
+            for (String datum : data) {
+                String[] line = StringUtils.splitByWholeSeparator(datum, UploadFileRequestBody.DEFAULT_SPLIT_SIMPLE);
+
+                T entity = ClassUtils.newInstance(targetClass);
+                for (int j = 0; j < line.length; j++) {
+                    int finalIndex = j;
+                    TreeDescriptionMetadata descriptionMetadata = fieldDesciptionList
+                            .stream()
+                            .filter(f -> f.getSort() == finalIndex)
+                            .findFirst()
+                            .orElseThrow(() -> new SystemException("找不到索引为" + finalIndex + "的字段描述"));
+                    ReflectionUtils.setFieldValue(entity, descriptionMetadata.getId(), Casts.cast(line[finalIndex], descriptionMetadata.getType()));
+                }
+                result.add(entity);
+            }
+        }
+
+        zis.closeEntry();
+
+        return result;
+    }
+
 }
