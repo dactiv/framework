@@ -39,7 +39,7 @@ public enum ExecuteStatus implements NameValueEnum<Integer> {
     /**
      * 不处理
      */
-    Ignore("不处理", 2),
+    Ignore("不处理", 3),
 
     /**
      * 执行失败
