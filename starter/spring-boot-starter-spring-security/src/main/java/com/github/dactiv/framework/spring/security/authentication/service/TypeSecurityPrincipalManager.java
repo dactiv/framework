@@ -6,15 +6,16 @@ import com.github.dactiv.framework.spring.security.authentication.TypeSecurityPr
 import com.github.dactiv.framework.spring.security.authentication.cache.CacheManager;
 import com.github.dactiv.framework.spring.security.authentication.token.RequestAuthenticationToken;
 import com.github.dactiv.framework.spring.security.authentication.token.TypeAuthenticationToken;
+import com.github.dactiv.framework.spring.security.exception.CodeAuthenticationServiceException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityMessageSource;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
 import org.springframework.util.Assert;
 
@@ -107,7 +108,7 @@ public class TypeSecurityPrincipalManager implements InitializingBean, MessageSo
                     "TypeSecurityPrincipalManager.usernameNotFound",
                     "在类型为 " + token.getType() + " 的 TypeSecurityPrincipalService 实现里，找不到名为 [" + token.getPrincipal().toString() + "] 登录账户"
             );
-            throw new UsernameNotFoundException(message);
+            throw new CodeAuthenticationServiceException(message, String.valueOf(HttpStatus.UNAUTHORIZED.value()));
         }
 
         return principal;
