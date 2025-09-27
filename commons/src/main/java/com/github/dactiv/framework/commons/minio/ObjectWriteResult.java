@@ -2,12 +2,17 @@ package com.github.dactiv.framework.commons.minio;
 
 import org.springframework.util.DigestUtils;
 
+import java.io.Serial;
+
 /**
  * 对象写入成功后的结果集
  *
  * @author maurice.chen
  */
 public class ObjectWriteResult extends FileObject {
+
+    @Serial
+    private static final long serialVersionUID = -2136072754715740876L;
 
     /**
      * minio e 标签名称
