@@ -22,7 +22,9 @@ public class BetweenWildcardParser<T> implements WildcardParser<QueryWrapper<T>>
     @Override
     public void structure(Property property, QueryWrapper<T> queryWrapper) {
 
-        if (!Iterable.class.isAssignableFrom(property.getValue().getClass())) {
+        if (property.getValue().getClass().isArray()) {
+            property.setValue(List.of((Object[])property.getValue()));
+        } else if (!Iterable.class.isAssignableFrom(property.getValue().getClass())) {
             throw new SystemException("Between 查询的参数值的数组必须大于 1 位");
         }
 

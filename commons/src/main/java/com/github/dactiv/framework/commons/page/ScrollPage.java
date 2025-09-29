@@ -82,15 +82,6 @@ public class ScrollPage<T> implements Serializable {
     }
 
     /**
-     * 设置分页请求
-     *
-     * @param pageRequest 分页请求
-     */
-    public void setPageRequest(ScrollPageRequest pageRequest) {
-        this.pageRequest = pageRequest;
-    }
-
-    /**
      * 获取数据元素集合
      *
      * @return 当前也的分页数据集合
@@ -123,6 +114,24 @@ public class ScrollPage<T> implements Serializable {
      */
     public void setMeta(Map<String, Object> meta) {
         this.meta = meta;
+    }
+
+    /**
+     * 设置分页请求
+     *
+     * @param pageRequest 分页请求
+     */
+    public void setPageRequest(ScrollPageRequest pageRequest) {
+        this.pageRequest = pageRequest;
+    }
+
+    /**
+     * 获取分页请求
+     *
+     * @return 分页请求
+     */
+    public ScrollPageRequest getPageRequest() {
+        return pageRequest;
     }
 
 }
