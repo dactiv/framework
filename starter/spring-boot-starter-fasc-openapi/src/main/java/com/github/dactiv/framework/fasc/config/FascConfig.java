@@ -1,5 +1,6 @@
 package com.github.dactiv.framework.fasc.config;
 
+import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.domain.metadata.RefreshAccessTokenMetadata;
 import com.github.dactiv.framework.fasc.enums.http.SignTypeEnum;
 import com.github.dactiv.framework.fasc.stratey.DefaultJsonStrategy;
@@ -8,12 +9,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
 
+/**
+ * @author maurice.chen
+ */
 @ConfigurationProperties("dactiv.fasc")
 public class FascConfig {
 
-    private RefreshAccessTokenMetadata accessToken;
-
-    private String clientCorpId;
+    private RefreshAccessTokenMetadata accessToken  = new RefreshAccessTokenMetadata(
+            CacheProperties.of("dactiv:fasc:access-token")
+    );;
 
     private String openCorpId;
 
@@ -81,14 +85,6 @@ public class FascConfig {
 
     public void setAccessToken(RefreshAccessTokenMetadata accessToken) {
         this.accessToken = accessToken;
-    }
-
-    public String getClientCorpId() {
-        return clientCorpId;
-    }
-
-    public void setClientCorpId(String clientCorpId) {
-        this.clientCorpId = clientCorpId;
     }
 
     public String getOpenCorpId() {

@@ -98,7 +98,6 @@ public class CiticService {
     public QueryUserTransactionStatusResponseBody queryUserTransactionStatus(QueryUserTransactionStatusRequestBody body) {
         body.setTransCode("21000010");
         return executeApi(citicConfig.getBaseUrl(), body, QueryUserTransactionStatusResponseBody.class);
-
     }
 
     public QueryBankCardResponseBody queryBankCard(QueryBankCardRequestBody body) {

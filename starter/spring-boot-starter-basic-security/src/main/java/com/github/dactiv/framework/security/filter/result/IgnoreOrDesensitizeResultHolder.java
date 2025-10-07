@@ -8,6 +8,7 @@ import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 忽略或脱敏结果持有者
@@ -146,7 +147,9 @@ public class IgnoreOrDesensitizeResultHolder {
 
 
     public static Object convert(Object source) {
-        //Map<String, Object> convert = Casts.convertValue(source, Casts.MAP_TYPE_REFERENCE);
+        if (Objects.isNull(source)) {
+            return null;
+        }
 
         List<String> ignoreProperties = IgnoreOrDesensitizeResultHolder.getIgnoreProperties();
         if (CollectionUtils.isNotEmpty(ignoreProperties)) {

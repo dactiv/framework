@@ -17,7 +17,9 @@ public class ObjectWriteResult extends FileObject {
     /**
      * minio e 标签名称
      */
-    public static String MINIO_ETAG = "etag";
+    public static final String MINIO_ETAG = "etag";
+
+    public static final String MINIO_ETAG_QUOTATION_MARKS = "\"";
 
     /**
      * minio e 标签

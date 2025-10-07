@@ -8,6 +8,9 @@ import org.springframework.stereotype.Component;
 import java.io.Serial;
 import java.io.Serializable;
 
+/**
+ * @author maurice.chen
+ */
 @Component
 @ConfigurationProperties("dactiv.wechat.applet")
 public class AppletConfig implements Serializable {

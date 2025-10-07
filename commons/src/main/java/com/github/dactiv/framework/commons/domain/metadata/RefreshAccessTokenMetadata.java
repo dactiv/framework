@@ -6,6 +6,9 @@ import com.github.dactiv.framework.commons.TimeProperties;
 import java.io.Serial;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author maurice.chen
+ */
 public class RefreshAccessTokenMetadata extends CloudSecretMetadata {
 
     @Serial
