@@ -13,7 +13,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityMessageSource;
 import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
@@ -80,7 +79,7 @@ public class TypeSecurityPrincipalManager implements InitializingBean, MessageSo
                 "找不到适用于 " + type + " 的 TypeSecurityPrincipalService 实现"
         );
 
-        return optional.orElseThrow(() -> new InternalAuthenticationServiceException(message));
+        return optional.orElseThrow(() -> new CodeAuthenticationServiceException(message, String.valueOf(HttpStatus.UNAUTHORIZED.value())));
     }
 
     /**

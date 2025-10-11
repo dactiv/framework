@@ -19,7 +19,7 @@ public class DescriptionMetadata implements BasicIdentification<String> {
 
     private String name;
 
-    private Class<?> type;
+    private String type;
 
     private Map<String, Object> metadata;
 
@@ -38,11 +38,11 @@ public class DescriptionMetadata implements BasicIdentification<String> {
         this.metadata = metadata;
     }
 
-    public Class<?> getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(Class<?> type) {
+    public void setType(String type) {
         this.type = type;
     }
 

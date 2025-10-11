@@ -336,7 +336,7 @@ public class CiticService {
                             .filter(f -> f.getSort() == finalIndex)
                             .findFirst()
                             .orElseThrow(() -> new SystemException("找不到索引为" + finalIndex + "的字段描述"));
-                    ReflectionUtils.setFieldValue(entity, descriptionMetadata.getId(), Casts.cast(line[finalIndex], descriptionMetadata.getType()));
+                    ReflectionUtils.setFieldValue(entity, descriptionMetadata.getId(), Casts.cast(line[finalIndex], Class.forName(descriptionMetadata.getType())));
                 }
                 result.add(entity);
             }

@@ -580,7 +580,7 @@ public abstract class Casts {
                 description.value()
         );
         metadata.setSort(description.sort());
-        metadata.setType(descriptionClass);
+        metadata.setType(descriptionClass.getName());
         metadata.setSource(Class.class.getName());
 
         List<TreeDescriptionMetadata> children = new LinkedList<>();
@@ -620,7 +620,7 @@ public abstract class Casts {
         );
 
         metadata.setSort(description.sort());
-        metadata.setType(type);
+        metadata.setType(type.getName());
         metadata.setSource(Method.class.getName());
 
         return metadata;
@@ -652,7 +652,7 @@ public abstract class Casts {
                 description.value()
         );
         metadata.setSort(description.sort());
-        metadata.setType(type);
+        metadata.setType(type.getName());
         metadata.setSource(Field.class.getName());
 
         if (isPrimitive(type)) {
