@@ -17,7 +17,7 @@ public class EqWildcardParser<T> implements WildcardParser<QueryWrapper<T>> {
 
     @Override
     public void structure(Property property, QueryWrapper<T> queryWrapper) {
-        queryWrapper.eq(property.getPropertyName(), property.getValue());
+        queryWrapper.eq(property.getFinalPropertyName(), property.getValue());
     }
 
     @Override

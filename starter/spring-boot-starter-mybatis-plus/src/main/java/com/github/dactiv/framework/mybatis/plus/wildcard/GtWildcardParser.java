@@ -17,7 +17,7 @@ public class GtWildcardParser<T> implements WildcardParser<QueryWrapper<T>> {
 
     @Override
     public void structure(Property property, QueryWrapper<T> queryWrapper) {
-        queryWrapper.gt(property.getPropertyName(), property.getValue());
+        queryWrapper.gt(property.getFinalPropertyName(), property.getValue());
     }
 
     @Override

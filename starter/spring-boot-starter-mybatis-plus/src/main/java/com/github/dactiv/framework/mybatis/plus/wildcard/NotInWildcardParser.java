@@ -27,9 +27,9 @@ public class NotInWildcardParser<T> implements WildcardParser<QueryWrapper<T>> {
             List<Object> values = new ArrayList<>();
 
             iterable.forEach(values::add);
-            queryWrapper.notIn(property.getPropertyName(), values.toArray());
+            queryWrapper.notIn(property.getFinalPropertyName(), values.toArray());
         } else {
-            queryWrapper.notIn(property.getPropertyName(), property.getValue());
+            queryWrapper.notIn(property.getFinalPropertyName(), property.getValue());
         }
     }
 

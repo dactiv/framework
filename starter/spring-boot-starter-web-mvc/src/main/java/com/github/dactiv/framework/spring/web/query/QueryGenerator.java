@@ -78,7 +78,7 @@ public interface QueryGenerator<T> {
         for (Map.Entry<String, List<Object>> entry : entryList) {
             List<Condition> conditions = getConditionParserList()
                     .stream()
-                    .filter(c -> c.isSupport(entry.getKey())) // 如果支持参数，就执行 getCondition 方法
+                    .filter(c -> c.isSupport(entry.getKey()))
                     .flatMap(c -> c.getCondition(entry.getKey(), columnMap.get(entry.getKey())).stream())
                     .collect(Collectors.toList());
 

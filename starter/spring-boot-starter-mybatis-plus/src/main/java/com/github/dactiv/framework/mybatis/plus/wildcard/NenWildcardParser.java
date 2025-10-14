@@ -19,7 +19,7 @@ public class NenWildcardParser<T> implements WildcardParser<QueryWrapper<T>> {
     @Override
     public void structure(Property property, QueryWrapper<T> queryWrapper) {
         if (BooleanUtils.toBoolean(property.getValue().toString())) {
-            queryWrapper.isNotNull(property.getPropertyName());
+            queryWrapper.isNotNull(property.getFinalPropertyName());
         }
     }
 

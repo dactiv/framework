@@ -45,7 +45,7 @@ public class LikeWildcardParser<T> implements WildcardParser<QueryWrapper<T>> {
 
     @Override
     public void structure(Property property, QueryWrapper<T> queryWrapper) {
-        queryWrapper.like(property.getPropertyName(), property.getValue());
+        queryWrapper.like(property.getFinalPropertyName(), property.getValue());
     }
 
     @Override

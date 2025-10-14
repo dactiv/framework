@@ -19,9 +19,9 @@ public class JsonEqWildcardParser<T> implements WildcardParser<QueryWrapper<T>> 
 
     @Override
     public void structure(Property property, QueryWrapper<T> query) {
-        String propertyName = StringUtils.substringBefore(property.getPropertyName(), Casts.DOT);
         String path = StringUtils.substringAfter(property.getPropertyName(), Casts.DOT);
-        query.apply(propertyName + "->'$." + path + "' = {0}", property.getValue());
+        String field = StringUtils.substringBefore(property.getPropertyName(), Casts.DOT);
+        query.apply(property.splicePropertyName(field) + "->'$." + path + "' = {0}", property.getValue());
     }
 
     @Override

@@ -27,9 +27,9 @@ public class InWildcardParser<T> implements WildcardParser<QueryWrapper<T>> {
             List<Object> values = new ArrayList<>();
 
             iterable.forEach(values::add);
-            queryWrapper.in(property.getPropertyName(), values.toArray());
+            queryWrapper.in(property.getFinalPropertyName(), values.toArray());
         } else {
-            queryWrapper.in(property.getPropertyName(), property.getValue());
+            queryWrapper.in(property.getFinalPropertyName(), property.getValue());
         }
     }
 

@@ -45,6 +45,8 @@ public class SimpleConditionParser implements ConditionParser {
      */
     public static final String DEFAULT_FIELD_CLOSE_SUFFIX = "]";
 
+    public static final String DEFAULT_ALIAS_SEPARATOR = "->";
+
     /**
      * 条件名称前缀
      */
@@ -106,7 +108,14 @@ public class SimpleConditionParser implements ConditionParser {
                 continue;
             }
 
-            Property p = new Property(propertyName, propertyValue);
+            Property p;
+            if (propertyName.contains(DEFAULT_ALIAS_SEPARATOR)) {
+                String[] aliasSeparator = StringUtils.splitByWholeSeparator(propertyName, DEFAULT_ALIAS_SEPARATOR);
+                p = new Property(aliasSeparator[0], aliasSeparator[1], propertyValue);
+            } else {
+                p = new Property(propertyName, propertyValue);
+            }
+
             String condition = StringUtils.substringAfterLast(fieldCondition, fieldConditionSeparators);
             String end = fieldOpenPrefix + fieldCondition + fieldCloseSuffix;
             ConditionType type = ConditionType.And;

@@ -27,20 +27,21 @@ public class JsonSearchOneWildcardParser<T> extends AbstractJsonFunctionWildcard
     /**
      * 获取表达式
      *
-     * @param propertyName 属性名称
+     * @param property 属性
      * @param index 值索引
      *
      * @return JSON_CONTAINS 表达式
      */
-    public String getExpression(String propertyName, Integer index) {
+    @Override
+    public String getExpression(Property property, Integer index) {
 
-        if (StringUtils.contains(propertyName, Casts.DOT)) {
-            String path = StringUtils.substringAfter(propertyName, Casts.DOT);
-            String field = StringUtils.substringBefore(propertyName, Casts.DOT);
-            return "JSON_SEARCH(" + field + "->'$[*]." + path  + "', 'one', {" + index + "}, '$') IS NOT NULL";
+        if (StringUtils.contains(property.getPropertyName(), Casts.DOT)) {
+            String path = StringUtils.substringAfter(property.getPropertyName(), Casts.DOT);
+            String field = StringUtils.substringBefore(property.getPropertyName(), Casts.DOT);
+            return "JSON_SEARCH(" + property.splicePropertyName(field) + "->'$[*]." + path  + "', 'one', {" + index + "}, '$') IS NOT NULL";
         }
 
-        return "JSON_SEARCH(" + propertyName + ", 'one', {" + index + "}) IS NOT NULL";
+        return "JSON_SEARCH(" + property.getFinalPropertyName() + ", 'one', {" + index + "}) IS NOT NULL";
     }
 
     @Override

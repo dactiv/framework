@@ -25,7 +25,7 @@ public class TestQueryGenerator {
     public void testAll() {
         MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
 
-        map.add("filter_[id_eqn]", true);
+        map.add("filter_[scp->id_eqn]", true);
         map.add("filter_[id_eq]", BigDecimal.ONE.intValue());
 
         map.add("filter_[user_id_gte]", BigDecimal.ZERO.intValue());
@@ -46,7 +46,7 @@ public class TestQueryGenerator {
 
         map.put("filter_[creation_time_between]", Arrays.asList(new Date(), new Date()));
 
-        map.add("filter_[city.id_jin]", "nanning");
+        map.add("filter_[scp->city.id_jin]", "nanning");
         map.put("filter_[area_jin]", Arrays.asList("qingxiuqu", "xingningqu"));
         map.put("filter_[area_jsa]", Arrays.asList("qingxiuqu", "xingningqu"));
         map.put("filter_[area_jso]", Arrays.asList("qingxiuqu", "xingningqu"));
@@ -77,7 +77,7 @@ public class TestQueryGenerator {
 
         Assertions.assertTrue(targetSql.contains("creation_time BETWEEN ? AND ?"));
 
-        Assertions.assertTrue(targetSql.contains("JSON_CONTAINS(city->'$[*].id', JSON_ARRAY(?), '$')"));
+        Assertions.assertTrue(targetSql.contains("JSON_CONTAINS(scp.city->'$[*].id', JSON_ARRAY(?), '$')"));
         Assertions.assertTrue(targetSql.contains("city->'$.name' = ?"));
         Assertions.assertTrue(targetSql.contains("(JSON_CONTAINS(area, JSON_ARRAY(?)) OR JSON_CONTAINS(area, JSON_ARRAY(?)))"));
         Assertions.assertTrue(targetSql.contains("(JSON_SEARCH(area, 'all', ?) IS NOT NULL OR JSON_SEARCH(area, 'all', ?) IS NOT NULL)"));

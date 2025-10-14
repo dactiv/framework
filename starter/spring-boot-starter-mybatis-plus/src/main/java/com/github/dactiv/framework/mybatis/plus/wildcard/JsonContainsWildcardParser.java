@@ -1,6 +1,7 @@
 package com.github.dactiv.framework.mybatis.plus.wildcard;
 
 import com.github.dactiv.framework.commons.Casts;
+import com.github.dactiv.framework.spring.web.query.Property;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -20,15 +21,15 @@ public class JsonContainsWildcardParser<T> extends AbstractJsonFunctionWildcardP
     }
 
     @Override
-    protected String getExpression(String propertyName, Integer index) {
+    protected String getExpression(Property property, Integer index) {
 
-        if (StringUtils.contains(propertyName, Casts.DOT)) {
-            String path = StringUtils.substringAfter(propertyName, Casts.DOT);
-            String field = StringUtils.substringBefore(propertyName, Casts.DOT);
-            return "JSON_CONTAINS(" + field + "->'$[*]." + path  + "', JSON_ARRAY({" + index + "}), '$')";
+        if (StringUtils.contains(property.getPropertyName(), Casts.DOT)) {
+            String path = StringUtils.substringAfter(property.getPropertyName(), Casts.DOT);
+            String field = StringUtils.substringBefore(property.getPropertyName(), Casts.DOT);
+            return "JSON_CONTAINS(" + property.splicePropertyName(field) + "->'$[*]." + path  + "', JSON_ARRAY({" + index + "}), '$')";
         }
 
-        return "JSON_CONTAINS(" + propertyName + ", JSON_ARRAY({" + index + "}))";
+        return "JSON_CONTAINS(" + property.getFinalPropertyName() + ", JSON_ARRAY({" + index + "}))";
     }
 
     @Override

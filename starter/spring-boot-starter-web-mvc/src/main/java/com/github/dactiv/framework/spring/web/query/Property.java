@@ -1,5 +1,8 @@
 package com.github.dactiv.framework.spring.web.query;
 
+import com.github.dactiv.framework.commons.Casts;
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * 属性信息，用户记录对应字段名称和值信息
  *
@@ -18,6 +21,11 @@ public class Property {
     public static final String PROPERTY_NAME = "propertyName";
 
     /**
+     * 别名
+     */
+    private String alias = StringUtils.EMPTY;
+
+    /**
      * 属性名
      */
     private String propertyName;
@@ -32,6 +40,12 @@ public class Property {
     }
 
     public Property(String propertyName, Object value) {
+        this.propertyName = propertyName;
+        this.value = value;
+    }
+
+    public Property(String alias, String propertyName, Object value) {
+        this.alias = alias;
         this.propertyName = propertyName;
         this.value = value;
     }
@@ -54,6 +68,13 @@ public class Property {
         this.propertyName = propertyName;
     }
 
+    public String getFinalPropertyName() {
+        if (StringUtils.isNotEmpty(alias)) {
+            return alias + Casts.DOT + propertyName;
+        }
+        return propertyName;
+    }
+
     /**
      * 获取条件值
      *
@@ -70,5 +91,29 @@ public class Property {
      */
     public void setValue(Object value) {
         this.value = value;
+    }
+
+    /**
+     * 获取别名
+     * @return 别名
+     */
+    public String getAlias() {
+        return alias;
+    }
+
+    /**
+     * 设置别名
+     *
+     * @param alias 别名
+     */
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public String splicePropertyName(String field) {
+        if (StringUtils.isNotEmpty(alias)) {
+            return alias + Casts.DOT + field;
+        }
+        return field;
     }
 }

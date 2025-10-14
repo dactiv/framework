@@ -37,7 +37,7 @@ public class BetweenWildcardParser<T> implements WildcardParser<QueryWrapper<T>>
             throw new SystemException("Between 查询必须参数值的数组大小为 2 位");
         }
 
-        queryWrapper.between(property.getPropertyName(), values.iterator().next(), values.get(values.size() - 1));
+        queryWrapper.between(property.getFinalPropertyName(), values.iterator().next(), values.get(values.size() - 1));
     }
 
     @Override

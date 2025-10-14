@@ -23,7 +23,7 @@ public abstract class AbstractJsonFunctionWildcardParser<T> implements WildcardP
 
     @Override
     public void structure(Property property, QueryWrapper<T> queryWrapper) {
-        ApplyObject applyObject = structureApplyObject(property.getValue(), index -> getExpression(property.getPropertyName(), index));
+        ApplyObject applyObject = structureApplyObject(property.getValue(), index -> getExpression(property, index));
         if (Iterable.class.isAssignableFrom(property.getValue().getClass())) {
             queryWrapper.and(c -> c.apply(applyObject.getSql(), applyObject.getArgs().toArray()));
         } else {
@@ -34,11 +34,11 @@ public abstract class AbstractJsonFunctionWildcardParser<T> implements WildcardP
     /**
      * 获取表达式
      *
-     * @param propertyName 属性名称
+     * @param property 属性
      * @param index   所引值
      * @return json 函数表达式 的 sql 语句
      */
-    protected abstract String getExpression(String propertyName, Integer index);
+    protected abstract String getExpression(Property property, Integer index);
 
     protected ApplyObject structureApplyObject(Object value, Function<Integer, String> expression) {
         if (value instanceof Iterable<?>) {

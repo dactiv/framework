@@ -17,7 +17,7 @@ public class FascConfig {
 
     private RefreshAccessTokenMetadata accessToken  = new RefreshAccessTokenMetadata(
             CacheProperties.of("dactiv:fasc:access-token")
-    );;
+    );
 
     private String openCorpId;
 

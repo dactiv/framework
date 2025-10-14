@@ -17,7 +17,7 @@ public class LtWildcardParser<T> implements WildcardParser<QueryWrapper<T>> {
 
     @Override
     public void structure(Property property, QueryWrapper<T> queryWrapper) {
-        queryWrapper.lt(property.getPropertyName(), property.getValue());
+        queryWrapper.lt(property.getFinalPropertyName(), property.getValue());
     }
 
     @Override

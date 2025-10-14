@@ -17,7 +17,7 @@ public class NeWildcardParser<T> implements WildcardParser<QueryWrapper<T>> {
 
     @Override
     public void structure(Property property, QueryWrapper<T> queryWrapper) {
-        queryWrapper.ne(property.getPropertyName(), property.getValue());
+        queryWrapper.ne(property.getFinalPropertyName(), property.getValue());
     }
 
     @Override
