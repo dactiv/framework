@@ -74,4 +74,5 @@ public class WechatConfig implements Serializable {
     public void setSuccessAuthenticationBuildParamName(String successAuthenticationBuildParamName) {
         this.successAuthenticationBuildParamName = successAuthenticationBuildParamName;
     }
+
 }

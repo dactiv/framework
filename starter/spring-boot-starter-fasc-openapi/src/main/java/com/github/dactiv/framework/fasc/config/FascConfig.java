@@ -1,6 +1,7 @@
 package com.github.dactiv.framework.fasc.config;
 
 import com.github.dactiv.framework.commons.CacheProperties;
+import com.github.dactiv.framework.commons.TimeProperties;
 import com.github.dactiv.framework.commons.domain.metadata.RefreshAccessTokenMetadata;
 import com.github.dactiv.framework.fasc.enums.http.SignTypeEnum;
 import com.github.dactiv.framework.fasc.stratey.DefaultJsonStrategy;
@@ -15,13 +16,14 @@ import java.util.List;
 @ConfigurationProperties("dactiv.fasc")
 public class FascConfig {
 
-    private RefreshAccessTokenMetadata accessToken  = new RefreshAccessTokenMetadata(
+    private RefreshAccessTokenMetadata accessToken = new RefreshAccessTokenMetadata(
+            TimeProperties.ofMinutes(10),
             CacheProperties.of("dactiv:fasc:access-token")
     );
 
     private String openCorpId;
 
-    private List<String> authScopes = List.of("ident_info","seal_info","signtask_init","signtask_info","signtask_file");
+    private List<String> authScopes = List.of("ident_info", "seal_info", "signtask_init", "signtask_info", "signtask_file");
 
     private String faceAuthMode = "tencent";
 

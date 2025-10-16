@@ -65,10 +65,9 @@ public abstract class WechatBasicService {
         if (Objects.nonNull(token) && System.currentTimeMillis() - token.getCreationTime().getTime() > refreshAccessTokenMetadata.getRefreshAccessTokenLeadTime().toMillis()) {
             return token;
         }
-
         ConcurrentConfig config = new ConcurrentConfig();
 
-        config.setKey("dactiv:wechat:get-access-token");
+        config.setKey(refreshAccessTokenMetadata.getCache().getName(":concurrent"));
         config.setException("获取微信 accessToken 出现并发");
         config.setWaitTime(TimeProperties.of(8, TimeUnit.SECONDS));
         config.setLeaseTime(TimeProperties.of(5, TimeUnit.SECONDS));

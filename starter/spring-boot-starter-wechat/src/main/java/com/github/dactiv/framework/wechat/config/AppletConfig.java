@@ -1,6 +1,7 @@
 package com.github.dactiv.framework.wechat.config;
 
 import com.github.dactiv.framework.commons.CacheProperties;
+import com.github.dactiv.framework.commons.TimeProperties;
 import com.github.dactiv.framework.commons.domain.metadata.RefreshAccessTokenMetadata;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,7 @@ public class AppletConfig implements Serializable {
      * 小程序账户
      */
     private RefreshAccessTokenMetadata accessToken = new RefreshAccessTokenMetadata(
+            TimeProperties.ofMinutes(10),
             CacheProperties.of("dactiv:wechat:applet:access-token")
     );
 

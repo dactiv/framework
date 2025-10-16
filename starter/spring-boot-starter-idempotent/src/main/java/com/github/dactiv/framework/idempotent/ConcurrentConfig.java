@@ -50,6 +50,32 @@ public class ConcurrentConfig {
         this.key = key;
     }
 
+    public ConcurrentConfig(String key, LockType lockType) {
+        this.key = key;
+        this.lockType = lockType;
+    }
+
+    public ConcurrentConfig(String key, LockType lockType, String exception) {
+        this.key = key;
+        this.lockType = lockType;
+        this.exception = exception;
+    }
+
+    public ConcurrentConfig(String key, LockType lockType, String exception, TimeProperties waitTime) {
+        this.key = key;
+        this.lockType = lockType;
+        this.exception = exception;
+        this.waitTime = waitTime;
+    }
+
+    public ConcurrentConfig(String key, LockType lockType, String exception, TimeProperties waitTime, TimeProperties leaseTime) {
+        this.key = key;
+        this.lockType = lockType;
+        this.exception = exception;
+        this.waitTime = waitTime;
+        this.leaseTime = leaseTime;
+    }
+
     /**
      * 创建一个新的并发配置
      */
