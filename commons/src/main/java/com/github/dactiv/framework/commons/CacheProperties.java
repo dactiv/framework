@@ -22,6 +22,9 @@ public class CacheProperties implements Serializable {
 
     public static final String EXPIRES_TIME_FIELD_NAME = "expiresTime";
 
+
+    public static final String CONCURRENT_CACHE_SUFFIX = "concurrent";
+
     /**
      * 缓存名称
      */
@@ -104,6 +107,15 @@ public class CacheProperties implements Serializable {
      */
     public String getName(Object suffix) {
         return StringUtils.appendIfMissing(getName(), DEFAULT_SEPARATOR) + suffix.toString();
+    }
+
+    /**
+     * 获取并发缓存名称
+     *
+     * @return 并发缓存名称
+     */
+    public String getConcurrentName() {
+        return StringUtils.appendIfMissing(getName(), CONCURRENT_CACHE_SUFFIX);
     }
 
     /**

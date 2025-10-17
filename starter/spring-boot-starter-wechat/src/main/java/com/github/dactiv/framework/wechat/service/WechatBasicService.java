@@ -55,7 +55,7 @@ public abstract class WechatBasicService {
     }
 
     @NacosCronScheduled(cron = "${dactiv.wechat.refresh-access-token-cron:0 0/30 * * * ? }")
-    @Concurrent(value = "dactiv:wechat:refresh-access-token" , waitTime = @Time(value = 8, unit = TimeUnit.SECONDS), leaseTime = @Time(value = 5, unit = TimeUnit.SECONDS), exception = "刷新微信 accessToken 出现并发")
+    @Concurrent(value = "dactiv:wechat:refresh-access-token", waitTime = @Time(value = 8, unit = TimeUnit.SECONDS), leaseTime = @Time(value = 5, unit = TimeUnit.SECONDS), exception = "刷新微信 accessToken 出现并发")
     public AccessToken refreshAccessToken() {
         RefreshAccessTokenMetadata refreshAccessTokenMetadata = getRefreshAccessTokenMetadata();
         RBucket<AccessToken> bucket = concurrentInterceptor
@@ -67,14 +67,13 @@ public abstract class WechatBasicService {
         }
         ConcurrentConfig config = new ConcurrentConfig();
 
-        config.setKey(refreshAccessTokenMetadata.getCache().getName(":concurrent"));
+        config.setKey(refreshAccessTokenMetadata.getCache().getConcurrentName());
         config.setException("获取微信 accessToken 出现并发");
         config.setWaitTime(TimeProperties.of(8, TimeUnit.SECONDS));
         config.setLeaseTime(TimeProperties.of(5, TimeUnit.SECONDS));
 
         token = concurrentInterceptor.invoke(config, this::getAccessToken);
-        bucket.set(token);
-        bucket.expire(token.getExpiresTime().toDuration());
+        bucket.set(token, token.getExpiresTime().toDuration());
 
         return token;
     }
@@ -113,8 +112,9 @@ public abstract class WechatBasicService {
                 new ParameterizedTypeReference<>() {
                 }
         );
-
-        LOGGER.info("获取 wechat access token 结果为:{}", result.getBody());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("获取 wechat access token 结果为:{}", result.getBody());
+        }
         if (isSuccess(result) && Objects.requireNonNull(result.getBody()).containsKey("access_token")) {
             token = new AccessToken();
             token.setToken(result.getBody().get("access_token").toString());

@@ -1,5 +1,6 @@
 package com.github.dactiv.framework.fasc.client;
 
+import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.TimeProperties;
 import com.github.dactiv.framework.commons.annotation.Time;
 import com.github.dactiv.framework.commons.domain.AccessToken;
@@ -286,6 +287,10 @@ public class OpenApiClient implements InitializingBean {
 
     public AccessToken getAccessToken() throws ApiException {
         BaseRes<AccessTokenRes> res = invokeApi(null, OpenApiUrlConstants.SERVICE_GET_ACCESS_TOKEN, AccessTokenRes.class);
+        if (log.isDebugEnabled()) {
+            log.debug("获取法大大 access token 结果为:{}", Casts.convertValue(res.getData(), Casts.MAP_TYPE_REFERENCE));
+        }
+
         AccessToken accessToken = new AccessToken();
         accessToken.setToken(res.getData().getAccessToken());
         accessToken.setExpiresTime(TimeProperties.of(Long.parseLong(res.getData().getExpiresIn()), TimeUnit.SECONDS));
@@ -303,7 +308,7 @@ public class OpenApiClient implements InitializingBean {
 
         ConcurrentConfig config = new ConcurrentConfig();
 
-        config.setKey(getConfig().getAccessToken().getCache().getName(":concurrent"));
+        config.setKey(getConfig().getAccessToken().getCache().getConcurrentName());
         config.setException("获取发大大 accessToken 出现并发");
         config.setWaitTime(TimeProperties.of(8, TimeUnit.SECONDS));
         config.setLeaseTime(TimeProperties.of(5, TimeUnit.SECONDS));
