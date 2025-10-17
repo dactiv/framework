@@ -24,6 +24,7 @@ import com.github.dactiv.framework.idempotent.advisor.concurrent.ConcurrentInter
 import com.github.dactiv.framework.idempotent.annotation.Concurrent;
 import com.github.dactiv.framework.nacos.task.annotation.NacosCronScheduled;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.redisson.api.RBucket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -293,7 +294,8 @@ public class OpenApiClient implements InitializingBean {
 
         AccessToken accessToken = new AccessToken();
         accessToken.setToken(res.getData().getAccessToken());
-        accessToken.setExpiresTime(TimeProperties.of(Long.parseLong(res.getData().getExpiresIn()), TimeUnit.SECONDS));
+        int expires = NumberUtils.toInt(res.getData().getExpiresIn()) - (int)getConfig().getAccessToken().getRefreshAccessTokenLeadTime().toSeconds();
+        accessToken.setExpiresTime(TimeProperties.of(expires, TimeUnit.SECONDS));
         return accessToken;
     }
 
@@ -317,7 +319,7 @@ public class OpenApiClient implements InitializingBean {
         RBucket<AccessToken> bucket = concurrentInterceptor
                 .getRedissonClient()
                 .getBucket(getConfig().getAccessToken().getCache().getName());
-        bucket.set(token);
+        bucket.set(token, token.getExpiresTime().toDuration());
         bucket.expire(token.getExpiresTime().toDuration());
 
         return token;

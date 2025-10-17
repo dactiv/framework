@@ -576,7 +576,7 @@ public abstract class Casts {
         }
 
         TreeDescriptionMetadata metadata = TreeDescriptionMetadata.of(
-                descriptionClass.getSimpleName(),
+                StringUtils.defaultIfEmpty(description.name(), descriptionClass.getSimpleName()),
                 description.value()
         );
         metadata.setSort(description.sort());
@@ -615,7 +615,7 @@ public abstract class Casts {
         Class<?> type = method.getReturnType();
 
         TreeDescriptionMetadata metadata = TreeDescriptionMetadata.of(
-                method.getName() + Casts.LEFT_BRACKET + Casts.RIGHT_BRACKET,
+                StringUtils.defaultIfEmpty(description.name(), method.getName() + Casts.LEFT_BRACKET + Casts.RIGHT_BRACKET),
                 description.value()
         );
 
@@ -648,7 +648,7 @@ public abstract class Casts {
         Class<?> type = field.getType();
 
         TreeDescriptionMetadata metadata = TreeDescriptionMetadata.of(
-                field.getName(),
+                StringUtils.defaultIfEmpty(description.name(), field.getName()),
                 description.value()
         );
         metadata.setSort(description.sort());

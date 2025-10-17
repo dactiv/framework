@@ -21,6 +21,12 @@ public @interface Description {
     String value();
 
     /**
+     * 名称
+     * @return
+     */
+    String name() default "";
+
+    /**
      * 顺序值
      * @return 顺序值
      */
