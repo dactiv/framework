@@ -294,7 +294,7 @@ public class OpenApiClient implements InitializingBean {
 
         AccessToken accessToken = new AccessToken();
         accessToken.setToken(res.getData().getAccessToken());
-        int expires = NumberUtils.toInt(res.getData().getExpiresIn()) - (int)getConfig().getAccessToken().getRefreshAccessTokenLeadTime().toSeconds();
+        int expires = NumberUtils.toInt(res.getData().getExpiresIn()) / 2;
         accessToken.setExpiresTime(TimeProperties.of(expires, TimeUnit.SECONDS));
         return accessToken;
     }

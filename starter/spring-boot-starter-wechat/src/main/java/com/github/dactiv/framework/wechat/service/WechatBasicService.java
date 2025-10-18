@@ -118,7 +118,7 @@ public abstract class WechatBasicService {
         if (isSuccess(result) && Objects.requireNonNull(result.getBody()).containsKey("access_token")) {
             token = new AccessToken();
             token.setToken(result.getBody().get("access_token").toString());
-            int expires = NumberUtils.toInt(result.getBody().get("expires_in").toString()) - (int)getRefreshAccessTokenMetadata().getRefreshAccessTokenLeadTime().toSeconds();
+            int expires = NumberUtils.toInt(result.getBody().get("expires_in").toString()) / 2;
             token.setExpiresTime(TimeProperties.of(expires, TimeUnit.SECONDS) );
         } else {
             throwSystemExceptionIfError(result.getBody());
