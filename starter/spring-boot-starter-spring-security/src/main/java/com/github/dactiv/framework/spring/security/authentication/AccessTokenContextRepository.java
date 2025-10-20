@@ -96,15 +96,19 @@ public class AccessTokenContextRepository extends HttpSessionSecurityContextRepo
         return securityContext;
     }
 
-    private SecurityContext readSecurityContextFromRequest(HttpServletRequest request) {
-        if (this.loginRequestMatcher.matches(request)) {
-            return null;
-        }
+    public String getAccessToken(HttpServletRequest request) {
         String token = request.getHeader(accessTokenProperties.getAccessTokenHeaderName());
         if (StringUtils.isEmpty(token)) {
             token = request.getParameter(accessTokenProperties.getAccessTokenParamName());
         }
+        return token;
+    }
 
+    private SecurityContext readSecurityContextFromRequest(HttpServletRequest request) {
+        if (this.loginRequestMatcher.matches(request)) {
+            return null;
+        }
+        String token = getAccessToken(request);
         if (StringUtils.isEmpty(token)) {
             return null;
         }

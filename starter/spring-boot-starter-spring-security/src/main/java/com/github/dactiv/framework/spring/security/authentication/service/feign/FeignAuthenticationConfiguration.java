@@ -28,9 +28,9 @@ public class FeignAuthenticationConfiguration {
     public static final String DEFAULT_TYPE = "feign";
 
     /**
-     * feign 调用认真拦截器
+     * feign 调用认证拦截器
      *
-     * @param properties 认真配置信息
+     * @param properties 认证配置信息
      *
      * @return feign 请求拦截器
      */
@@ -94,7 +94,6 @@ public class FeignAuthenticationConfiguration {
         String base64 = encodeUserProperties(user);
 
         httpHeaders.add(HttpHeaders.AUTHORIZATION, BasicAuthenticationConverter.AUTHENTICATION_SCHEME_BASIC + StringUtils.SPACE + base64);
-
         return httpHeaders;
     }
 
