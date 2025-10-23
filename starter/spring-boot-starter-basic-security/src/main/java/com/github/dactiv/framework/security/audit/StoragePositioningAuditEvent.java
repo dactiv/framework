@@ -2,6 +2,7 @@ package com.github.dactiv.framework.security.audit;
 
 import org.springframework.boot.actuate.audit.AuditEvent;
 
+import java.io.Serial;
 import java.time.Instant;
 import java.util.Map;
 
@@ -14,6 +15,11 @@ import java.util.Map;
  * @author maurice.chen
  */
 public class StoragePositioningAuditEvent extends AuditEvent {
+
+    @Serial
+    private static final long serialVersionUID = -2637890771981260326L;
+
+    public static final String STORAGE_POSITIONING_FIELD = "storagePositioning";
 
     /**
      * 存储定位

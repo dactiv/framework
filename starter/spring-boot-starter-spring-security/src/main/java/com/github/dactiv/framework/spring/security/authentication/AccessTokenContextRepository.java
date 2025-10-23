@@ -134,6 +134,10 @@ public class AccessTokenContextRepository extends HttpSessionSecurityContextRepo
                 return null;
             }
 
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("[访问令牌获取数据]:获取当前用户信息，数据为:{}", plaintextUserDetail);
+            }
+
             String type = plaintextUserDetail.getOrDefault(IdAuditEvent.TYPE_FIELD_NAME, StringUtils.EMPTY).toString();
             Object id = plaintextUserDetail.getOrDefault(IdEntity.ID_FIELD_NAME, StringUtils.EMPTY).toString();
             SecurityContext context = cacheManager.getSecurityContext(
