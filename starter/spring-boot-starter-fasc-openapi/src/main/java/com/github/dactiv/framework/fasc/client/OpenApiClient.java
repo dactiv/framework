@@ -243,12 +243,16 @@ public class OpenApiClient implements InitializingBean {
 
     private HttpInfoRes request(String url, String method, Map<String, String> headerMap, Map<String, String> bodyMap, Map<String, File> fileMap) throws ApiException {
         try {
+            HttpInfoRes result = null;
             if (RequestConstants.METHOD_GET.equals(method)) {
-                return HttpUtil.get(url, headerMap, bodyMap);
+                result = HttpUtil.get(url, headerMap, bodyMap);
             } else if (RequestConstants.METHOD_POST.equals(method)) {
-                return HttpUtil.post(url, headerMap, bodyMap, fileMap);
+                result = HttpUtil.post(url, headerMap, bodyMap, fileMap);
             }
-            return null;
+            if (log.isDebugEnabled()) {
+                log.debug("[法大大请求响应]:请求: {} 接口，响应信息为:{}", url, Casts.getObjectMapper().writeValueAsString(result));
+            }
+            return result;
         } catch (ApiException apie) {
             throw apie;
         } catch (Exception e) {
