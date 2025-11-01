@@ -24,7 +24,6 @@ public class TestQueryGenerator {
     @Test
     public void testAll() {
         MultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-
         map.add("filter_[scp->id_eqn]", true);
         map.add("filter_[id_eq]", BigDecimal.ONE.intValue());
 
@@ -46,11 +45,12 @@ public class TestQueryGenerator {
 
         map.put("filter_[creation_time_between]", Arrays.asList(new Date(), new Date()));
 
-        map.add("filter_[scp->city.id_jin]", "nanning");
+        map.add("filter_[scp->city.*id_jin]", "nanning");
         map.put("filter_[area_jin]", Arrays.asList("qingxiuqu", "xingningqu"));
         map.put("filter_[area_jsa]", Arrays.asList("qingxiuqu", "xingningqu"));
         map.put("filter_[area_jso]", Arrays.asList("qingxiuqu", "xingningqu"));
 
+        map.add("filter_[city.name_jeq]", "nanning");
         map.add("filter_[city.name_jeq]", "nanning");
         map.add("filter_[name_eq]_or_[username_like]_or_[real_name_like]", "nanning");
 

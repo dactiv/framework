@@ -26,7 +26,7 @@ public class JsonContainsWildcardParser<T> extends AbstractJsonFunctionWildcardP
         if (StringUtils.contains(property.getPropertyName(), Casts.DOT)) {
             String path = StringUtils.substringAfter(property.getPropertyName(), Casts.DOT);
             String field = StringUtils.substringBefore(property.getPropertyName(), Casts.DOT);
-            return "JSON_CONTAINS(" + property.splicePropertyName(field) + "->'$[*]." + path  + "', JSON_ARRAY({" + index + "}), '$')";
+            return "JSON_CONTAINS(" + property.splicePropertyName(field) + "->'$" + getFinalPath(path)  + "', JSON_ARRAY({" + index + "}), '$')";
         }
 
         return "JSON_CONTAINS(" + property.getFinalPropertyName() + ", JSON_ARRAY({" + index + "}))";

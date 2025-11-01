@@ -38,7 +38,7 @@ public class JsonSearchAllWildcardParser<T> extends AbstractJsonFunctionWildcard
         if (StringUtils.contains(property.getPropertyName(), Casts.DOT)) {
             String path = StringUtils.substringAfter(property.getPropertyName(), Casts.DOT);
             String field = StringUtils.substringBefore(property.getPropertyName(), Casts.DOT);
-            return "JSON_SEARCH(" + property.splicePropertyName(field) + "->'$[*]." + path  + "', 'all', {" + index + "}, '$') IS NOT NULL";
+            return "JSON_SEARCH(" + property.splicePropertyName(field) + "->'$" + getFinalPath(path)  + "', 'all', {" + index + "}, '$') IS NOT NULL";
         }
 
         return "JSON_SEARCH(" + property.getFinalPropertyName() + ", 'all', {" + index + "}) IS NOT NULL";

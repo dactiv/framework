@@ -2,6 +2,7 @@ package com.github.dactiv.framework.mybatis.plus.wildcard;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.dactiv.framework.commons.Casts;
+import com.github.dactiv.framework.commons.jackson.serializer.DesensitizeSerializer;
 import com.github.dactiv.framework.spring.web.query.Property;
 import com.github.dactiv.framework.spring.web.query.generator.WildcardParser;
 import org.apache.commons.lang3.StringUtils;
@@ -20,6 +21,16 @@ import java.util.function.Function;
  * @param <T>
  */
 public abstract class AbstractJsonFunctionWildcardParser<T> implements WildcardParser<QueryWrapper<T>> {
+
+    public static final String ALL_ARRAY = "[*]";
+
+    protected String getFinalPath(String path) {
+        if (StringUtils.startsWith(path, DesensitizeSerializer.DEFAULT_DESENSITIZE_SYMBOL)) {
+            return ALL_ARRAY + Casts.DOT + StringUtils.removeStart(path, DesensitizeSerializer.DEFAULT_DESENSITIZE_SYMBOL);
+        } else {
+            return Casts.DOT + path;
+        }
+    }
 
     @Override
     public void structure(Property property, QueryWrapper<T> queryWrapper) {
