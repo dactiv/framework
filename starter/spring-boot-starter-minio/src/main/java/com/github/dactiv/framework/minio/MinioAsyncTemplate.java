@@ -34,6 +34,8 @@ import java.util.stream.StreamSupport;
 
 /**
  * minio 异步操作类库
+ *
+ * @author maurice.chen
  */
 public class MinioAsyncTemplate extends ConsoleApiMinioAsyncClient {
 
@@ -182,11 +184,16 @@ public class MinioAsyncTemplate extends ConsoleApiMinioAsyncClient {
                 VersionFileObject version = Casts.cast(fileObject);
                 args.versionId(version.getVersionId());
             }
-
-            return SystemException.convertSupplier(
-                    () -> removeObject(args.build()).thenCompose(v -> afterDeleteObject(fileObject, deleteBucketIfEmpty)),
-                    "[minio async template] removeBucket error"
-            );
+            try {
+                statObject(StatObjectArgs.builder().bucket(bucketName).object(fileObject.getObjectName()).build());
+                return SystemException.convertSupplier(
+                        () -> removeObject(args.build()).thenCompose(v -> afterDeleteObject(fileObject, deleteBucketIfEmpty)),
+                        "[minio async template] removeBucket error"
+                );
+            } catch (Exception e) {
+                LOGGER.warn("[minio async template] removeBucket error", e);
+                return CompletableFuture.completedFuture(Boolean.FALSE);
+            }
         }
 
     }
@@ -562,7 +569,19 @@ public class MinioAsyncTemplate extends ConsoleApiMinioAsyncClient {
                 .extraQueryParams(Objects.isNull(source.getExtraQueryParams()) ? null: source.getExtraQueryParams())
                 .build();
 
-        CopyObjectArgs args = CopyObjectArgs
+        return deleteObject(target, false)
+                .thenApplyAsync(result -> CopyObjectArgs
+                        .builder()
+                        .bucket(target.getBucketName().toLowerCase())
+                        .region(target.getRegion())
+                        .object(Objects.toString(target.getObjectName(), target.getObjectName()))
+                        .source(copySource)
+                        .extraHeaders(Objects.isNull(target.getExtraHeaders()) ? null: target.getExtraHeaders())
+                        .extraQueryParams(Objects.isNull(target.getExtraQueryParams()) ? null: target.getExtraQueryParams())
+                        .build())
+                .thenComposeAsync(args ->  SystemException.convertSupplier(() -> copyObject(args), "[minio async template] copyObject error"));
+
+        /*CopyObjectArgs args = CopyObjectArgs
                 .builder()
                 .bucket(target.getBucketName().toLowerCase())
                 .region(target.getRegion())
@@ -572,7 +591,7 @@ public class MinioAsyncTemplate extends ConsoleApiMinioAsyncClient {
                 .extraQueryParams(Objects.isNull(target.getExtraQueryParams()) ? null: target.getExtraQueryParams())
                 .build();
 
-        return SystemException.convertSupplier(() -> copyObject(args), "[minio async template] copyObject error");
+        return SystemException.convertSupplier(() -> copyObject(args), "[minio async template] copyObject error");*/
     }
 
     /**
