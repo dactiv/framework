@@ -581,17 +581,6 @@ public class MinioAsyncTemplate extends ConsoleApiMinioAsyncClient {
                         .build())
                 .thenComposeAsync(args ->  SystemException.convertSupplier(() -> copyObject(args), "[minio async template] copyObject error"));
 
-        /*CopyObjectArgs args = CopyObjectArgs
-                .builder()
-                .bucket(target.getBucketName().toLowerCase())
-                .region(target.getRegion())
-                .object(Objects.toString(target.getObjectName(), target.getObjectName()))
-                .source(copySource)
-                .extraHeaders(Objects.isNull(target.getExtraHeaders()) ? null: target.getExtraHeaders())
-                .extraQueryParams(Objects.isNull(target.getExtraQueryParams()) ? null: target.getExtraQueryParams())
-                .build();
-
-        return SystemException.convertSupplier(() -> copyObject(args), "[minio async template] copyObject error");*/
     }
 
     /**
