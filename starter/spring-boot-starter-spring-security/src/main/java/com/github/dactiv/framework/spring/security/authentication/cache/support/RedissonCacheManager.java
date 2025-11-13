@@ -108,9 +108,9 @@ public class RedissonCacheManager implements CacheManager {
 
         TimeProperties timeProperties = accessTokenCache.getExpiresTime();
         if (Objects.isNull(timeProperties)) {
-            bucket.setAsync(context);
+            bucket.set(context);
         } else {
-            bucket.setAsync(context, timeProperties.getValue(), timeProperties.getUnit());
+            bucket.set(context, timeProperties.toDuration());
         }
 
     }
