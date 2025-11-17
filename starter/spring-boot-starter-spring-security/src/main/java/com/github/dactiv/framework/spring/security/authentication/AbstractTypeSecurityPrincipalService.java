@@ -33,7 +33,7 @@ public abstract class AbstractTypeSecurityPrincipalService implements TypeSecuri
     @Override
     public CacheProperties getAuthorizationCache(TypeAuthenticationToken token) {
         return CacheProperties.of(
-                authenticationProperties.getAuthorizationCache().getName(token.getType()),
+                authenticationProperties.getAuthorizationCache().getName(token.getName()),
                 authenticationProperties.getAuthorizationCache().getExpiresTime()
         ) ;
     }
