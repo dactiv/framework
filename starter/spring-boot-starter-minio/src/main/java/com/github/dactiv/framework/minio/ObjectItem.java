@@ -38,10 +38,11 @@ public class ObjectItem implements Serializable {
     }
 
     public LocalDateTime getLastModified() {
-        if (Objects.isNull(item.lastModified())) {
+        try {
+            return item.lastModified().toLocalDateTime();
+        } catch (Exception e) {
             return null;
         }
-        return item.lastModified().toLocalDateTime();
     }
 
     public long getSize() {

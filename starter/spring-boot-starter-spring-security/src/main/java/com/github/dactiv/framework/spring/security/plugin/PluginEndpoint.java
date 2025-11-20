@@ -41,10 +41,12 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.DigestUtils;
 import org.springframework.util.SystemPropertyUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -213,7 +215,7 @@ public class PluginEndpoint {
                 PluginInfo parent = createPluginInfo(plugin, classTarget);
                 // 如果该 plugin 配置没有 id 值，就直接用类名做 id 值
                 if (StringUtils.isBlank(parent.getId())) {
-                    parent.setId(classTarget.getName());
+                    parent.setId(DigestUtils.md5DigestAsHex(classTarget.getName().getBytes(StandardCharsets.UTF_8)));
                 }
 
                 pluginInfoList.add(parent);
@@ -333,7 +335,7 @@ public class PluginEndpoint {
             PluginInfo target = new PluginInfo(plugin);
             // 如果方法级别的 plugin 信息没有 id，就用方法名称做 id
             if (StringUtils.isBlank(target.getId())) {
-                target.setId(method.getName());
+                target.setId(DigestUtils.md5DigestAsHex(method.toString().getBytes(StandardCharsets.UTF_8)));
             }
 
             if (StringUtils.isBlank(target.getParent()) && Objects.nonNull(parent)) {
