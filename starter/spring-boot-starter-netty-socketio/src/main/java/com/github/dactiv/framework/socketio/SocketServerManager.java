@@ -3,10 +3,11 @@ package com.github.dactiv.framework.socketio;
 import com.corundumstudio.socketio.SocketIOClient;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.github.dactiv.framework.socketio.domain.SocketPrincipal;
+import com.github.dactiv.framework.socketio.interceptor.SocketServerInterceptor;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.task.TaskExecutor;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -16,23 +17,31 @@ public class SocketServerManager implements CommandLineRunner, DisposableBean {
 
     private final SocketIOServer socketServer;
 
-    private final TaskExecutor taskExecutor;
-
     private final SocketUserDetailsAuthentication userDetailsAuthentication;
 
+    private final List<SocketServerInterceptor> socketServerInterceptors;
+
     public SocketServerManager(SocketIOServer socketServer,
-                               SocketUserDetailsAuthentication userDetailsAuthentication) {
+                               SocketUserDetailsAuthentication userDetailsAuthentication,
+                               List<SocketServerInterceptor> socketServerInterceptors) {
         this.socketServer = socketServer;
         this.userDetailsAuthentication = userDetailsAuthentication;
+        this.socketServerInterceptors = socketServerInterceptors;
     }
 
     @Override
     public void destroy() throws Exception {
+        for (SocketServerInterceptor socketServerInterceptor : socketServerInterceptors) {
+            socketServerInterceptor.destroy();
+        }
         socketServer.stop();
     }
 
     @Override
     public void run(String... args) throws Exception {
+        for (SocketServerInterceptor socketServerInterceptor : socketServerInterceptors) {
+            socketServerInterceptor.run(args);
+        }
         socketServer.startAsync();
     }
 

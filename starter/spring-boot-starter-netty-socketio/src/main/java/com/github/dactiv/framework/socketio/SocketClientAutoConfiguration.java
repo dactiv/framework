@@ -5,6 +5,8 @@ import com.corundumstudio.socketio.store.RedissonStoreFactory;
 import com.github.dactiv.framework.socketio.config.SocketConfig;
 import com.github.dactiv.framework.socketio.holder.Interceptor.SocketMessageInterceptor;
 import com.github.dactiv.framework.socketio.holder.SocketMessagePointcutAdvisor;
+import com.github.dactiv.framework.socketio.interceptor.AuthorizationInterceptor;
+import com.github.dactiv.framework.socketio.interceptor.SocketServerInterceptor;
 import com.github.dactiv.framework.socketio.resolver.MessageSenderResolver;
 import com.github.dactiv.framework.spring.security.authentication.AccessTokenContextRepository;
 import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
@@ -28,15 +30,15 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Configuration
 @AutoConfigureBefore(SpringWebMvcAutoConfiguration.class)
 @EnableConfigurationProperties({SpringWebMvcProperties.class, AuthenticationProperties.class, SocketConfig.class})
-@ConditionalOnProperty(prefix = "dactiv.socketio.client", value = "enabled", matchIfMissing = true)
+@ConditionalOnProperty(prefix = "dactiv.socketio", value = "enabled", matchIfMissing = true)
 public class SocketClientAutoConfiguration {
 
     @Bean
     public SocketUserDetailsAuthentication socketUserDetailsAuthentication(AccessTokenContextRepository accessTokenContextRepository,
                                                                            SocketConfig socketConfig,
                                                                            RedissonClient redissonClient,
-                                                                           SocketMessageClient socketMessageClient) {
-        return new SocketUserDetailsAuthentication(accessTokenContextRepository, socketConfig, redissonClient, socketMessageClient);
+                                                                           ObjectProvider<AuthorizationInterceptor> authorizationInterceptors) {
+        return new SocketUserDetailsAuthentication(accessTokenContextRepository, socketConfig, redissonClient, authorizationInterceptors.stream().toList());
     }
 
     /**
@@ -60,20 +62,20 @@ public class SocketClientAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean(SocketServerManager.class)
-    public SocketServerManager socketServerManager(SocketUserDetailsAuthentication userDetailsAuthentication, SocketIOServer socketIoServer) {
-        return new SocketServerManager(socketIoServer, userDetailsAuthentication);
+    public SocketServerManager socketServerManager(SocketUserDetailsAuthentication userDetailsAuthentication,
+                                                   SocketIOServer socketIoServer,
+                                                   ObjectProvider<SocketServerInterceptor> socketServerInterceptors) {
+        return new SocketServerManager(socketIoServer, userDetailsAuthentication, socketServerInterceptors.stream().toList());
     }
 
     @Bean
     @ConditionalOnMissingBean(SocketMessageClient.class)
-    public SocketMessageClient socketMessageClient(SocketIOServer socketIoServer,
-                                                   ThreadPoolTaskExecutor threadPoolTaskExecutor,
-                                                   SocketUserDetailsAuthentication socketUserDetailsAuthentication,
+    public SocketMessageClient socketMessageClient(ThreadPoolTaskExecutor threadPoolTaskExecutor,
+                                                   SocketServerManager socketServerManager,
                                                    ObjectProvider<MessageSenderResolver> messageSenderResolvers) {
         return new SocketMessageClient(
-                socketIoServer,
                 threadPoolTaskExecutor,
-                socketUserDetailsAuthentication,
+                socketServerManager,
                 messageSenderResolvers.stream().toList()
         );
     }

@@ -1,7 +1,6 @@
 package com.github.dactiv.framework.socketio;
 
 import com.corundumstudio.socketio.SocketIOClient;
-import com.corundumstudio.socketio.SocketIOServer;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.RestResult;
 import com.github.dactiv.framework.commons.exception.SystemException;
@@ -17,7 +16,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -32,20 +34,16 @@ public class SocketMessageClient {
 
     public static final String DEFAULT_CHAT_ROOM_LEAVE_EVENT_NAME = "CHAT_ROOM_LEAVE";
 
-    private final SocketIOServer socketIoServer;
-
-    private final SocketUserDetailsAuthentication socketUserDetailsAuthentication;
+    private final SocketServerManager socketServerManager;
 
     private final List<MessageSenderResolver> messageSenderResolvers;
 
     private final ThreadPoolTaskExecutor taskExecutor;
 
-    public SocketMessageClient(SocketIOServer socketIoServer,
-                               ThreadPoolTaskExecutor taskExecutor,
-                               SocketUserDetailsAuthentication socketUserDetailsAuthentication,
+    public SocketMessageClient(ThreadPoolTaskExecutor taskExecutor,
+                               SocketServerManager socketServerManager,
                                List<MessageSenderResolver> messageSenderResolvers) {
-        this.socketIoServer = socketIoServer;
-        this.socketUserDetailsAuthentication = socketUserDetailsAuthentication;
+        this.socketServerManager = socketServerManager;
         this.messageSenderResolvers = messageSenderResolvers;
         this.taskExecutor = taskExecutor;
     }
@@ -147,14 +145,22 @@ public class SocketMessageClient {
         }
     }
 
+    public <T> CompletableFuture<RestResult<List<String>>> asyncJoinRoom(List<String> deviceIdentifies, Set<String> rooms) {
+        return taskExecutor.submitCompletable(() -> joinRoom(deviceIdentifies, rooms));
+    }
+
     public RestResult<List<String>> joinRoom(List<String> deviceIdentifies, Set<String> rooms) {
-        List<SocketIOClient> clients = deviceIdentifies.stream().map(s -> socketIoServer.getClient(UUID.fromString(s))).toList();
+        List<SocketIOClient> clients = deviceIdentifies.stream().map(socketServerManager::getClient).toList();
         clients.forEach(c -> c.joinRooms(rooms));
         return broadcastRoomOperation(rooms, clients, DEFAULT_CHAT_ROOM_JOIN_EVENT_NAME);
     }
 
+    public CompletableFuture<RestResult<List<String>>> asyncLeaveRoom(List<String> deviceIdentifies, Set<String> rooms) {
+        return taskExecutor.submitCompletable(() -> leaveRoom(deviceIdentifies, rooms));
+    }
+
     public RestResult<List<String>> leaveRoom(List<String> deviceIdentifies, Set<String> rooms) {
-        List<SocketIOClient> clients = deviceIdentifies.stream().map(s -> socketIoServer.getClient(UUID.fromString(s))).toList();
+        List<SocketIOClient> clients = deviceIdentifies.stream().map(socketServerManager::getClient).toList();
         clients.forEach(c -> c.leaveRooms(rooms));
         return broadcastRoomOperation(rooms, clients, DEFAULT_CHAT_ROOM_LEAVE_EVENT_NAME);
     }
@@ -164,7 +170,7 @@ public class SocketMessageClient {
                 .stream()
                 .map(SocketIOClient::getSessionId)
                 .map(UUID::toString)
-                .map(socketUserDetailsAuthentication::getSocketPrincipalByDeviceIdentified)
+                .map(socketServerManager::getSocketPrincipalByDeviceIdentified)
                 .toList();
         broadcast(rooms, defaultChatRoomLeaveEventName, data);
 
@@ -177,6 +183,6 @@ public class SocketMessageClient {
      * @param message socket 消息
      */
     public <T> void sendMessage(AbstractSocketMessageMetadata<T> message) {
-        messageSenderResolvers.stream().filter(m -> m.isSupport(message)).forEach(m -> m.sendMessage(message, socketIoServer));
+        messageSenderResolvers.stream().filter(m -> m.isSupport(message)).forEach(m -> m.sendMessage(message, socketServerManager.getSocketServer()));
     }
 }

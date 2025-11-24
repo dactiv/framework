@@ -70,7 +70,7 @@ public class SocketResult implements Serializable {
      *
      * @param broadcastMessage 多播消息
      */
-    public void addBroadcastSocketMessage(BroadcastMessageMetadata<?> broadcastMessage) {
+    public void addBroadcastSocketMessage(BroadcastMessageMetadata<Object> broadcastMessage) {
         removeIfExist(broadcastMessage, getBroadcastMessages());
         getBroadcastMessages().add(broadcastMessage);
     }
@@ -90,7 +90,7 @@ public class SocketResult implements Serializable {
      *
      * @param multipleUnicastMessage 单数据循环单播 socket 消息
      */
-    public void addMultipleUnicastMessage(MultipleUnicastMessageMetadata<?> multipleUnicastMessage) {
+    public void addMultipleUnicastMessage(MultipleUnicastMessageMetadata<Object> multipleUnicastMessage) {
         removeIfExist(multipleUnicastMessage, getMultipleUnicastMessages());
         getMultipleUnicastMessages().add(multipleUnicastMessage);
     }
@@ -116,7 +116,7 @@ public class SocketResult implements Serializable {
      *
      * @param unicastMessage 单播 socket 消息对象
      */
-    public void addUnicastMessage(UnicastMessageMetadata<?> unicastMessage) {
+    public void addUnicastMessage(UnicastMessageMetadata<Object> unicastMessage) {
         removeIfExist(unicastMessage, getUnicastMessages());
         getUnicastMessages().add(unicastMessage);
     }

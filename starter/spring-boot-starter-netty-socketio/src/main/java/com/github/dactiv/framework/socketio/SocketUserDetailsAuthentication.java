@@ -16,8 +16,8 @@ import com.github.dactiv.framework.commons.id.TypeIdNameMetadata;
 import com.github.dactiv.framework.security.audit.IdAuditEvent;
 import com.github.dactiv.framework.socketio.config.SocketConfig;
 import com.github.dactiv.framework.socketio.domain.SocketPrincipal;
-import com.github.dactiv.framework.socketio.domain.SocketUserMessage;
 import com.github.dactiv.framework.socketio.enumerate.ConnectStatus;
+import com.github.dactiv.framework.socketio.interceptor.AuthorizationInterceptor;
 import com.github.dactiv.framework.spring.security.authentication.AccessTokenContextRepository;
 import com.github.dactiv.framework.spring.security.authentication.config.AuthenticationProperties;
 import com.github.dactiv.framework.spring.security.authentication.token.AuditAuthenticationToken;
@@ -54,19 +54,21 @@ public class SocketUserDetailsAuthentication implements AuthorizationListener, C
 
     private final RedissonClient redissonClient;
 
-    private final SocketMessageClient socketMessageClient;
+    private final List<AuthorizationInterceptor> authorizationInterceptors;
+
+    /*private final SocketMessageClient socketMessageClient;*/
 
     public SocketUserDetailsAuthentication(AccessTokenContextRepository accessTokenContextRepository,
                                            SocketConfig socketConfig,
                                            RedissonClient redissonClient,
-                                           SocketMessageClient socketMessageClient) {
+                                           List<AuthorizationInterceptor> authorizationInterceptors) {
         this.accessTokenContextRepository = accessTokenContextRepository;
         this.socketConfig = socketConfig;
         this.redissonClient = redissonClient;
-        this.socketMessageClient = socketMessageClient;
+        this.authorizationInterceptors = authorizationInterceptors;
     }
 
-    private TypeIdNameMetadata getTypeIdNameMetadata(HandshakeData handshakeData) {
+    public static TypeIdNameMetadata getTypeIdNameMetadata(HandshakeData handshakeData) {
         String deviceIdentified = handshakeData
                 .getSingleUrlParam(DeviceUtils.REQUEST_DEVICE_IDENTIFIED_PARAM_NAME);
         String type = handshakeData
@@ -136,31 +138,6 @@ public class SocketUserDetailsAuthentication implements AuthorizationListener, C
         );
     }
 
-    /**
-     * 断开链接
-     *
-     * @param details socket 用户明细实现
-     */
-    private void disconnect(SocketPrincipal details) {
-        try {
-
-            SocketUserMessage<Object> socketUserDetails = SocketUserMessage.of(
-                    details,
-                    CLIENT_DISCONNECT_EVENT_NAME,
-                    RestResult.ofSuccess("您的账号已在其他客户端登陆，如果非本人操作，请及时修改密码")
-            );
-
-            List<RestResult<Object>> result = socketMessageClient.unicast(List.of(socketUserDetails));
-
-            if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("ID 为 [{}] 的用户在其他设备登录，断开上一次设备的链接，响应结果为:{}", details.getId(), result);
-            }
-
-        } catch (Exception e) {
-            LOGGER.error("登出用户失败", e);
-        }
-    }
-
     public SocketPrincipal getSocketPrincipal(String principal) {
         TypeIdNameMetadata typeIdNameMetadata = IdNameMetadata.ofPrincipalString(principal);
         return getSocketPrincipal(typeIdNameMetadata);
@@ -227,25 +204,18 @@ public class SocketUserDetailsAuthentication implements AuthorizationListener, C
         if (StringUtils.isEmpty(typeIdNameMetadata.getName()) || StringUtils.isEmpty(typeIdNameMetadata.getId())) {
             return AuthorizationResult.FAILED_AUTHORIZATION;
         }
+        SecurityContext securityContext = null;
+        for (AuthorizationInterceptor interceptor : authorizationInterceptors) {
+            securityContext = interceptor.getAuthorizationResult(typeIdNameMetadata, data);
+            if (Objects.nonNull(securityContext)) {
+                break;
+            }
+        }
 
-        /*SecurityContext securityContext;
-        if (StringUtils.isNotEmpty(typeIdNameMetadata.getType()) && ResourceSourceEnum.CONSOLE_SOURCES.contains(typeIdNameMetadata.getType())) {
-            String cookie = data.getHttpHeaders().get(HttpHeaders.COOKIE);
-            List<String> cookieValue = Arrays.stream(StringUtils.splitByWholeSeparator(cookie, Casts.SEMICOLON)).map(StringUtils::trim).toList();
 
-            String sessionValue = cookieValue
-                    .stream()
-                    .filter(s -> StringUtils.startsWith(s, HeaderWebSessionIdResolver.DEFAULT_HEADER_NAME))
-                    .findFirst()
-                    .orElse(StringUtils.EMPTY);
-            String sessionId = Base64.decodeToString(StringUtils.substringAfter(sessionValue, Casts.EQ));
-            Session session = sessionRepository.findById(sessionId);
-
-            securityContext = session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
-            typeIdNameMetadata.setId(sessionId);
-        } else {*/
-        SecurityContext securityContext = accessTokenContextRepository.getSecurityContext(typeIdNameMetadata.getName());
-        /*}*/
+        if (Objects.isNull(securityContext)) {
+            securityContext = accessTokenContextRepository.getSecurityContext(typeIdNameMetadata.getName());
+        }
 
         if (Objects.isNull(securityContext)) {
             return AuthorizationResult.FAILED_AUTHORIZATION;
@@ -258,16 +228,15 @@ public class SocketUserDetailsAuthentication implements AuthorizationListener, C
         AuditAuthenticationToken token = Casts.cast(securityContext.getAuthentication());
         SocketPrincipal exist = getSocketPrincipal(token.getName());
         if (Objects.nonNull(exist) && !StringUtils.equals(exist.getDeviceIdentified(), typeIdNameMetadata.getId())) {
-            this.disconnect(exist);
+            for (AuthorizationInterceptor interceptor : authorizationInterceptors) {
+                interceptor.hasSocketPrincipal(exist, token);
+            }
         }
 
         data.getHttpHeaders().add(DEFAULT_IDENTIFIED_HEADER_NAME, typeIdNameMetadata.getId());
 
         SocketPrincipal socketUserDetails = Casts.of(token.getSecurityPrincipal(), SocketPrincipal.class);
         socketUserDetails.setConnectStatus(ConnectStatus.Connecting);
-        // 设置 socket server 的 id 地址和端口
-        /*socketUserDetails.setSocketServerIp(discoveryProperties.getIp());*/
-        //socketUserDetails.setPort(socketConfig.getPort());
         socketUserDetails.setDeviceIdentified(typeIdNameMetadata.getId());
         socketUserDetails.setType(token.getType());
 
