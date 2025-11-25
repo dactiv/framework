@@ -2,7 +2,6 @@ package com.github.dactiv.framework.citic;
 
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.ser.ToXmlGenerator;
-import com.github.dactiv.framework.citic.config.CiticProperties;
 import com.github.dactiv.framework.citic.service.CiticService;
 import com.github.dactiv.framework.commons.exception.SystemException;
 import org.slf4j.Logger;

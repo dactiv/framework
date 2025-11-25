@@ -2,7 +2,7 @@ package com.github.dactiv.framework.fasc.utils.http;
 
 import com.github.dactiv.framework.fasc.bean.base.BaseResponseEntity;
 import com.github.dactiv.framework.fasc.bean.base.HttpInfoRes;
-import com.github.dactiv.framework.fasc.config.HttpConfig;
+import com.github.dactiv.framework.fasc.HttpProperties;
 import com.github.dactiv.framework.fasc.constants.RequestConstants;
 import com.github.dactiv.framework.fasc.exception.ApiException;
 import org.apache.http.*;
@@ -54,7 +54,7 @@ public class HttpUtil {
 
     private static int DEFAULT_SOCKET_MAX_TOTAL = 400;
 
-    public static HttpConfig httpConfig;
+    public static HttpProperties httpProperties;
 
     private static volatile CloseableHttpClient closeableHttpClient;
 
@@ -145,7 +145,7 @@ public class HttpUtil {
                               Map<String, File> files) throws ApiException {
         try {
             // 初始化httpClient
-            CloseableHttpClient httpClient = getHttpClient(httpConfig);
+            CloseableHttpClient httpClient = getHttpClient(httpProperties);
             // 创建http请求 设置请求参数
             HttpPost httpPost;
             if (files == null || files.isEmpty()) {
@@ -153,7 +153,7 @@ public class HttpUtil {
             } else {
                 httpPost = getHttpPost(url, params, files);
             }
-            httpPost.setConfig(getRequestConfig(httpConfig));
+            httpPost.setConfig(getRequestConfig(httpProperties));
             return executeHttpRequest(httpClient, httpPost, reqHeader);
         } catch (ApiException e) {
             throw e;
@@ -166,11 +166,11 @@ public class HttpUtil {
     /**
      * 获取client
      *
-     * @param httpConfig http配置
+     * @param httpProperties http配置
      * @return CloseableHttpClient client
      * @throws ApiException 异常
      */
-    public static CloseableHttpClient getHttpClient(HttpConfig httpConfig) throws ApiException {
+    public static CloseableHttpClient getHttpClient(HttpProperties httpProperties) throws ApiException {
         if(closeableHttpClient != null) {
             return closeableHttpClient;
         }
@@ -180,7 +180,7 @@ public class HttpUtil {
                 return closeableHttpClient;
             }
             Registry<ConnectionSocketFactory> sfr = null;
-            if (httpConfig != null && Boolean.TRUE.equals(httpConfig.getProxyFlag())) {
+            if (httpProperties != null && Boolean.TRUE.equals(httpProperties.getProxyFlag())) {
                 sfr = RegistryBuilder.<ConnectionSocketFactory>create()
                         .register("http", PlainConnectionSocketFactory.getSocketFactory())
                         .register("https",SSLConnectionSocketFactory.getSocketFactory())
@@ -196,11 +196,11 @@ public class HttpUtil {
             PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(sfr);
             Integer defaultMaxPerRoute = DEFAULT_MAX_PER_ROUTE;
             Integer defaultSocketMaxTotal = DEFAULT_SOCKET_MAX_TOTAL;
-            if(httpConfig != null && httpConfig.getDefaultMaxPerRoute() != null && httpConfig.getDefaultMaxPerRoute() > 0) {
-                defaultMaxPerRoute = httpConfig.getDefaultMaxPerRoute();
+            if(httpProperties != null && httpProperties.getDefaultMaxPerRoute() != null && httpProperties.getDefaultMaxPerRoute() > 0) {
+                defaultMaxPerRoute = httpProperties.getDefaultMaxPerRoute();
             }
-            if(httpConfig != null && httpConfig.getDefaultSocketMaxTotal() != null && httpConfig.getDefaultSocketMaxTotal() > 0) {
-                defaultSocketMaxTotal = httpConfig.getDefaultSocketMaxTotal();
+            if(httpProperties != null && httpProperties.getDefaultSocketMaxTotal() != null && httpProperties.getDefaultSocketMaxTotal() > 0) {
+                defaultSocketMaxTotal = httpProperties.getDefaultSocketMaxTotal();
             }
             connectionManager.setDefaultMaxPerRoute(defaultMaxPerRoute);
             connectionManager.setMaxTotal(defaultSocketMaxTotal);
@@ -219,11 +219,11 @@ public class HttpUtil {
 
     public static HttpInfoRes get(String url, Map<String, String> reqHeader, Map<String, String> params) throws ApiException {
         // 初始化httpClient
-        CloseableHttpClient httpClient = getHttpClient(httpConfig);
+        CloseableHttpClient httpClient = getHttpClient(httpProperties);
         // 创建http请求 设置请求参数
         HttpGet httpGet = getHttpGet(url, params, RequestConstants.CHARSET_UTF8);
         // 设置超时时间、代理配置
-        httpGet.setConfig(getRequestConfig(httpConfig));
+        httpGet.setConfig(getRequestConfig(httpProperties));
         return executeHttpRequest(httpClient, httpGet, reqHeader);
     }
 
@@ -276,7 +276,7 @@ public class HttpUtil {
 
         CloseableHttpResponse response = null;
         // 初始化httpClient
-        CloseableHttpClient httpClient = getHttpClient(httpConfig);
+        CloseableHttpClient httpClient = getHttpClient(httpProperties);
         try {
             // 创建http请求 设置请求参数
             HttpPost httpPost = getHttpPost(url, params, RequestConstants.CHARSET_UTF8);
@@ -285,7 +285,7 @@ public class HttpUtil {
                     httpPost.addHeader(entry.getKey(), entry.getValue());
                 }
             }
-            httpPost.setConfig(getRequestConfig(httpConfig));
+            httpPost.setConfig(getRequestConfig(httpProperties));
             response = httpClient.execute(httpPost);
             reqesutAndResponseLog(httpPost, response);
             entity.setHttpStatusCode(response.getStatusLine().getStatusCode());
@@ -349,18 +349,18 @@ public class HttpUtil {
      *
      * @return 请求配置
      */
-    private static RequestConfig getRequestConfig(HttpConfig httpConfig) {
+    private static RequestConfig getRequestConfig(HttpProperties httpProperties) {
         RequestConfig.Builder custom = RequestConfig.custom();
-        if (httpConfig != null) {
-            if (httpConfig.getReadTimeout() != null) {
-                custom.setSocketTimeout(httpConfig.getReadTimeout());
+        if (httpProperties != null) {
+            if (httpProperties.getReadTimeout() != null) {
+                custom.setSocketTimeout(httpProperties.getReadTimeout());
             }
-            if (httpConfig.getConnectTimeout() != null) {
-                custom.setConnectTimeout(httpConfig.getConnectTimeout());
+            if (httpProperties.getConnectTimeout() != null) {
+                custom.setConnectTimeout(httpProperties.getConnectTimeout());
             }
             // 设置代理
-            if (Boolean.TRUE.equals(httpConfig.getProxyFlag())) {
-                HttpHost proxy = new HttpHost(httpConfig.getProxyHost(), httpConfig.getProxyPort(), "http");
+            if (Boolean.TRUE.equals(httpProperties.getProxyFlag())) {
+                HttpHost proxy = new HttpHost(httpProperties.getProxyHost(), httpProperties.getProxyPort(), "http");
                 custom.setProxy(proxy);
             }
         }

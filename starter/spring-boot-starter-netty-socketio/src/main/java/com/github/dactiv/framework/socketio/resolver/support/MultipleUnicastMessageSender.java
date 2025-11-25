@@ -3,7 +3,7 @@ package com.github.dactiv.framework.socketio.resolver.support;
 import com.corundumstudio.socketio.ClientOperations;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.github.dactiv.framework.commons.Casts;
-import com.github.dactiv.framework.socketio.config.SocketConfig;
+import com.github.dactiv.framework.socketio.SocketProperties;
 import com.github.dactiv.framework.socketio.domain.metadata.AbstractSocketMessageMetadata;
 import com.github.dactiv.framework.socketio.domain.metadata.MultipleUnicastMessageMetadata;
 import com.github.dactiv.framework.socketio.resolver.MessageSenderResolver;
@@ -24,9 +24,9 @@ public class MultipleUnicastMessageSender implements MessageSenderResolver {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(MultipleUnicastMessageSender.class);
 
-    private final SocketConfig config;
+    private final SocketProperties config;
 
-    public MultipleUnicastMessageSender(SocketConfig config) {
+    public MultipleUnicastMessageSender(SocketProperties config) {
         this.config = config;
     }
 

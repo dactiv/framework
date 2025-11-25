@@ -1,10 +1,10 @@
-package com.github.dactiv.framework.fasc.config;
+package com.github.dactiv.framework.fasc;
 
 /**
  * @author Fadada
  * 2021/9/8 17:53:20
  */
-public class HttpConfig {
+public class HttpProperties {
     /**
      * http连接超时时间
      */
@@ -35,10 +35,10 @@ public class HttpConfig {
     private Integer proxyPort;
 
 
-    public HttpConfig() {
+    public HttpProperties() {
     }
 
-    public HttpConfig(int connectTimeout, int readTimeout, Boolean proxyFlag, String proxyHost, Integer proxyPort) {
+    public HttpProperties(int connectTimeout, int readTimeout, Boolean proxyFlag, String proxyHost, Integer proxyPort) {
         this.connectTimeout = connectTimeout;
         this.readTimeout = readTimeout;
         this.proxyFlag = proxyFlag;
@@ -46,7 +46,7 @@ public class HttpConfig {
         this.proxyPort = proxyPort;
     }
 
-    public HttpConfig(int connectTimeout, int readTimeout, Boolean proxyFlag, String proxyHost, Integer proxyPort, Integer defaultMaxPerRoute, Integer defaultSocketMaxTotal) {
+    public HttpProperties(int connectTimeout, int readTimeout, Boolean proxyFlag, String proxyHost, Integer proxyPort, Integer defaultMaxPerRoute, Integer defaultSocketMaxTotal) {
         this.connectTimeout = connectTimeout;
         this.readTimeout = readTimeout;
         this.proxyFlag = proxyFlag;

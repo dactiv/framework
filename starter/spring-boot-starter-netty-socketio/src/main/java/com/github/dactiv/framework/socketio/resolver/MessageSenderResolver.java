@@ -4,7 +4,7 @@ import com.corundumstudio.socketio.SocketIOServer;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.security.filter.result.IgnoreOrDesensitizeResultHolder;
-import com.github.dactiv.framework.socketio.config.SocketConfig;
+import com.github.dactiv.framework.socketio.SocketProperties;
 import com.github.dactiv.framework.socketio.domain.metadata.AbstractSocketMessageMetadata;
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -36,7 +36,7 @@ public interface MessageSenderResolver {
      */
     boolean isSupport(AbstractSocketMessageMetadata<?> socketMessage);
 
-    default String postMessageToJson(String event, Object message, SocketConfig config) {
+    default String postMessageToJson(String event, Object message, SocketProperties config) {
         Map<String, Object> source = Casts.convertValue(message, Casts.MAP_TYPE_REFERENCE);
         List<String> ignoreProperties = config.getIgnoreResultMap().get(event);
         if (CollectionUtils.isNotEmpty(ignoreProperties)) {

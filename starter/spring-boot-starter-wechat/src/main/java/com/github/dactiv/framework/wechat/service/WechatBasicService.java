@@ -10,7 +10,7 @@ import com.github.dactiv.framework.idempotent.ConcurrentConfig;
 import com.github.dactiv.framework.idempotent.advisor.concurrent.ConcurrentInterceptor;
 import com.github.dactiv.framework.idempotent.annotation.Concurrent;
 import com.github.dactiv.framework.nacos.task.annotation.NacosCronScheduled;
-import com.github.dactiv.framework.wechat.config.WechatConfig;
+import com.github.dactiv.framework.wechat.WechatProperties;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.redisson.api.RBucket;
@@ -31,14 +31,14 @@ public abstract class WechatBasicService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WechatBasicService.class);
 
-    private final WechatConfig wechatConfig;
+    private final WechatProperties wechatProperties;
 
     private final RestTemplate restTemplate = new RestTemplate(new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()));
 
     private final ConcurrentInterceptor concurrentInterceptor;
 
-    public WechatBasicService(WechatConfig wechatConfig,ConcurrentInterceptor concurrentInterceptor) {
-        this.wechatConfig = wechatConfig;
+    public WechatBasicService(WechatProperties wechatProperties, ConcurrentInterceptor concurrentInterceptor) {
+        this.wechatProperties = wechatProperties;
         this.concurrentInterceptor = concurrentInterceptor;
     }
 
@@ -143,9 +143,9 @@ public abstract class WechatBasicService {
             return false;
         }
 
-        if (result.getBody().containsKey(wechatConfig.getStatusCodeFieldName())) {
-            String statusCode = result.getBody().get(wechatConfig.getStatusCodeFieldName()).toString();
-            return statusCode.equals(wechatConfig.getSuccessCodeValue());
+        if (result.getBody().containsKey(wechatProperties.getStatusCodeFieldName())) {
+            String statusCode = result.getBody().get(wechatProperties.getStatusCodeFieldName()).toString();
+            return statusCode.equals(wechatProperties.getSuccessCodeValue());
         }
 
         return true;
@@ -158,14 +158,14 @@ public abstract class WechatBasicService {
      */
     public void throwSystemExceptionIfError(Map<String, Object> result) {
         if (MapUtils.isNotEmpty(result)) {
-            throw new ErrorCodeException(result.get(wechatConfig.getStatusMessageFieldName()).toString(), result.get(wechatConfig.getStatusCodeFieldName()).toString());
+            throw new ErrorCodeException(result.get(wechatProperties.getStatusMessageFieldName()).toString(), result.get(wechatProperties.getStatusCodeFieldName()).toString());
         } else {
             throw new SystemException("执行微信 api 接口出现异常");
         }
     }
 
-    public WechatConfig getWechatConfig() {
-        return wechatConfig;
+    public WechatProperties getWechatConfig() {
+        return wechatProperties;
     }
 
     public RestTemplate getRestTemplate() {

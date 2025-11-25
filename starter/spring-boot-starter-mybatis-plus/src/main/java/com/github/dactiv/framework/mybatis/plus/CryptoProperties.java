@@ -1,4 +1,4 @@
-package com.github.dactiv.framework.mybatis.plus.config;
+package com.github.dactiv.framework.mybatis.plus;
 
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

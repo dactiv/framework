@@ -5,7 +5,7 @@ import com.citicbank.baselib.crypto.util.CryptUtil;
 import com.citicbank.baselib.crypto.util.FileUtil;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.dactiv.framework.citic.config.CiticProperties;
+import com.github.dactiv.framework.citic.CiticProperties;
 import com.github.dactiv.framework.citic.domain.CiticApiResult;
 import com.github.dactiv.framework.citic.domain.body.request.*;
 import com.github.dactiv.framework.citic.domain.body.response.*;

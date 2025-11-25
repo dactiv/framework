@@ -10,7 +10,7 @@ import com.github.dactiv.framework.fasc.bean.base.BaseReq;
 import com.github.dactiv.framework.fasc.bean.base.BaseRes;
 import com.github.dactiv.framework.fasc.bean.base.BaseResponseEntity;
 import com.github.dactiv.framework.fasc.bean.base.HttpInfoRes;
-import com.github.dactiv.framework.fasc.config.FascConfig;
+import com.github.dactiv.framework.fasc.FascProperties;
 import com.github.dactiv.framework.fasc.constants.OpenApiUrlConstants;
 import com.github.dactiv.framework.fasc.constants.RequestConstants;
 import com.github.dactiv.framework.fasc.exception.ApiException;
@@ -47,16 +47,16 @@ public class OpenApiClient implements InitializingBean {
 
     private final Logger log = LoggerFactory.getLogger(OpenApiClient.class);
 
-    private final FascConfig config;
+    private final FascProperties config;
 
     private final ConcurrentInterceptor concurrentInterceptor;
 
-    public OpenApiClient(FascConfig config, ConcurrentInterceptor concurrentInterceptor) {
+    public OpenApiClient(FascProperties config, ConcurrentInterceptor concurrentInterceptor) {
         this.config = config;
         this.concurrentInterceptor = concurrentInterceptor;
     }
 
-    public FascConfig getConfig() {
+    public FascProperties getConfig() {
         return config;
     }
 

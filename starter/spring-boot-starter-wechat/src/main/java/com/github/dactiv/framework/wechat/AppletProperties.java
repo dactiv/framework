@@ -1,4 +1,4 @@
-package com.github.dactiv.framework.wechat.config;
+package com.github.dactiv.framework.wechat;
 
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.TimeProperties;
@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 @Component
 @ConfigurationProperties("dactiv.wechat.applet")
-public class AppletConfig implements Serializable {
+public class AppletProperties implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -5139843287077090780L;
@@ -34,7 +34,7 @@ public class AppletConfig implements Serializable {
             CacheProperties.of("dactiv:wechat:applet:access-token")
     );
 
-    public AppletConfig() {
+    public AppletProperties() {
     }
 
     public String getPhoneNumberCodeParamName() {

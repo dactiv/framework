@@ -1,7 +1,6 @@
 package com.github.dactiv.framework.fasc;
 
 import com.github.dactiv.framework.fasc.client.*;
-import com.github.dactiv.framework.fasc.config.FascConfig;
 import com.github.dactiv.framework.idempotent.advisor.concurrent.ConcurrentInterceptor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -10,12 +9,12 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConditionalOnProperty(prefix = "dactiv.fasc", value = "enabled", matchIfMissing = true)
-@EnableConfigurationProperties(FascConfig.class)
+@EnableConfigurationProperties(FascProperties.class)
 public class FascAutoConfiguration {
 
     @Bean
-    public OpenApiClient openApiClient(FascConfig fascConfig, ConcurrentInterceptor concurrentInterceptor) {
-        return new OpenApiClient(fascConfig,concurrentInterceptor);
+    public OpenApiClient openApiClient(FascProperties fascProperties, ConcurrentInterceptor concurrentInterceptor) {
+        return new OpenApiClient(fascProperties,concurrentInterceptor);
     }
 
     @Bean

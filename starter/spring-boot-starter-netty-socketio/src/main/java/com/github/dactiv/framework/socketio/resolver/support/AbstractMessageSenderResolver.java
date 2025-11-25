@@ -4,7 +4,7 @@ import com.corundumstudio.socketio.ClientOperations;
 import com.corundumstudio.socketio.SocketIOServer;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.socketio.SocketUserDetailsAuthentication;
-import com.github.dactiv.framework.socketio.config.SocketConfig;
+import com.github.dactiv.framework.socketio.SocketProperties;
 import com.github.dactiv.framework.socketio.domain.metadata.AbstractSocketMessageMetadata;
 import com.github.dactiv.framework.socketio.resolver.MessageSenderResolver;
 import org.slf4j.Logger;
@@ -23,10 +23,10 @@ public abstract class AbstractMessageSenderResolver<T extends AbstractSocketMess
 
     public static final Logger LOGGER = LoggerFactory.getLogger(AbstractMessageSenderResolver.class);
 
-    private SocketConfig config;
+    private SocketProperties config;
 
     @Autowired
-    public void setConfig(SocketConfig config) {
+    public void setConfig(SocketProperties config) {
         this.config = config;
     }
 

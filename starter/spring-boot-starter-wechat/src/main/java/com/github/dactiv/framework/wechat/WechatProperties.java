@@ -1,4 +1,4 @@
-package com.github.dactiv.framework.wechat.config;
+package com.github.dactiv.framework.wechat;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 @Component
 @ConfigurationProperties("dactiv.wechat")
-public class WechatConfig implements Serializable {
+public class WechatProperties implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -2546539338401618009L;
@@ -40,7 +40,7 @@ public class WechatConfig implements Serializable {
      */
     private String successAuthenticationBuildParamName = "wechatCode";
 
-    public WechatConfig() {
+    public WechatProperties() {
     }
 
     public String getStatusCodeFieldName() {

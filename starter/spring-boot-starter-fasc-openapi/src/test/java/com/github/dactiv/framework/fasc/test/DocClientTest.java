@@ -11,7 +11,7 @@ import com.github.dactiv.framework.fasc.bean.common.OpenId;
 import com.github.dactiv.framework.fasc.client.CorpClient;
 import com.github.dactiv.framework.fasc.client.DocClient;
 import com.github.dactiv.framework.fasc.client.SignTaskClient;
-import com.github.dactiv.framework.fasc.config.FascConfig;
+import com.github.dactiv.framework.fasc.FascProperties;
 import com.github.dactiv.framework.fasc.enums.common.IdTypeEnum;
 import com.github.dactiv.framework.fasc.enums.doc.FileTypeEnum;
 import com.github.dactiv.framework.fasc.req.corp.GetCorpReq;
@@ -46,7 +46,7 @@ public class DocClientTest {
     private CorpClient corpClient;
 
     @Autowired
-    private FascConfig config;
+    private FascProperties config;
 
     @Test
     public void test() {

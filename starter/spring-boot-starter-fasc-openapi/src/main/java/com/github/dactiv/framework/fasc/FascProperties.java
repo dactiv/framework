@@ -1,4 +1,4 @@
-package com.github.dactiv.framework.fasc.config;
+package com.github.dactiv.framework.fasc;
 
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.TimeProperties;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author maurice.chen
  */
 @ConfigurationProperties("dactiv.fasc")
-public class FascConfig {
+public class FascProperties {
 
     private RefreshAccessTokenMetadata accessToken = new RefreshAccessTokenMetadata(
             TimeProperties.ofMinutes(10),
@@ -42,11 +42,11 @@ public class FascConfig {
     /**
      * http配置
      */
-    private HttpConfig httpConfig;
+    private HttpProperties httpProperties;
 
     private String successCodeValue = "100000";
 
-    public FascConfig() {
+    public FascProperties() {
     }
 
     public String getServerUrl() {
@@ -73,12 +73,12 @@ public class FascConfig {
         this.jsonStrategy = jsonStrategy;
     }
 
-    public HttpConfig getHttpConfig() {
-        return httpConfig;
+    public HttpProperties getHttpConfig() {
+        return httpProperties;
     }
 
-    public void setHttpConfig(HttpConfig httpConfig) {
-        this.httpConfig = httpConfig;
+    public void setHttpConfig(HttpProperties httpProperties) {
+        this.httpProperties = httpProperties;
     }
 
     public RefreshAccessTokenMetadata getAccessToken() {

@@ -1,10 +1,9 @@
-package com.github.dactiv.framework.socketio.config;
+package com.github.dactiv.framework.socketio;
 
 import com.corundumstudio.socketio.Configuration;
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.TimeProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -15,9 +14,8 @@ import java.util.Map;
  *
  * @author maurice.chen
  */
-@Component
 @ConfigurationProperties("dactiv.socketio")
-public class SocketConfig extends Configuration {
+public class SocketProperties extends Configuration {
 
 
     /**
@@ -35,7 +33,7 @@ public class SocketConfig extends Configuration {
      */
     private Map<String, List<String>> desensitizeResultMap = new LinkedHashMap<>();
 
-    public SocketConfig() {
+    public SocketProperties() {
     }
 
     public CacheProperties getUserCache() {

@@ -2,7 +2,6 @@ package com.github.dactiv.framework.socketio;
 
 import com.corundumstudio.socketio.SocketIOServer;
 import com.corundumstudio.socketio.store.RedissonStoreFactory;
-import com.github.dactiv.framework.socketio.config.SocketConfig;
 import com.github.dactiv.framework.socketio.holder.Interceptor.SocketMessageInterceptor;
 import com.github.dactiv.framework.socketio.holder.SocketMessagePointcutAdvisor;
 import com.github.dactiv.framework.socketio.interceptor.AuthorizationInterceptor;
@@ -29,16 +28,16 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
  */
 @Configuration
 @AutoConfigureBefore(SpringWebMvcAutoConfiguration.class)
-@EnableConfigurationProperties({SpringWebMvcProperties.class, AuthenticationProperties.class, SocketConfig.class})
+@EnableConfigurationProperties({SpringWebMvcProperties.class, AuthenticationProperties.class, SocketProperties.class})
 @ConditionalOnProperty(prefix = "dactiv.socketio", value = "enabled", matchIfMissing = true)
 public class SocketClientAutoConfiguration {
 
     @Bean
     public SocketUserDetailsAuthentication socketUserDetailsAuthentication(AccessTokenContextRepository accessTokenContextRepository,
-                                                                           SocketConfig socketConfig,
+                                                                           SocketProperties socketProperties,
                                                                            RedissonClient redissonClient,
                                                                            ObjectProvider<AuthorizationInterceptor> authorizationInterceptors) {
-        return new SocketUserDetailsAuthentication(accessTokenContextRepository, socketConfig, redissonClient, authorizationInterceptors.stream().toList());
+        return new SocketUserDetailsAuthentication(accessTokenContextRepository, socketProperties, redissonClient, authorizationInterceptors.stream().toList());
     }
 
     /**

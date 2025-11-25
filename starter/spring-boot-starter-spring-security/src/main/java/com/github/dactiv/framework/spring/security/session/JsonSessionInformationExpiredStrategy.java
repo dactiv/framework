@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.web.session.SessionInformationExpiredEvent;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -19,7 +18,6 @@ import java.util.Map;
  *
  * @author maurice
  */
-@Component
 public class JsonSessionInformationExpiredStrategy implements SessionInformationExpiredStrategy {
 
     @Override

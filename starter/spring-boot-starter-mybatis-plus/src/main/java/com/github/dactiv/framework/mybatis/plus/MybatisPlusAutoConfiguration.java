@@ -13,7 +13,6 @@ import com.github.dactiv.framework.mybatis.MybatisAutoConfiguration;
 import com.github.dactiv.framework.mybatis.config.OperationDataTraceProperties;
 import com.github.dactiv.framework.mybatis.interceptor.audit.OperationDataTraceResolver;
 import com.github.dactiv.framework.mybatis.plus.audit.MybatisPlusOperationDataTraceResolver;
-import com.github.dactiv.framework.mybatis.plus.config.CryptoProperties;
 import com.github.dactiv.framework.mybatis.plus.crypto.DataAesCryptoService;
 import com.github.dactiv.framework.mybatis.plus.crypto.DataRsaCryptoService;
 import com.github.dactiv.framework.mybatis.plus.interceptor.DecryptInterceptor;

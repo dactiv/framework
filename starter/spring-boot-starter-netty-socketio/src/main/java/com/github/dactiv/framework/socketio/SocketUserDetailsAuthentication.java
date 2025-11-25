@@ -14,7 +14,6 @@ import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.commons.id.IdNameMetadata;
 import com.github.dactiv.framework.commons.id.TypeIdNameMetadata;
 import com.github.dactiv.framework.security.audit.IdAuditEvent;
-import com.github.dactiv.framework.socketio.config.SocketConfig;
 import com.github.dactiv.framework.socketio.domain.SocketPrincipal;
 import com.github.dactiv.framework.socketio.enumerate.ConnectStatus;
 import com.github.dactiv.framework.socketio.interceptor.AuthorizationInterceptor;
@@ -50,7 +49,7 @@ public class SocketUserDetailsAuthentication implements AuthorizationListener, C
 
     private final AccessTokenContextRepository accessTokenContextRepository;
 
-    private final SocketConfig socketConfig;
+    private final SocketProperties socketProperties;
 
     private final RedissonClient redissonClient;
 
@@ -59,11 +58,11 @@ public class SocketUserDetailsAuthentication implements AuthorizationListener, C
     /*private final SocketMessageClient socketMessageClient;*/
 
     public SocketUserDetailsAuthentication(AccessTokenContextRepository accessTokenContextRepository,
-                                           SocketConfig socketConfig,
+                                           SocketProperties socketProperties,
                                            RedissonClient redissonClient,
                                            List<AuthorizationInterceptor> authorizationInterceptors) {
         this.accessTokenContextRepository = accessTokenContextRepository;
-        this.socketConfig = socketConfig;
+        this.socketProperties = socketProperties;
         this.redissonClient = redissonClient;
         this.authorizationInterceptors = authorizationInterceptors;
     }
@@ -159,7 +158,7 @@ public class SocketUserDetailsAuthentication implements AuthorizationListener, C
 
         RBucket<SocketPrincipal> deviceIdentifiedBucket = getSocketDeviceIdentifiedBucket(socketPrincipal.getDeviceIdentified());
         deviceIdentifiedBucket.set(socketPrincipal);
-        TimeProperties time = socketConfig.getUserCache().getExpiresTime();
+        TimeProperties time = socketProperties.getUserCache().getExpiresTime();
         if (Objects.nonNull(time)) {
             deviceIdentifiedBucket.expireAsync(time.toDuration());
             principalBucket.expireAsync(time.toDuration());
@@ -168,7 +167,7 @@ public class SocketUserDetailsAuthentication implements AuthorizationListener, C
 
     private RBucket<SocketPrincipal> getSocketPrincipalBucket(TypeIdNameMetadata typeIdNameMetadata) {
         String key = typeIdNameMetadata.getType() + CacheProperties.DEFAULT_SEPARATOR + typeIdNameMetadata.getId();
-        return redissonClient.getBucket(socketConfig.getUserCache().getName(key));
+        return redissonClient.getBucket(socketProperties.getUserCache().getName(key));
     }
 
     public SocketPrincipal getSocketPrincipalByDeviceIdentified(String deviceIdentified) {
@@ -176,7 +175,7 @@ public class SocketUserDetailsAuthentication implements AuthorizationListener, C
     }
 
     private RBucket<SocketPrincipal> getSocketDeviceIdentifiedBucket(String deviceIdentified) {
-        return redissonClient.getBucket(socketConfig.getUserCache().getName(deviceIdentified));
+        return redissonClient.getBucket(socketProperties.getUserCache().getName(deviceIdentified));
     }
 
     public void deleteSocketUserDetails(SocketPrincipal socketPrincipal) {
@@ -248,7 +247,7 @@ public class SocketUserDetailsAuthentication implements AuthorizationListener, C
         return AuthorizationResult.SUCCESSFUL_AUTHORIZATION;
     }
 
-    public SocketConfig getSocketConfig() {
-        return socketConfig;
+    public SocketProperties getSocketConfig() {
+        return socketProperties;
     }
 }

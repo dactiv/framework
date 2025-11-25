@@ -1,4 +1,4 @@
-package com.github.dactiv.framework.wechat.config;
+package com.github.dactiv.framework.wechat;
 
 import com.github.dactiv.framework.commons.CacheProperties;
 import com.github.dactiv.framework.commons.domain.metadata.RefreshAccessTokenMetadata;
@@ -10,7 +10,7 @@ import java.io.Serializable;
 
 @Component
 @ConfigurationProperties("dactiv.wechat.official")
-public class OfficialConfig implements Serializable {
+public class OfficialProperties implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -7783628591893033115L;
@@ -22,7 +22,7 @@ public class OfficialConfig implements Serializable {
             CacheProperties.of("dactiv:wechat:official:access-token")
     );
 
-    public OfficialConfig() {
+    public OfficialProperties() {
     }
 
     public RefreshAccessTokenMetadata getAccessToken() {

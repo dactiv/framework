@@ -5,8 +5,8 @@ import com.github.dactiv.framework.commons.domain.AccessToken;
 import com.github.dactiv.framework.commons.domain.metadata.RefreshAccessTokenMetadata;
 import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.idempotent.advisor.concurrent.ConcurrentInterceptor;
-import com.github.dactiv.framework.wechat.config.AppletConfig;
-import com.github.dactiv.framework.wechat.config.WechatConfig;
+import com.github.dactiv.framework.wechat.AppletProperties;
+import com.github.dactiv.framework.wechat.WechatProperties;
 import com.github.dactiv.framework.wechat.domain.WechatUserDetails;
 import com.github.dactiv.framework.wechat.domain.metadata.applet.PhoneInfoMetadata;
 import com.github.dactiv.framework.wechat.domain.metadata.applet.SimpleWechatUserDetailsMetadata;
@@ -30,18 +30,18 @@ public class WechatAppletService extends WechatBasicService implements Initializ
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WechatAppletService.class);
 
-    private final AppletConfig appletConfig;
+    private final AppletProperties appletProperties;
 
-    public WechatAppletService(AppletConfig appletConfig,
-                               WechatConfig wechatConfig,
+    public WechatAppletService(AppletProperties appletProperties,
+                               WechatProperties wechatProperties,
                                ConcurrentInterceptor concurrentInterceptor) {
-        super(wechatConfig, concurrentInterceptor);
-        this.appletConfig = appletConfig;
+        super(wechatProperties, concurrentInterceptor);
+        this.appletProperties = appletProperties;
     }
 
     @Override
     protected RefreshAccessTokenMetadata getRefreshAccessTokenMetadata() {
-        return appletConfig.getAccessToken();
+        return appletProperties.getAccessToken();
     }
 
     @Override
@@ -54,8 +54,8 @@ public class WechatAppletService extends WechatBasicService implements Initializ
         }
     }
 
-    public AppletConfig getAppletConfig() {
-        return appletConfig;
+    public AppletProperties getAppletConfig() {
+        return appletProperties;
     }
 
     /**

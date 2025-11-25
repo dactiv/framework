@@ -1,4 +1,4 @@
-package com.github.dactiv.framework.citic.config;
+package com.github.dactiv.framework.citic;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

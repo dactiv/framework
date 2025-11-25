@@ -3,7 +3,7 @@ package com.github.dactiv.framework.fasc.utils.crypt;
 import com.github.dactiv.framework.commons.Casts;
 import com.github.dactiv.framework.commons.exception.SystemException;
 import com.github.dactiv.framework.crypto.algorithm.SimpleByteSource;
-import com.github.dactiv.framework.fasc.config.FascConfig;
+import com.github.dactiv.framework.fasc.FascProperties;
 import com.github.dactiv.framework.fasc.constants.RequestConstants;
 import com.github.dactiv.framework.fasc.utils.string.StringUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -88,7 +88,7 @@ public class FddCryptUtil {
         return stringBuilder.toString();
     }
 
-    public static void verifyEventSign(ServletServerHttpRequest request, FascConfig fascConfig) {
+    public static void verifyEventSign(ServletServerHttpRequest request, FascProperties fascProperties) {
         String requestSign = request.getHeaders().getFirst(RequestConstants.SIGN);
         SystemException.isTrue(StringUtils.isNotEmpty(requestSign), "[法大大]: 签名数据不能为空");
         String timestamp = request.getHeaders().getFirst(RequestConstants.TIMESTAMP);
@@ -104,7 +104,7 @@ public class FddCryptUtil {
         paramMap.put(RequestConstants.DATA_KEY, request.getServletRequest().getParameter(RequestConstants.DATA_KEY));
 
         String signString =  FddCryptUtil.sortParameters(paramMap);;
-        String sign = SystemException.convertSupplier(() -> FddCryptUtil.sign(signString, timestamp, fascConfig.getAccessToken().getSecretKey()));
+        String sign = SystemException.convertSupplier(() -> FddCryptUtil.sign(signString, timestamp, fascProperties.getAccessToken().getSecretKey()));
         SystemException.isTrue(StringUtils.equals(sign, requestSign),"[法大大]: 验签不通过");
     }
 
