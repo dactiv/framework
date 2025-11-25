@@ -8,6 +8,8 @@ import java.util.Objects;
  */
 public class TypeIdNameMetadata extends IdNameMetadata {
 
+    public static final String TYPE_FIELD_NAME = "type";
+
     @Serial
     private static final long serialVersionUID = -5958623464505187650L;
 
