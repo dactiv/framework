@@ -8,6 +8,7 @@ import com.github.dactiv.framework.mybatis.plus.audit.MybatisPlusOperationDataTr
 import com.github.dactiv.framework.security.audit.IdAuditEvent;
 import com.github.dactiv.framework.spring.security.audit.config.ControllerAuditProperties;
 import com.github.dactiv.framework.spring.security.authentication.token.AuditAuthenticationToken;
+import com.github.dactiv.framework.spring.security.entity.AuditAuthenticationSuccessDetails;
 import com.github.dactiv.framework.spring.security.entity.SecurityPrincipalOperationDataTraceRecord;
 import com.github.dactiv.framework.spring.web.mvc.SpringMvcUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -113,17 +114,20 @@ public class SecurityPrincipalOperationDataTraceResolver extends MybatisPlusOper
         dataTraceRecordMap.remove(IdAuditEvent.PRINCIPAL_FIELD_NAME);
 
         Map<String, Object> data = new LinkedHashMap<>();
-        data.put(AuditAuthenticationToken.DETAILS_KEY, authenticationToken.getDetails());
+
+        AuditAuthenticationSuccessDetails details = Casts.cast(authenticationToken.getDetails());
+
+        data.put(AuditAuthenticationToken.DETAILS_KEY, details.getMetadata());
         data.put(OPERATION_DATA_TRACE_ATTR_NAME, dataTraceRecordMap);
 
-        syncControllerAuditEvent(data);
+        //syncControllerAuditEvent(data);
 
         SecurityPrincipalOperationDataTraceRecord newValue = Casts.of(dataTraceRecord,SecurityPrincipalOperationDataTraceRecord.class);
         newValue.setPrincipal(authenticationToken.getName());
         return createAuditEvent(newValue, data);
     }
 
-    private void syncControllerAuditEvent(Map<String, Object> data) {
+    /*private void syncControllerAuditEvent(Map<String, Object> data) {
         Optional<HttpServletRequest> optional = SpringMvcUtils.getHttpServletRequest();
 
         if (optional.isEmpty()) {
@@ -144,5 +148,5 @@ public class SecurityPrincipalOperationDataTraceResolver extends MybatisPlusOper
         data.put(controllerAuditProperties.getHeaderKey(), header);
         data.put(controllerAuditProperties.getParamKey(), param);
         data.put(controllerAuditProperties.getBodyKey(), body);
-    }
+    }*/
 }
