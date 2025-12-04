@@ -1,17 +1,3 @@
-dactiv:
-  fasc:
-    access-token:
-      secret-id: 80002872
-      secret-key: LXFPTXWDJHQF4HUPM0G4DSTPE7LYTE9I
-      cache:
-        name: 'dactiv:fasc:access-token'
-        time:
-          value: 10
-          unit: MINUTES
-    client-corp-id: 1903980686920245248
-    open-corp-id: 6cd4cc94e4a545e5a02c521fb174d15e
-    server-url: https://uat-api.fadada.com/api/v5
-
 spring:
   main:
     banner-mode: "off"
